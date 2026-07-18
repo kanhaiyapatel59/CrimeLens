@@ -4,25 +4,18 @@ import {
   Paper,
   Typography,
   Button,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Chip,
   Drawer,
   CircularProgress,
   IconButton,
   Tooltip,
+  Avatar,
+  Divider,
 } from '@mui/material'
 import {
-  Search as SearchIcon,
-  FilterList as FilterIcon,
   Refresh as RefreshIcon,
-  CenterFocusStrong as CenterIcon,
-  ZoomIn as ZoomInIcon,
-  ZoomOut as ZoomOutIcon,
   Person as PersonIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material'
 import ReactFlow, {
   MiniMap,
@@ -41,31 +34,32 @@ import { motion } from 'framer-motion'
 const Network = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  const [filters, setFilters] = useState({ depth: 2, limit: 50 })
   const [selectedNode, setSelectedNode] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [loading, setLoading] = useState(true)
 
   // Fetch graph data
   const { data, refetch, isLoading } = useQuery({
-    queryKey: ['network-graph', filters],
-    queryFn: () => networkAPI.getGraph(filters),
+    queryKey: ['network-graph'],
+    queryFn: () => networkAPI.getGraph({ limit: 50 }),
   })
 
   // Transform data for React Flow
   useEffect(() => {
     if (data?.data) {
       const graphData = data.data
-      const flowNodes = graphData.nodes.map((node, index) => ({
-        id: node.id,
+      
+      // ✅ SAFE CHECK: Ensure nodes and edges exist
+      const flowNodes = (graphData.nodes || []).map((node, index) => ({
+        id: node.id || `node-${index}`,
         position: {
           x: Math.random() * 1000,
           y: Math.random() * 600,
         },
         data: {
-          label: node.label,
-          type: node.type,
-          attributes: node.attributes,
+          label: node.label || 'Unknown',
+          type: node.type || 'unknown',
+          attributes: node.attributes || {},
         },
         style: {
           background: node.color || '#1a237e',
@@ -80,14 +74,14 @@ const Network = () => {
         },
       }))
 
-      const flowEdges = graphData.edges.map((edge) => ({
-        id: `${edge.source}-${edge.target}`,
-        source: edge.source,
-        target: edge.target,
-        label: edge.label,
+      const flowEdges = (graphData.edges || []).map((edge, index) => ({
+        id: edge.id || `edge-${index}`,
+        source: edge.source || '',
+        target: edge.target || '',
+        label: edge.label || '',
         style: {
           stroke: edge.color || '#95A5A6',
-          strokeWidth: Math.max(1, edge.strength || 1),
+          strokeWidth: Math.max(1, (edge.strength || 1) / 2),
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -97,6 +91,8 @@ const Network = () => {
 
       setNodes(flowNodes)
       setEdges(flowEdges)
+      setLoading(false)
+    } else {
       setLoading(false)
     }
   }, [data, setNodes, setEdges])
@@ -111,24 +107,33 @@ const Network = () => {
     setDrawerOpen(true)
   }
 
-  const handleNodeDoubleClick = async (event, node) => {
-    // Fetch node details
-    try {
-      const response = await networkAPI.getCentrality(node.id)
-      setSelectedNode({
-        ...node,
-        centrality: response.data,
-      })
-      setDrawerOpen(true)
-    } catch (error) {
-      console.error('Failed to fetch node details:', error)
-    }
-  }
-
   if (loading || isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
         <CircularProgress />
+      </Box>
+    )
+  }
+
+  // ✅ SAFE CHECK: If no nodes, show message
+  if (!nodes || nodes.length === 0) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <Paper sx={{ p: 4, textAlign: 'center', maxWidth: 400 }}>
+          <Typography variant="h6" gutterBottom>
+            No Network Data Available
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            There are no connections to display in the network graph.
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => refetch()}
+            sx={{ mt: 2 }}
+          >
+            Refresh
+          </Button>
+        </Paper>
       </Box>
     )
   }
@@ -146,13 +151,6 @@ const Network = () => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="outlined"
-            startIcon={<FilterIcon />}
-            onClick={() => setDrawerOpen(true)}
-          >
-            Filters
-          </Button>
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
@@ -185,7 +183,6 @@ const Network = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onNodeClick={onNodeClick}
-          onNodeDoubleClick={handleNodeDoubleClick}
           fitView
           attributionPosition="bottom-left"
         >
@@ -231,7 +228,7 @@ const Network = () => {
               </Avatar>
               <Box>
                 <Typography variant="subtitle1" fontWeight={600}>
-                  {selectedNode.data?.label}
+                  {selectedNode.data?.label || 'Unknown'}
                 </Typography>
                 <Chip
                   label={selectedNode.data?.type || 'Unknown'}
@@ -247,7 +244,7 @@ const Network = () => {
             <Typography variant="subtitle2" fontWeight={600} gutterBottom>
               Attributes
             </Typography>
-            {selectedNode.data?.attributes && (
+            {selectedNode.data?.attributes && Object.keys(selectedNode.data.attributes).length > 0 ? (
               <Box sx={{ mt: 1 }}>
                 {Object.entries(selectedNode.data.attributes).map(([key, value]) => (
                   <Box
@@ -268,33 +265,10 @@ const Network = () => {
                   </Box>
                 ))}
               </Box>
-            )}
-
-            {selectedNode.centrality && (
-              <>
-                <Divider sx={{ my: 2 }} />
-                <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                  Centrality Metrics
-                </Typography>
-                <Box sx={{ mt: 1 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
-                    <Typography variant="body2" color="textSecondary">
-                      Degree
-                    </Typography>
-                    <Typography variant="body2" fontWeight={500}>
-                      {selectedNode.centrality.degree}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
-                    <Typography variant="body2" color="textSecondary">
-                      Weighted Degree
-                    </Typography>
-                    <Typography variant="body2" fontWeight={500}>
-                      {selectedNode.centrality.weightedDegree}
-                    </Typography>
-                  </Box>
-                </Box>
-              </>
+            ) : (
+              <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                No attributes available
+              </Typography>
             )}
 
             <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
