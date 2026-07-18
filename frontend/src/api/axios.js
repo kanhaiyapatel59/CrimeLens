@@ -83,6 +83,8 @@ axiosInstance.interceptors.response.use(
       toast.error(message)
     }
 
+    // IMPORTANT: do not force reload/redirect here for bulk import errors.
+    // axios interceptor already handles 401 (session expired) explicitly.
     return Promise.reject(error)
   }
 )

@@ -183,22 +183,98 @@ class CrimeController {
     }
   }
 
-  /**
-   * Bulk upload crimes
-   */
-  static async bulkUpload(req, res) {
-    try {
-      const userId = req.userId;
-      const { crimes } = req.body;
+/**
+ * Bulk upload crimes - FIXED
+ */
+static async bulkUpload(req, res) {
+  try {
+    const userId = req.userId;
+    let { crimes } = req.body;
 
-      const result = await CrimeService.bulkUpload(crimes, userId);
-
-      return ResponseHandler.success(res, result, 'Bulk upload completed');
-    } catch (error) {
-      logger.error('Bulk upload error:', error);
-      return ResponseHandler.error(res, error, 'Bulk upload failed');
+    // ✅ If crimes is not an array, try to parse it
+    if (!Array.isArray(crimes)) {
+      if (typeof crimes === 'string') {
+        try {
+          crimes = JSON.parse(crimes);
+        } catch (e) {
+          return ResponseHandler.badRequest(res, 'Invalid JSON format');
+        }
+      } else {
+        return ResponseHandler.badRequest(res, 'Crimes must be an array');
+      }
     }
+
+    if (!crimes || crimes.length === 0) {
+      return ResponseHandler.badRequest(res, 'No crimes to upload');
+    }
+
+    // ✅ Process each crime
+    const results = {
+      success: [],
+      failed: [],
+      total: crimes.length
+    };
+
+    for (const crimeData of crimes) {
+      try {
+        // Validate required fields
+        if (!crimeData.firNumber || !crimeData.incidentId || !crimeData.crimeType) {
+          results.failed.push({
+            firNumber: crimeData.firNumber || 'Unknown',
+            error: 'Missing required fields: firNumber, incidentId, or crimeType'
+          });
+          continue;
+        }
+
+        // Create crime
+        const crime = new CrimeIncident({
+          firNumber: crimeData.firNumber,
+          incidentId: crimeData.incidentId,
+          crimeType: crimeData.crimeType,
+          date: crimeData.date || new Date(),
+          time: crimeData.time || '00:00',
+          description: crimeData.description || 'Bulk uploaded crime',
+          severity: crimeData.severity || 'medium',
+          status: crimeData.status || 'reported',
+          location: crimeData.location || {
+            coordinates: [77.5946, 12.9716],
+            address: {
+              district: crimeData.district || '',
+              policeStation: crimeData.policeStation || '',
+            }
+          },
+          reportedBy: userId,
+          reportingOfficer: userId,
+          metaData: {
+            source: 'bulk_upload',
+            originalData: crimeData
+          }
+        });
+
+        await crime.save();
+        results.success.push({
+          firNumber: crime.firNumber,
+          id: crime._id
+        });
+      } catch (error) {
+        results.failed.push({
+          firNumber: crimeData.firNumber || 'Unknown',
+          error: error.message
+        });
+      }
+    }
+
+    // ✅ Return results
+    const message = `Uploaded ${results.success.length} of ${results.total} crimes`;
+    if (results.failed.length > 0) {
+      return ResponseHandler.success(res, results, `${message} (${results.failed.length} failed)`);
+    }
+    return ResponseHandler.success(res, results, message);
+  } catch (error) {
+    logger.error('Bulk upload error:', error);
+    return ResponseHandler.error(res, error, 'Bulk upload failed');
   }
+}
 
   /**
    * Export crimes

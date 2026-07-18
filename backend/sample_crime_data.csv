@@ -1,0 +1,9 @@
+CrimeNo,CaseNo,CrimeRegisteredDate,BriefFacts,GravityOffenceID,latitude,longitude,ComplainantName,AccusedName,DistrictID,PoliceStationID
+"104430006202600001","202600001","2024-01-15","Robbery at MG Road - Cash and valuables stolen from a jewelry store","2","12.9716","77.5946","Rajesh Kumar","Amit Singh","DIST001","PS001"
+"104430006202600002","202600002","2024-01-16","Burglary at Indiranagar - Laptop, cash and jewelry stolen","3","12.9784","77.6408","Priya Sharma","Vikram Reddy","DIST001","PS002"
+"104430006202600003","202600003","2024-01-17","Chain snatching in Koramangala - Gold chain stolen from elderly woman","3","12.9352","77.6245","Sunita Patel","Ravi Kumar","DIST001","PS001"
+"104430006202600004","202600004","2024-01-18","Murder case in Whitefield - Victim found dead with stab wounds","1","12.9698","77.7499","Anita Desai","Kiran Raj","DIST002","PS003"
+"104430006202600005","202600005","2024-01-19","Drug possession in Electronic City - 2kg of narcotics seized","4","12.8399","77.677","Mohan Kumar","Sanjay Singh","DIST001","PS004"
+"104430006202600006","202600006","2024-01-20","Hit and run accident in Jayanagar - Pedestrian killed","2","12.9304","77.5825","Lakshmi Narayan","Prakash Rao","DIST001","PS005"
+"104430006202600007","202600007","2024-01-21","Cyber fraud in Rajajinagar - 5 lakhs fraudulently transferred","3","12.9985","77.5543","Suresh Reddy","Unknown","DIST001","PS001"
+"104430006202600008","202600008","2024-01-22","Armed robbery at Bank in Malleswaram - 10 lakhs stolen","1","13.003","77.5685","Bank Manager","Gang Members","DIST001","PS006"

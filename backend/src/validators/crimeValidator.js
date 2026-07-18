@@ -164,16 +164,22 @@ class CrimeValidator {
     ];
   }
 
-  /**
-   * Validate bulk upload
-   */
-  static validateBulk() {
-    return [
-      body('crimes')
-        .notEmpty().withMessage('Crimes array is required')
-        .isArray({ min: 1 }).withMessage('Must have at least one crime')
-    ];
-  }
+/**
+ * Validate bulk upload - FIXED
+ */
+static validateBulk() {
+  return [
+    body('crimes')
+      .optional()
+      .isArray().withMessage('Crimes must be an array')
+      .custom(value => {
+        if (!value || value.length === 0) {
+          throw new Error('At least one crime is required');
+        }
+        return true;
+      })
+  ];
+}
 
   /**
    * Validate export format

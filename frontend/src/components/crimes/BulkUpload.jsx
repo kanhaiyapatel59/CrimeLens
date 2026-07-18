@@ -11,6 +11,7 @@ import {
   ListItemText,
   ListItemIcon,
   IconButton,
+  Chip,
 } from '@mui/material'
 import {
   CloudUpload as UploadIcon,
@@ -21,28 +22,42 @@ import {
 } from '@mui/icons-material'
 import { useMutation } from '@tanstack/react-query'
 import { crimeAPI } from '../../api/crimes'
-import toast from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
+
 
 const BulkUpload = ({ onSuccess, onCancel }) => {
   const [file, setFile] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [results, setResults] = useState(null)
 
-  const uploadMutation = useMutation({
+const uploadMutation = useMutation({
     mutationFn: (data) => crimeAPI.bulkUpload(data),
-    onSuccess: (data) => {
-      setResults(data.data)
+    onSuccess: async (data) => {
+      const resultData = data.data?.data || data.data
+      setResults(resultData)
       setUploading(false)
-      if (data.data.failed.length === 0) {
-        toast.success(`Successfully uploaded ${data.data.success.length} crimes`)
-        setTimeout(onSuccess, 2000)
+
+      // Make sure UI refreshes everywhere after upload.
+      // onSuccess() in parent usually invalidates crimes query;
+      // additionally force a hard refresh to reload dashboard/map/network/report.
+      if (resultData.failed?.length === 0) {
+        toast.success(`Successfully uploaded ${resultData.success?.length || 0} crimes`)
+        setTimeout(() => {
+          try {
+            onSuccess()
+          } finally {
+            // Load latest KPIs/graphs.
+            window.location.reload()
+          }
+        }, 1500)
       } else {
-        toast.warning(`Uploaded ${data.data.success.length} crimes, ${data.data.failed.length} failed`)
+        toast.warning(`Uploaded ${resultData.success?.length || 0} crimes, ${resultData.failed?.length || 0} failed`)
       }
     },
     onError: (error) => {
       setUploading(false)
       toast.error(error.response?.data?.message || 'Upload failed')
+      console.error('Upload error:', error)
     },
   })
 
@@ -63,25 +78,25 @@ const BulkUpload = ({ onSuccess, onCancel }) => {
     setUploading(true)
 
     try {
-      // Parse file based on type
       const text = await file.text()
       let crimes
 
       if (file.name.endsWith('.json')) {
-        crimes = JSON.parse(text)
-        if (!Array.isArray(crimes)) {
-          throw new Error('JSON file must contain an array of crimes')
-        }
+        const parsed = JSON.parse(text)
+        crimes = Array.isArray(parsed) ? parsed : [parsed]
       } else if (file.name.endsWith('.csv')) {
-        // Simple CSV parsing
-        const lines = text.split('\n')
+        const lines = text.split('\n').filter(line => line.trim())
+        if (lines.length < 2) {
+          throw new Error('CSV file must have headers and at least one data row')
+        }
         const headers = lines[0].split(',').map(h => h.trim())
-        crimes = lines.slice(1).filter(line => line.trim()).map(line => {
+        crimes = lines.slice(1).map(line => {
           const values = line.split(',').map(v => v.trim())
-          return headers.reduce((obj, header, index) => {
+          const obj = {}
+          headers.forEach((header, index) => {
             obj[header] = values[index] || ''
-            return obj
-          }, {})
+          })
+          return obj
         })
       } else {
         throw new Error('Unsupported file format. Please use JSON or CSV.')
@@ -91,10 +106,12 @@ const BulkUpload = ({ onSuccess, onCancel }) => {
         throw new Error('No data found in file')
       }
 
+      // ✅ Send crimes as an object with crimes array
       await uploadMutation.mutateAsync({ crimes })
     } catch (error) {
       setUploading(false)
       toast.error(error.message || 'Failed to parse file')
+      console.error('Parse error:', error)
     }
   }
 
@@ -205,13 +222,31 @@ const BulkUpload = ({ onSuccess, onCancel }) => {
 
           {results && (
             <Box sx={{ mt: 2 }}>
-              <Alert severity={results.failed.length === 0 ? 'success' : 'warning'}>
-                {results.success.length} uploaded successfully
-                {results.failed.length > 0 && `, ${results.failed.length} failed`}
+              <Alert 
+                severity={results.failed?.length === 0 ? 'success' : 'warning'}
+                sx={{ mb: 2 }}
+              >
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                  <Chip 
+                    label={`✅ ${results.success?.length || 0} Uploaded`} 
+                    color="success" 
+                    size="small"
+                  />
+                  <Chip 
+                    label={`❌ ${results.failed?.length || 0} Failed`} 
+                    color="error" 
+                    size="small"
+                  />
+                  <Chip 
+                    label={`📊 ${results.total || 0} Total`} 
+                    color="primary" 
+                    size="small"
+                  />
+                </Box>
               </Alert>
 
-              {results.failed.length > 0 && (
-                <List dense>
+              {results.failed?.length > 0 && (
+                <List dense sx={{ maxHeight: 200, overflow: 'auto' }}>
                   {results.failed.map((item, index) => (
                     <ListItem key={index}>
                       <ListItemIcon>

@@ -25,8 +25,8 @@ export const crimeAPI = {
   getHotspots: (params = {}) =>
     axios.get('/api/crimes/hotspots', { params }),
   
-  bulkUpload: (crimes) =>
-    axios.post('/api/crimes/bulk', { crimes }),
+  bulkUpload: (data) =>
+    axios.post('/api/crimes/bulk', data),     
   
   export: (params = {}) =>
     axios.get('/api/crimes/export', { params, responseType: 'blob' }),

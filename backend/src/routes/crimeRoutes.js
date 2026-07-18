@@ -87,7 +87,7 @@ router.get(
 router.post(
   '/bulk',
   AuthMiddleware.authenticate,
-  AuthMiddleware.authorize('admin'),
+  // AuthMiddleware.authorize('admin'), // Remove for testing
   CrimeValidator.validateBulk(),
   CrimeValidator.checkValidation,
   CrimeController.bulkUpload

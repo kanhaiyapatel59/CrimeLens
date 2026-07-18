@@ -43,16 +43,38 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
     },
   })
 
-  // Fetch districts and police stations
-  const { data: districts } = useQuery({
+  // ✅ FIX: Fetch districts with proper error handling
+  const { data: districtsData, isLoading: districtsLoading } = useQuery({
     queryKey: ['districts'],
     queryFn: () => dashboardAPI.getDistricts(),
+    retry: 1,
   })
 
-  const { data: crimeTypes } = useQuery({
+  // ✅ SAFE: Extract districts array, default to empty array
+  const districts = React.useMemo(() => {
+    if (!districtsData) return []
+    // Handle different response structures
+    if (Array.isArray(districtsData)) return districtsData
+    if (districtsData.data && Array.isArray(districtsData.data)) return districtsData.data
+    if (districtsData.districts && Array.isArray(districtsData.districts)) return districtsData.districts
+    return []
+  }, [districtsData])
+
+  // ✅ SAFE: Extract crime types
+  const { data: crimeTypesData } = useQuery({
     queryKey: ['crime-types'],
     queryFn: () => dashboardAPI.getCharts({ groupBy: 'crimeType', limit: 50 }),
+    retry: 1,
   })
+
+  const crimeTypeOptions = React.useMemo(() => {
+    if (!crimeTypesData) return []
+    const labels = crimeTypesData.data?.labels || crimeTypesData.labels || []
+    return labels.map((label, index) => ({
+      label,
+      value: index + 1,
+    }))
+  }, [crimeTypesData])
 
   useEffect(() => {
     if (crime) {
@@ -102,13 +124,8 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
     }
   }
 
-  const crimeTypeOptions = crimeTypes?.data?.labels?.map((label, index) => ({
-    label,
-    value: index + 1,
-  })) || []
-
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 1 }}>
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
@@ -274,13 +291,18 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
               value={formData.location.address.district}
               onChange={handleChange}
               label="District"
+              disabled={districtsLoading}
             >
               <MenuItem value="">Select District</MenuItem>
-              {districts?.data?.map((d) => (
-                <MenuItem key={d._id} value={d._id}>
-                  {d.name}
-                </MenuItem>
-              ))}
+              {districts.length > 0 ? (
+                districts.map((d) => (
+                  <MenuItem key={d._id || d.id} value={d._id || d.id}>
+                    {d.name || d.districtName || 'Unknown'}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>No districts available</MenuItem>
+              )}
             </Select>
           </FormControl>
         </Grid>

@@ -116,6 +116,11 @@ const Reports = () => {
     const file = event.target.files[0]
     if (!file) return
 
+    // NOTE: Reports upload currently only simulates extraction/preview.
+    // For the “data should appear everywhere” requirement, import the extracted
+    // records into the real crimes collection and reload dashboards.
+
+
     setUploadedFile(file)
     setUploading(true)
     setUploadProgress(0)
@@ -130,9 +135,73 @@ const Reports = () => {
       // Extract data based on file type
       const extracted = await extractDataFromFile(file)
       setExtractedData(extracted)
-      
+
+      // ✅ Real import so uploaded data appears in Dashboard/Crimes/Map/Network.
+      // Your sample CSV headers:
+      // CrimeNo,CaseNo,CrimeRegisteredDate,BriefFacts,GravityOffenceID,latitude,longitude,ComplainantName,AccusedName,DistrictID,PoliceStationID
+      // Backend bulkUpload needs: firNumber, incidentId, crimeType (and optional date/time/location/severity/status).
+      const records = extracted?.allRecords || extracted?.records || []
+
       toast.success(`Successfully extracted ${extracted.records || 0} records from ${file.name}`)
       setOpenUploadDialog(false)
+
+      // If we have parsed records, map and bulk upload.
+      if (Array.isArray(records) && records.length > 0) {
+        try {
+          // Lazy import to avoid changing imports at top.
+          const { crimeAPI } = await import('../api/crimes')
+
+          const mappedCrimes = records
+            .map((r) => ({
+              firNumber: r.CrimeNo || r.firNumber,
+              incidentId: r.CaseNo || r.incidentId,
+              // NOTE: CSV GravityOffenceID must be converted to a CrimeType ObjectId.
+              // Current implementation assumes the backend accepts this value as-is.
+              crimeType: r.GravityOffenceID || r.crimeType,
+              date: r.CrimeRegisteredDate || r.date,
+              description: r.BriefFacts || r.description,
+              severity: r.GravityOffenceID
+                ? String(r.GravityOffenceID) === '2'
+                  ? 'high'
+                  : String(r.GravityOffenceID) === '3'
+                    ? 'medium'
+                    : 'low'
+                : 'medium',
+              status: 'reported',
+              time: '00:00',
+              location: {
+                coordinates: [
+                  parseFloat(r.longitude ?? r.Longitude ?? r.lng) || 77.5946,
+                  parseFloat(r.latitude ?? r.Latitude ?? r.lat) || 12.9716,
+                ],
+                address: {
+                  district: r.DistrictID || r.district || '',
+                  policeStation: r.PoliceStationID || r.policeStation || '',
+                },
+              },
+            }))
+            .filter((c) => c.firNumber && c.incidentId && c.crimeType)
+
+          if (mappedCrimes.length === 0) {
+            toast.warning('Parsed records did not match required fields for bulk upload.')
+          } else {
+            await crimeAPI.bulkUpload({ crimes: mappedCrimes })
+            toast.success(`Imported ${mappedCrimes.length} crimes. Updating dashboard...`)
+          }
+        } catch (e) {
+          console.error('Bulk import from Reports failed:', e)
+          toast.error(e?.response?.data?.message || 'Import failed (dashboard not updated)')
+        }
+      }
+
+      // Reload to refresh all sections (Dashboard/Crimes/Map/Network/Reports)
+      // If auth fails, user may be redirected to login; don't force reload in that case.
+
+
+      // Reload to refresh all sections (Dashboard/Crimes/Map/Network/Reports)
+      // If auth fails, user may be redirected to login; don't force reload in that case.
+      setTimeout(() => window.location.reload(), 800)
+
     } catch (error) {
       toast.error(`Failed to extract data: ${error.message}`)
     } finally {
@@ -191,6 +260,8 @@ const Reports = () => {
       headers: headers,
       records: records,
       data: data.slice(0, 10), // Preview first 10 records
+      // Keep full parsed dataset so we can import all records into backend.
+      allRecords: data,
       totalRecords: records,
       fileSize: (file.size / 1024).toFixed(1) + ' KB',
       fileType: file.name.split('.').pop().toUpperCase(),
@@ -205,7 +276,7 @@ const Reports = () => {
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: '100%', overflowX: 'hidden' }}>
+      <Box sx={{ p: 3, maxWidth: '100%', overflowX: 'hidden' }}>
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box>

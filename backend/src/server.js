@@ -20,6 +20,7 @@ const crimeRoutes = require('./routes/crimeRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const networkRoutes = require('./routes/networkRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 // Utils & Middleware
 const logger = require('./utils/logger');
@@ -202,6 +203,7 @@ app.use('/api/crimes', crimeRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/network', networkRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // 404 handler
 app.use((req, res) => {
