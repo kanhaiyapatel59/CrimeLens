@@ -10,6 +10,7 @@ import {
   Button,
   CircularProgress,
   Alert,
+  Typography,
 } from '@mui/material'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { crimeAPI } from '../../api/crimes'

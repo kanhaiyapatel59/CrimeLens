@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   Box,
   Paper,
@@ -11,20 +11,16 @@ import {
   MenuItem,
   Chip,
   Drawer,
-  List,
-  ListItem,
-  ListItemText,
   CircularProgress,
-    Button,  // ← ADD THIS
-
+  Button,
 } from '@mui/material'
 import {
-  Layers as LayersIcon,
   FilterList as FilterIcon,
   CenterFocusStrong as CenterIcon,
   ZoomIn as ZoomInIcon,
   ZoomOut as ZoomOutIcon,
   Refresh as RefreshIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material'
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet'
 import { useQuery } from '@tanstack/react-query'
@@ -32,6 +28,7 @@ import { crimeAPI } from '../api/crimes'
 import { dashboardAPI } from '../api/dashboard'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import toast from 'react-hot-toast'
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl
@@ -73,53 +70,61 @@ const CrimeMarkers = ({ crimes }) => {
   const map = useMap()
 
   useEffect(() => {
-    if (crimes && crimes.length > 0) {
-      const group = L.featureGroup()
-      crimes.forEach((crime) => {
-        if (crime.location?.coordinates) {
-          const [lng, lat] = crime.location.coordinates
-          const marker = L.marker([lat, lng])
-          const severityColors = {
-            low: '#4caf50',
-            medium: '#ff9800',
-            high: '#f44336',
-            critical: '#e91e63',
-          }
-          const color = severityColors[crime.severity] || '#1a237e'
+    if (!crimes || crimes.length === 0) return
 
-          const circle = L.circle([lat, lng], {
-            radius: crime.severity === 'critical' ? 200 : 
-                    crime.severity === 'high' ? 150 :
-                    crime.severity === 'medium' ? 100 : 50,
-            color: color,
-            fillColor: color,
-            fillOpacity: 0.3,
-          })
-
-          const popupContent = `
-            <div style="font-family: sans-serif; min-width: 200px;">
-              <h4 style="margin: 0 0 8px 0; color: #1a237e;">${crime.firNumber}</h4>
-              <p style="margin: 4px 0;"><strong>Type:</strong> ${crime.crimeType?.name || 'Unknown'}</p>
-              <p style="margin: 4px 0;"><strong>Date:</strong> ${new Date(crime.date).toLocaleDateString()}</p>
-              <p style="margin: 4px 0;"><strong>Severity:</strong> <span style="color: ${color}; font-weight: 600;">${crime.severity.toUpperCase()}</span></p>
-              <p style="margin: 4px 0;"><strong>Status:</strong> ${crime.status}</p>
-            </div>
-          `
-
-          marker.bindPopup(popupContent)
-          circle.bindPopup(popupContent)
-
-          group.addLayer(marker)
-          group.addLayer(circle)
+    const group = L.featureGroup()
+    
+    crimes.forEach((crime) => {
+      if (crime.location?.coordinates) {
+        const [lng, lat] = crime.location.coordinates
+        const severityColors = {
+          low: '#4caf50',
+          medium: '#ff9800',
+          high: '#f44336',
+          critical: '#e91e63',
         }
-      })
+        const color = severityColors[crime.severity] || '#1a237e'
 
-      map.addLayer(group)
-      map.fitBounds(group.getBounds(), { padding: [50, 50] })
+        const marker = L.circleMarker([lat, lng], {
+          radius: crime.severity === 'critical' ? 12 : 
+                  crime.severity === 'high' ? 10 :
+                  crime.severity === 'medium' ? 8 : 6,
+          color: color,
+          weight: 2,
+          opacity: 0.8,
+          fillColor: color,
+          fillOpacity: 0.6,
+        })
 
-      return () => {
-        map.removeLayer(group)
+        const popupContent = `
+          <div style="font-family: sans-serif; min-width: 200px;">
+            <h4 style="margin: 0 0 8px 0; color: #1a237e;">${crime.firNumber || 'Unknown'}</h4>
+            <p style="margin: 4px 0;"><strong>Type:</strong> ${crime.crimeType?.name || 'Unknown'}</p>
+            <p style="margin: 4px 0;"><strong>Date:</strong> ${crime.date ? new Date(crime.date).toLocaleDateString() : 'N/A'}</p>
+            <p style="margin: 4px 0;"><strong>Severity:</strong> <span style="color: ${color}; font-weight: 600;">${(crime.severity || 'unknown').toUpperCase()}</span></p>
+            <p style="margin: 4px 0;"><strong>Status:</strong> ${crime.status || 'unknown'}</p>
+          </div>
+        `
+
+        marker.bindPopup(popupContent)
+        group.addLayer(marker)
       }
+    })
+
+    map.addLayer(group)
+
+    const validCrimes = crimes.filter(c => c.location?.coordinates)
+    if (validCrimes.length > 0) {
+      const bounds = L.latLngBounds(
+        validCrimes.map(c => [c.location.coordinates[1], c.location.coordinates[0]])
+      )
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [50, 50] })
+      }
+    }
+
+    return () => {
+      map.removeLayer(group)
     }
   }, [crimes, map])
 
@@ -133,17 +138,18 @@ const Map = () => {
     status: '',
   })
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const mapRef = React.useRef()
+  const mapRef = useRef()
 
-  // Fetch crimes for map
-  const { data, isLoading } = useQuery({
+  // ✅ FIXED: Removed 'limit' parameter to avoid 422 error
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['map-crimes', filters],
     queryFn: () => crimeAPI.getAll({
-      limit: 200,
-      startDate: new Date(Date.now() - filters.days * 24 * 60 * 60 * 1000).toISOString(),
+      page: 1,
       severity: filters.severity || undefined,
       status: filters.status || undefined,
     }),
+    retry: 1,
+    staleTime: 30000,
   })
 
   // Fetch hotspots
@@ -152,6 +158,7 @@ const Map = () => {
     queryFn: () => crimeAPI.getHotspots({
       days: filters.days,
     }),
+    retry: 1,
   })
 
   const handleFilterChange = (field, value) => {
@@ -173,15 +180,18 @@ const Map = () => {
   const handleCenter = () => {
     if (mapRef.current && data?.data?.crimes?.length > 0) {
       const crimes = data.data.crimes
-      const bounds = L.latLngBounds(
-        crimes.map(c => [c.location.coordinates[1], c.location.coordinates[0]])
-      )
-      mapRef.current.fitBounds(bounds, { padding: [50, 50] })
+      const validCrimes = crimes.filter(c => c.location?.coordinates)
+      if (validCrimes.length > 0) {
+        const bounds = L.latLngBounds(
+          validCrimes.map(c => [c.location.coordinates[1], c.location.coordinates[0]])
+        )
+        mapRef.current.fitBounds(bounds, { padding: [50, 50] })
+      }
     }
   }
 
   const crimes = data?.data?.crimes || []
-  const center = crimes.length > 0
+  const center = crimes.length > 0 && crimes[0]?.location?.coordinates
     ? [crimes[0].location.coordinates[1], crimes[0].location.coordinates[0]]
     : [12.9716, 77.5946]
 
@@ -195,18 +205,24 @@ const Map = () => {
 
   return (
     <Box sx={{ height: 'calc(100vh - 120px)', position: 'relative' }}>
-      {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
         <Typography variant="h4" fontWeight={700}>
           Crime Map
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <Button
             variant="outlined"
             startIcon={<FilterIcon />}
             onClick={() => setDrawerOpen(true)}
           >
             Filters
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<RefreshIcon />}
+            onClick={() => refetch()}
+          >
+            Refresh
           </Button>
           <Chip
             label={`${crimes.length} crimes`}
@@ -216,7 +232,6 @@ const Map = () => {
         </Box>
       </Box>
 
-      {/* Map */}
       <Paper
         elevation={0}
         sx={{
@@ -245,16 +260,20 @@ const Map = () => {
         </MapContainer>
       </Paper>
 
-      {/* Filter Drawer */}
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         PaperProps={{ sx: { width: 320, p: 3 } }}
       >
-        <Typography variant="h6" fontWeight={600} gutterBottom>
-          Map Filters
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6" fontWeight={600}>
+            Map Filters
+          </Typography>
+          <IconButton onClick={() => setDrawerOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
 
         <Box sx={{ mt: 3 }}>
           <Typography variant="subtitle2" gutterBottom>

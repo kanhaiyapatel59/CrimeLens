@@ -16,8 +16,6 @@ import {
 import {
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
-  Brightness4 as DarkModeIcon,
-  Brightness7 as LightModeIcon,
   Person as PersonIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
@@ -59,14 +57,14 @@ const Header = ({ onMenuClick }) => {
       color="default"
       elevation={0}
       sx={{
-        backgroundColor: 'rgba(255,255,255,0.8)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(0,0,0,0.06)',
+        backgroundColor: '#fff',
+        borderBottom: '1px solid #e8ecf1',
+        zIndex: 1100,
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+      <Toolbar sx={{ minHeight: 64, justifyContent: 'space-between', px: { xs: 2, sm: 3 } }}>
         {/* Left */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <IconButton
             edge="start"
             color="inherit"
@@ -77,10 +75,10 @@ const Header = ({ onMenuClick }) => {
           </IconButton>
           
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography variant="subtitle2" fontWeight={600} color="text.primary">
               Welcome back, {user?.firstName}
             </Typography>
-            <Typography variant="caption" color="textSecondary">
+            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -92,32 +90,29 @@ const Header = ({ onMenuClick }) => {
         </Box>
 
         {/* Right */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {/* Notifications */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <IconButton onClick={handleNotifications}>
             <Badge badgeContent={3} color="error">
               <NotificationsIcon />
             </Badge>
           </IconButton>
 
-          {/* Theme Toggle */}
-          <IconButton>
-            {theme.palette.mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-          </IconButton>
-
-          {/* User */}
           <Chip
             avatar={
-              <Avatar sx={{ bgcolor: '#1a237e', color: '#fff' }}>
+              <Avatar sx={{ bgcolor: '#1a237e', color: '#fff', width: 28, height: 28, fontSize: '0.75rem' }}>
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </Avatar>
             }
             label={`${user?.firstName} ${user?.lastName}`}
             onClick={handleProfileMenu}
-            sx={{ fontWeight: 500, display: { xs: 'none', sm: 'flex' } }}
+            sx={{
+              fontWeight: 500,
+              borderRadius: 2,
+              display: { xs: 'none', sm: 'flex' },
+              '& .MuiChip-label': { px: 1.5, fontSize: '0.8rem' },
+            }}
           />
 
-          {/* User Menu */}
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -126,27 +121,24 @@ const Header = ({ onMenuClick }) => {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
             <MenuItem onClick={handleProfileClose}>
-              <PersonIcon sx={{ mr: 1 }} /> Profile
+              <PersonIcon sx={{ mr: 1, fontSize: 20 }} /> Profile
             </MenuItem>
             <MenuItem onClick={handleProfileClose}>
-              <SettingsIcon sx={{ mr: 1 }} /> Settings
+              <SettingsIcon sx={{ mr: 1, fontSize: 20 }} /> Settings
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
-              <LogoutIcon sx={{ mr: 1 }} /> Logout
+              <LogoutIcon sx={{ mr: 1, fontSize: 20 }} /> Logout
             </MenuItem>
           </Menu>
 
-          {/* Notifications Menu */}
           <Menu
             anchorEl={notifAnchorEl}
             open={Boolean(notifAnchorEl)}
             onClose={handleNotifClose}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            PaperProps={{
-              sx: { width: 350, maxHeight: 400 },
-            }}
+            PaperProps={{ sx: { width: 340, maxHeight: 400 } }}
           >
             <Typography variant="subtitle2" sx={{ p: 2, fontWeight: 600 }}>
               Notifications
@@ -154,17 +146,17 @@ const Header = ({ onMenuClick }) => {
             <Divider />
             <MenuItem onClick={handleNotifClose}>
               <Box>
-                <Typography variant="body2" fontWeight={500}>
+                <Typography variant="body2" fontWeight={500} fontSize="0.85rem">
                   🔴 Crime Spike Detected
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  15 minutes ago • Bengaluru District
+                  15 min ago • Bengaluru District
                 </Typography>
               </Box>
             </MenuItem>
             <MenuItem onClick={handleNotifClose}>
               <Box>
-                <Typography variant="body2" fontWeight={500}>
+                <Typography variant="body2" fontWeight={500} fontSize="0.85rem">
                   🤖 AI Prediction Ready
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
@@ -172,19 +164,9 @@ const Header = ({ onMenuClick }) => {
                 </Typography>
               </Box>
             </MenuItem>
-            <MenuItem onClick={handleNotifClose}>
-              <Box>
-                <Typography variant="body2" fontWeight={500}>
-                  📊 Weekly Report Generated
-                </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  3 hours ago • View report
-                </Typography>
-              </Box>
-            </MenuItem>
             <Divider />
             <MenuItem onClick={handleNotifClose} sx={{ justifyContent: 'center' }}>
-              <Typography variant="body2" color="primary">
+              <Typography variant="body2" color="primary" fontSize="0.8rem">
                 View All Notifications
               </Typography>
             </MenuItem>

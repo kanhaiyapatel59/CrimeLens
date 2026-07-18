@@ -64,20 +64,33 @@ const Crimes = () => {
   const [openBulk, setOpenBulk] = useState(false)
   const [tabValue, setTabValue] = useState(0)
 
-  // Fetch crimes
+  // ✅ FIX: Clean filters before sending to API
+  const cleanFilters = () => {
+    const clean = {}
+    Object.keys(filters).forEach(key => {
+      if (filters[key] && filters[key] !== '' && filters[key] !== 'all') {
+        clean[key] = filters[key]
+      }
+    })
+    return clean
+  }
+
+  // Fetch crimes - FIXED
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['crimes', page, rowsPerPage, filters],
     queryFn: () => crimeAPI.getAll({
       page: page + 1,
       limit: rowsPerPage,
-      ...filters,
+      ...cleanFilters(),
     }),
+    retry: 1,
   })
 
   // Fetch crime types for filters
   const { data: crimeTypes } = useQuery({
     queryKey: ['crime-types'],
     queryFn: () => dashboardAPI.getCharts({ groupBy: 'crimeType', limit: 50 }),
+    retry: 1,
   })
 
   // Delete mutation
@@ -154,7 +167,7 @@ const Crimes = () => {
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box>
           <Typography variant="h4" fontWeight={700}>
             Crime Records
@@ -163,7 +176,7 @@ const Crimes = () => {
             Manage and analyze crime incidents
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <Button
             variant="outlined"
             startIcon={<UploadIcon />}
@@ -174,7 +187,7 @@ const Crimes = () => {
           <Button
             variant="outlined"
             startIcon={<DownloadIcon />}
-            onClick={() => crimeAPI.export(filters)}
+            onClick={() => crimeAPI.export(cleanFilters())}
           >
             Export
           </Button>

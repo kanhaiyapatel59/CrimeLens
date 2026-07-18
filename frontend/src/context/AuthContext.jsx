@@ -14,10 +14,13 @@ export const AuthProvider = ({ children }) => {
   // Restore session on mount
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
+
+    // Only fetch profile if token exists; otherwise the UI may open empty.
     if (token) {
       dispatch(restoreSession())
       dispatch(getProfile())
     }
+
     setInitialized(true)
   }, [dispatch])
 

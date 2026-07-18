@@ -82,7 +82,7 @@ class CrimeValidator {
   }
 
   /**
-   * Validate crime list filters
+   * Validate crime list filters - FIXED
    */
   static validateList() {
     return [
@@ -98,16 +98,43 @@ class CrimeValidator {
       
       query('startDate')
         .optional()
-        .isISO8601().withMessage('Invalid start date format'),
+        .custom((value) => {
+          // Accept various date formats: YYYY-MM-DD, ISO, or timestamp
+          if (!value) return true;
+          const date = new Date(value);
+          if (isNaN(date.getTime())) {
+            throw new Error('Invalid date format');
+          }
+          return true;
+        })
+        .withMessage('Invalid start date format'),
       
       query('endDate')
         .optional()
-        .isISO8601().withMessage('Invalid end date format'),
+        .custom((value) => {
+          if (!value) return true;
+          const date = new Date(value);
+          if (isNaN(date.getTime())) {
+            throw new Error('Invalid date format');
+          }
+          return true;
+        })
+        .withMessage('Invalid end date format'),
       
       query('crimeType')
         .optional()
         .custom(value => mongoose.Types.ObjectId.isValid(value))
         .withMessage('Invalid crime type ID'),
+      
+      query('district')
+        .optional()
+        .custom(value => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('Invalid district ID'),
+      
+      query('policeStation')
+        .optional()
+        .custom(value => mongoose.Types.ObjectId.isValid(value))
+        .withMessage('Invalid police station ID'),
       
       query('severity')
         .optional()
@@ -160,11 +187,27 @@ class CrimeValidator {
       
       query('startDate')
         .optional()
-        .isISO8601().withMessage('Invalid start date format'),
+        .custom((value) => {
+          if (!value) return true;
+          const date = new Date(value);
+          if (isNaN(date.getTime())) {
+            throw new Error('Invalid date format');
+          }
+          return true;
+        })
+        .withMessage('Invalid start date format'),
       
       query('endDate')
         .optional()
-        .isISO8601().withMessage('Invalid end date format')
+        .custom((value) => {
+          if (!value) return true;
+          const date = new Date(value);
+          if (isNaN(date.getTime())) {
+            throw new Error('Invalid date format');
+          }
+          return true;
+        })
+        .withMessage('Invalid end date format')
     ];
   }
 
