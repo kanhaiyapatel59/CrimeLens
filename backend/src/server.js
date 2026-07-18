@@ -13,6 +13,10 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const path = require('path');
+const crimeRoutes = require('./routes/crimeRoutes');  // ← ADD THIS
+const dashboardRoutes = require('./routes/dashboardRoutes'); 
+const networkRoutes = require('./routes/networkRoutes');  // ← ADD THIS
+const aiRoutes = require('./routes/aiRoutes');  // ← ADD THIS
 
 // Import custom modules
 const logger = require('./utils/logger');
@@ -119,6 +123,11 @@ app.get('/health', (req, res) => {
 
 // API routes - FIXED: Removed the problematic middleware
 app.use('/api/auth', authRoutes);
+app.use('/api/crimes', crimeRoutes);
+app.use('/api/dashboard', dashboardRoutes);  // ← ADD THIS
+
+app.use('/api/network', networkRoutes); 
+app.use('/api/ai', aiRoutes);  // ← ADD THIS
 
 // TODO: Add more routes as we build them
 // app.use('/api/users', require('./routes/userRoutes'));
