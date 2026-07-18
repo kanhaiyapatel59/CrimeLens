@@ -20,6 +20,8 @@ import Map from './pages/Map'
 import Network from './pages/Network'
 import AIChat from './pages/AIChat'
 import Reports from './pages/Reports'
+import Profile from './pages/Profile'       // ← ADD
+import Settings from './pages/Settings'     // ← ADD
 
 // Components
 import PrivateRoute from './components/common/PrivateRoute'
@@ -58,18 +60,14 @@ function App() {
         
         <AnimatePresence mode="wait">
           <Routes>
-            {/* ============================================
-                PUBLIC ROUTES (No Authentication Required)
-                ============================================ */}
+            {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             
-            {/* ============================================
-                PROTECTED ROUTES (Authentication Required)
-                ============================================ */}
+            {/* Protected Routes */}
             <Route element={<PrivateRoute />}>
               <Route element={<Layout />}>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -79,12 +77,12 @@ function App() {
                 <Route path="/network" element={<Network />} />
                 <Route path="/ai-chat" element={<AIChat />} />
                 <Route path="/reports" element={<Reports />} />
+                <Route path="/profile" element={<Profile />} />    {/* ← ADD */}
+                <Route path="/settings" element={<Settings />} />  {/* ← ADD */}
               </Route>
             </Route>
             
-            {/* ============================================
-                404 - Not Found
-                ============================================ */}
+            {/* 404 */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </AnimatePresence>

@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   Avatar,
+  Divider,
 } from '@mui/material'
 import {
   Dashboard as DashboardIcon,
@@ -18,6 +19,8 @@ import {
   NetworkCheck as NetworkIcon,
   Chat as ChatIcon,
   Assessment as ReportIcon,
+  Person as PersonIcon,
+  Settings as SettingsIcon,
   Logout as LogoutIcon,
   Security as SecurityIcon,
 } from '@mui/icons-material'
@@ -31,6 +34,11 @@ const menuItems = [
   { path: '/network', label: 'Network', icon: NetworkIcon },
   { path: '/ai-chat', label: 'AI Assistant', icon: ChatIcon },
   { path: '/reports', label: 'Reports', icon: ReportIcon },
+]
+
+const bottomMenuItems = [
+  { path: '/profile', label: 'Profile', icon: PersonIcon },
+  { path: '/settings', label: 'Settings', icon: SettingsIcon },
 ]
 
 const Sidebar = ({ open, onClose, isMobile }) => {
@@ -108,7 +116,7 @@ const Sidebar = ({ open, onClose, isMobile }) => {
         </Box>
       </Box>
 
-      {/* Menu */}
+      {/* Main Menu */}
       <List sx={{ flex: 1, pt: 1, px: 1, overflowY: 'auto' }}>
         {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
@@ -140,9 +148,38 @@ const Sidebar = ({ open, onClose, isMobile }) => {
         ))}
       </List>
 
-      {/* Logout */}
-      <Box sx={{ borderTop: '1px solid rgba(255,255,255,0.08)', p: 1.5 }}>
-        <ListItem disablePadding>
+      {/* Bottom Menu - Profile & Settings */}
+      <Box sx={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        {bottomMenuItems.map((item) => (
+          <ListItem key={item.path} disablePadding sx={{ px: 1, py: 0.5 }}>
+            <ListItemButton
+              component={NavLink}
+              to={item.path}
+              sx={{
+                borderRadius: 1,
+                py: 1,
+                px: 1.5,
+                '&.active': {
+                  backgroundColor: 'rgba(79, 195, 247, 0.15)',
+                  '& .MuiListItemIcon-root': { color: '#4fc3f7' },
+                  '& .MuiListItemText-primary': { color: '#fff', fontWeight: 600 },
+                },
+                '&:hover': { backgroundColor: 'rgba(255,255,255,0.06)' },
+              }}
+            >
+              <ListItemIcon sx={{ color: 'rgba(255,255,255,0.5)', minWidth: 36 }}>
+                <item.icon sx={{ fontSize: 20 }} />
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+
+        {/* Logout */}
+        <ListItem disablePadding sx={{ px: 1, pb: 1.5 }}>
           <ListItemButton
             onClick={handleLogout}
             sx={{
@@ -183,7 +220,6 @@ const Sidebar = ({ open, onClose, isMobile }) => {
           left: 0,
           height: '100vh',
           zIndex: isMobile ? 1300 : 1100,
-          // ✅ Slide in/out animation
           transform: isMobile ? 'none' : (open ? 'translateX(0)' : 'translateX(-260px)'),
           transition: 'transform 0.25s ease-in-out',
           overflowX: 'hidden',

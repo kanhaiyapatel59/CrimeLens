@@ -11,11 +11,15 @@ import {
   Tooltip,
   Avatar,
   Divider,
+  Alert,
+  AlertTitle,
 } from '@mui/material'
 import {
   Refresh as RefreshIcon,
   Person as PersonIcon,
   Close as CloseIcon,
+  Add as AddIcon,
+  Warning as WarningIcon,
 } from '@mui/icons-material'
 import ReactFlow, {
   MiniMap,
@@ -30,8 +34,10 @@ import 'reactflow/dist/style.css'
 import { useQuery } from '@tanstack/react-query'
 import { networkAPI } from '../api/network'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const Network = () => {
+  const navigate = useNavigate()
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
   const [selectedNode, setSelectedNode] = useState(null)
@@ -39,9 +45,11 @@ const Network = () => {
   const [loading, setLoading] = useState(true)
 
   // Fetch graph data
-  const { data, refetch, isLoading } = useQuery({
+  const { data, refetch, isLoading, error } = useQuery({
     queryKey: ['network-graph'],
-    queryFn: () => networkAPI.getGraph({ limit: 50 }),
+    queryFn: () => networkAPI.getGraph({ limit: 100 }),
+    retry: 2,
+    staleTime: 60000,
   })
 
   // Transform data for React Flow
@@ -53,8 +61,8 @@ const Network = () => {
       const flowNodes = (graphData.nodes || []).map((node, index) => ({
         id: node.id || `node-${index}`,
         position: {
-          x: Math.random() * 1000,
-          y: Math.random() * 600,
+          x: Math.random() * 1000 + 100,
+          y: Math.random() * 600 + 50,
         },
         data: {
           label: node.label || 'Unknown',
@@ -107,37 +115,108 @@ const Network = () => {
     setDrawerOpen(true)
   }
 
-  if (loading || isLoading) {
+  // Handle refresh
+  const handleRefresh = () => {
+    setLoading(true)
+    refetch()
+  }
+
+  // Handle add data
+  const handleAddData = () => {
+    navigate('/crimes')
+  }
+
+  // Show loading state
+  if (isLoading || loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <CircularProgress />
+        <CircularProgress size={60} />
+        <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+          Loading network data...
+        </Typography>
       </Box>
     )
   }
 
-  // ✅ SAFE CHECK: If no nodes, show message
-  if (!nodes || nodes.length === 0) {
+  // ✅ Show error state
+  if (error) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <Paper sx={{ p: 4, textAlign: 'center', maxWidth: 400 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh', p: 3 }}>
+        <Paper sx={{ p: 4, textAlign: 'center', maxWidth: 500, borderRadius: 3 }}>
+          <WarningIcon sx={{ fontSize: 64, color: 'warning.main', mb: 2 }} />
           <Typography variant="h6" gutterBottom>
-            No Network Data Available
+            Unable to Load Network
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            There are no connections to display in the network graph.
+            {error.message || 'There was an error loading the network data. Please try again.'}
           </Typography>
           <Button
             variant="contained"
-            onClick={() => refetch()}
+            onClick={handleRefresh}
             sx={{ mt: 2 }}
           >
-            Refresh
+            Retry
           </Button>
         </Paper>
       </Box>
     )
   }
 
+  // ✅ Show empty state with helpful message
+  if (!nodes || nodes.length === 0) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh', p: 3 }}>
+        <Paper sx={{ p: 4, textAlign: 'center', maxWidth: 500, borderRadius: 3 }}>
+          <Box sx={{ mb: 3 }}>
+            <NetworkCheckIcon sx={{ fontSize: 80, color: '#1a237e', opacity: 0.3 }} />
+          </Box>
+          <Typography variant="h5" fontWeight={600} gutterBottom>
+            No Network Data Available
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+            The network graph is empty because there are no connections to display.
+            <br />
+            <br />
+            <strong>How to add data:</strong>
+            <br />
+            • Add crime records with victims and suspects
+            <br />
+            • Create relationships between entities
+            <br />
+            • Link suspects to multiple crimes
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAddData}
+              sx={{ bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}
+            >
+              Add Crime Records
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<RefreshIcon />}
+              onClick={handleRefresh}
+            >
+              Refresh
+            </Button>
+          </Box>
+          <Alert severity="info" sx={{ mt: 3, textAlign: 'left' }}>
+            <AlertTitle>💡 Tip</AlertTitle>
+            Network connections are automatically created when you:
+            <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+              <li>Add victims and suspects to crimes</li>
+              <li>Link multiple suspects to the same crime</li>
+              <li>Track repeat offenders across cases</li>
+            </ul>
+          </Alert>
+        </Paper>
+      </Box>
+    )
+  }
+
+  // ✅ Main network graph view
   return (
     <Box sx={{ height: 'calc(100vh - 120px)' }}>
       {/* Header */}
@@ -150,11 +229,11 @@ const Network = () => {
             Visualize connections between suspects, crimes, and locations
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
-            onClick={() => refetch()}
+            onClick={handleRefresh}
           >
             Refresh
           </Button>
@@ -271,6 +350,33 @@ const Network = () => {
               </Typography>
             )}
 
+            {selectedNode.centrality && (
+              <>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                  Centrality Metrics
+                </Typography>
+                <Box sx={{ mt: 1 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
+                    <Typography variant="body2" color="textSecondary">
+                      Degree
+                    </Typography>
+                    <Typography variant="body2" fontWeight={500}>
+                      {selectedNode.centrality.degree || 0}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
+                    <Typography variant="body2" color="textSecondary">
+                      Weighted Degree
+                    </Typography>
+                    <Typography variant="body2" fontWeight={500}>
+                      {selectedNode.centrality.weightedDegree || 0}
+                    </Typography>
+                  </Box>
+                </Box>
+              </>
+            )}
+
             <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
               <Button
                 fullWidth
@@ -293,5 +399,8 @@ const Network = () => {
     </Box>
   )
 }
+
+// Import missing icon
+import { NetworkCheck as NetworkCheckIcon } from '@mui/icons-material'
 
 export default Network
