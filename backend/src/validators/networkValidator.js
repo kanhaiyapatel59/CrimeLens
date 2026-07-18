@@ -9,6 +9,25 @@ class NetworkValidator {
   /**
    * Validate network filters
    */
+  static checkValidation(req, res, next) {
+    // Lazy-load to avoid changing current imports structure
+    const { validationResult } = require('express-validator');
+
+    const errors = validationResult(req);
+    if (errors.isEmpty()) return next();
+
+    const errorMessages = errors.array().map((error) => ({
+      field: error.path,
+      message: error.msg,
+    }));
+
+    return res.status(422).json({
+      success: false,
+      message: 'Validation error',
+      errors: errorMessages,
+    });
+  }
+
   static validateFilters() {
     return [
       query('depth')

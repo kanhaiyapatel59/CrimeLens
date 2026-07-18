@@ -2,7 +2,7 @@
  * Dashboard Validator - Validation for dashboard endpoints
  */
 
-const { query } = require('express-validator');
+const { query, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
 class DashboardValidator {
@@ -74,6 +74,28 @@ class DashboardValidator {
         .isIn(['total', 'violent', 'property', 'detection', 'conviction'])
         .withMessage('Invalid metric')
     ];
+  }
+
+  /**
+   * Check validation results
+   */
+  static checkValidation(req, res, next) {
+    const errors = validationResult(req);
+    
+    if (errors.isEmpty()) {
+      return next();
+    }
+
+    const errorMessages = errors.array().map(error => ({
+      field: error.path,
+      message: error.msg
+    }));
+
+    return res.status(422).json({
+      success: false,
+      message: 'Validation error',
+      errors: errorMessages
+    });
   }
 }
 

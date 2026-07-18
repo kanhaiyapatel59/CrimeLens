@@ -1,6 +1,5 @@
 /**
  * Response Handler - Standardized API responses
- * Enterprise feature: Consistent response format across all endpoints
  */
 
 const logger = require('./logger');
@@ -14,7 +13,6 @@ class ResponseHandler {
       timestamp: new Date().toISOString()
     };
     
-    logger.info(`Response: ${statusCode} - ${message}`);
     return res.status(statusCode).json(response);
   }
 
@@ -52,17 +50,6 @@ class ResponseHandler {
 
   static conflict(res, message = 'Conflict') {
     return this.error(res, new Error(message), message, 409);
-  }
-
-  static validationError(res, errors, message = 'Validation error') {
-    const response = {
-      success: false,
-      message,
-      errors,
-      timestamp: new Date().toISOString()
-    };
-    logger.error(`Validation Error: ${message}`, { errors });
-    return res.status(422).json(response);
   }
 }
 

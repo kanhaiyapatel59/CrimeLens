@@ -4,6 +4,7 @@
  */
 
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -12,66 +13,127 @@ const rateLimit = require('express-rate-limit');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
-const path = require('path');
-const crimeRoutes = require('./routes/crimeRoutes');  // ← ADD THIS
-const dashboardRoutes = require('./routes/dashboardRoutes'); 
-const networkRoutes = require('./routes/networkRoutes');  // ← ADD THIS
-const aiRoutes = require('./routes/aiRoutes');  // ← ADD THIS
 
-// Import custom modules
+// Routes
+const authRoutes = require('./routes/authRoutes');
+const crimeRoutes = require('./routes/crimeRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const networkRoutes = require('./routes/networkRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+
+// Utils & Middleware
 const logger = require('./utils/logger');
 const { connectDatabase } = require('./database/connection');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { requestLogger } = require('./middlewares/requestLogger');
 
-// Import routes
-const authRoutes = require('./routes/authRoutes');
-
 const app = express();
 const httpServer = createServer(app);
+
+// ============================================
+// CORS - ULTIMATE FIX (Place this FIRST)
+// ============================================
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',')
+  : [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://localhost:5000',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:3000'
+    ];
+
+// Manual CORS headers for all requests
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  // Allow all origins in development, or check against allowed list
+  if (process.env.NODE_ENV === 'development' || !origin || allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  }
+  
+  // Handle preflight requests immediately
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// CORS middleware (official)
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
+      
+      if (
+        allowedOrigins.includes(origin) ||
+        process.env.NODE_ENV === 'development'
+      ) {
+        callback(null, true);
+      } else {
+        console.log('Blocked CORS from:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    optionsSuccessStatus: 200
+  })
+);
 
 // ============================================
 // Security & Performance Middleware
 // ============================================
 
-// Security headers
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
     },
-  },
-  crossOriginEmbedderPolicy: false,
-}));
-
-// CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000', 'http://localhost:5173'],
-  credentials: true,
-  optionsSuccessStatus: 200,
-}));
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 // Compression
 app.use(compression());
 
-// JSON parsing with size limit
+// Body parser
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '10mb'
+  })
+);
 
 // Rate limiting
+// NOTE: Dashboard pages make multiple concurrent requests; keep this permissive in dev.
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: process.env.RATE_LIMIT_WINDOW_MS
+    ? Number(process.env.RATE_LIMIT_WINDOW_MS)
+    : 15 * 60 * 1000,
+  max: process.env.RATE_LIMIT_MAX ? Number(process.env.RATE_LIMIT_MAX) : 1000,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
+
+// Apply only to high-volume API endpoints if possible.
 app.use('/api', limiter);
 
-// Request logging
+// Request logger
 app.use(requestLogger);
 
 // ============================================
@@ -80,30 +142,43 @@ app.use(requestLogger);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000', 'http://localhost:5173'],
+    origin: function(origin, callback) {
+      if (!origin) {
+        return callback(null, true);
+      }
+      
+      if (
+        allowedOrigins.includes(origin) ||
+        process.env.NODE_ENV === 'development'
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
-  },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
+  }
 });
 
 io.on('connection', (socket) => {
   logger.info(`New client connected: ${socket.id}`);
-  
+
   socket.on('subscribe', (data) => {
     socket.join(data.room);
     logger.info(`Client ${socket.id} subscribed to ${data.room}`);
   });
-  
+
   socket.on('unsubscribe', (data) => {
     socket.leave(data.room);
     logger.info(`Client ${socket.id} unsubscribed from ${data.room}`);
   });
-  
+
   socket.on('disconnect', () => {
     logger.info(`Client disconnected: ${socket.id}`);
   });
 });
 
-// Make io accessible to routes
 app.set('io', io);
 
 // ============================================
@@ -121,24 +196,12 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes - FIXED: Removed the problematic middleware
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/crimes', crimeRoutes);
-app.use('/api/dashboard', dashboardRoutes);  // ← ADD THIS
-
-app.use('/api/network', networkRoutes); 
-app.use('/api/ai', aiRoutes);  // ← ADD THIS
-
-// TODO: Add more routes as we build them
-// app.use('/api/users', require('./routes/userRoutes'));
-// app.use('/api/crimes', require('./routes/crimeRoutes'));
-// app.use('/api/analytics', require('./routes/analyticsRoutes'));
-// app.use('/api/districts', require('./routes/districtRoutes'));
-// app.use('/api/stations', require('./routes/stationRoutes'));
-// app.use('/api/investigations', require('./routes/investigationRoutes'));
-// app.use('/api/evidence', require('./routes/evidenceRoutes'));
-// app.use('/api/networks', require('./routes/networkRoutes'));
-// app.use('/api/predictions', require('./routes/predictionRoutes'));
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/network', networkRoutes);
+app.use('/api/ai', aiRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -149,7 +212,7 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler - FIXED: Properly placed after all routes
+// Global error handler
 app.use(errorHandler);
 
 // ============================================
@@ -160,15 +223,22 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // Connect to MongoDB
+// Connect to MongoDB
     await connectDatabase();
     logger.info('✅ Database connected successfully');
 
-    // Connect to Redis (optional - uncomment when ready)
-    // await connectRedis();
-    // logger.info('✅ Redis connected successfully');
+    // Start server (handle EADDRINUSE gracefully)
+    httpServer.on('error', (err) => {
+      if (err && err.code === 'EADDRINUSE') {
+        logger.error(`❌ Port ${PORT} is already in use (EADDRINUSE). Is another dev server running?`);
+        logger.error(err);
+        // Exit with non-zero so nodemon doesn't get stuck
+        process.exit(1);
+      }
 
-    // Start server
+      logger.error('HTTP server error:', err);
+    });
+
     httpServer.listen(PORT, () => {
       logger.info(`🚀 CrimeLens Backend running on port ${PORT}`);
       logger.info(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -181,19 +251,35 @@ const startServer = async () => {
   }
 };
 
-// Graceful shutdown
-const gracefulShutdown = () => {
-  logger.info('Received shutdown signal, closing connections...');
-  
-  httpServer.close(() => {
-    mongoose.connection.close(false, () => {
-      logger.info('Database connections closed');
-      process.exit(0);
-    });
-  });
+// Graceful shutdown (idempotent)
+let isShuttingDown = false;
+let shutdownTimeout = null;
 
-  // Force close after 10 seconds
-  setTimeout(() => {
+const gracefulShutdown = () => {
+  if (isShuttingDown) {
+    // Prevent repeated shutdown spam / re-entrancy during teardown
+    return;
+  }
+  isShuttingDown = true;
+
+  logger.info('Received shutdown signal, closing connections...');
+
+  // Stop accepting new connections
+  try {
+    httpServer.close(() => {
+      // Close Mongo connection
+      mongoose.connection.close(false, () => {
+        logger.info('Database connections closed');
+        process.exit(0);
+      });
+    });
+  } catch (e) {
+    logger.error('Error during httpServer.close:', e);
+    // Fall through to forced shutdown
+  }
+
+  // Force close after 10 seconds (schedule once)
+  shutdownTimeout = setTimeout(() => {
     logger.error('Could not close connections in time, forcefully shutting down');
     process.exit(1);
   }, 10000);
@@ -209,6 +295,7 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
+  // Avoid repeated shutdown triggers
   logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
   gracefulShutdown();
 });

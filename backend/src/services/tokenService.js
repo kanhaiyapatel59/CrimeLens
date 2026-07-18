@@ -11,23 +11,27 @@ class TokenService {
    * Generate access token (short-lived)
    */
   static generateAccessToken(payload) {
-    return jwt.sign(
+    console.log('🔑 [TokenService] Generating access token for:', payload.email);
+    const token = jwt.sign(
       payload,
       process.env.JWT_SECRET,
       {
-        expiresIn: process.env.JWT_EXPIRE || '15m',
+        expiresIn: process.env.JWT_EXPIRE || '7d',
         issuer: 'crimelens',
         audience: 'crimelens-api',
         algorithm: 'HS256'
       }
     );
+    console.log('✅ [TokenService] Access token generated');
+    return token;
   }
 
   /**
    * Generate refresh token (long-lived)
    */
   static generateRefreshToken(payload) {
-    return jwt.sign(
+    console.log('🔑 [TokenService] Generating refresh token for:', payload.email);
+    const token = jwt.sign(
       payload,
       process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
       {
@@ -37,6 +41,8 @@ class TokenService {
         algorithm: 'HS256'
       }
     );
+    console.log('✅ [TokenService] Refresh token generated');
+    return token;
   }
 
   /**
@@ -44,13 +50,23 @@ class TokenService {
    */
   static verifyAccessToken(token) {
     try {
-      return jwt.verify(token, process.env.JWT_SECRET, {
+      console.log('🔑 [TokenService] Verifying token:', token.substring(0, 30) + '...');
+      console.log('🔑 [TokenService] Using JWT_SECRET:', process.env.JWT_SECRET ? 'Yes' : 'No');
+      
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, {
         issuer: 'crimelens',
         audience: 'crimelens-api'
       });
+      
+      console.log('✅ [TokenService] Token verified successfully for:', decoded.email);
+      return decoded;
     } catch (error) {
+      console.log('❌ [TokenService] Token verification failed:', error.message);
       if (error.name === 'TokenExpiredError') {
         throw new Error('Access token expired');
+      }
+      if (error.name === 'JsonWebTokenError') {
+        throw new Error('Invalid token signature');
       }
       throw new Error('Invalid access token');
     }
@@ -61,11 +77,15 @@ class TokenService {
    */
   static verifyRefreshToken(token) {
     try {
-      return jwt.verify(token, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
+      console.log('🔑 [TokenService] Verifying refresh token');
+      const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
         issuer: 'crimelens',
         audience: 'crimelens-api'
       });
+      console.log('✅ [TokenService] Refresh token verified');
+      return decoded;
     } catch (error) {
+      console.log('❌ [TokenService] Refresh token verification failed:', error.message);
       if (error.name === 'TokenExpiredError') {
         throw new Error('Refresh token expired');
       }

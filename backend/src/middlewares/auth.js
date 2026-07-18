@@ -18,17 +18,23 @@ class AuthMiddleware {
       // Get token from header
       const authHeader = req.headers.authorization;
       
+      console.log('🔑 [Auth] Auth Header:', authHeader ? 'Present' : 'Missing');
+      
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('❌ [Auth] No token provided');
         return ResponseHandler.unauthorized(res, 'No token provided');
       }
 
       const token = authHeader.split(' ')[1];
+      console.log('🔑 [Auth] Token received:', token.substring(0, 30) + '...');
 
       // Verify token
       let decoded;
       try {
         decoded = TokenService.verifyAccessToken(token);
+        console.log('✅ [Auth] Token decoded successfully:', decoded);
       } catch (error) {
+        console.log('❌ [Auth] Token verification failed:', error.message);
         return ResponseHandler.unauthorized(res, error.message);
       }
 
@@ -38,16 +44,21 @@ class AuthMiddleware {
         .lean();
 
       if (!user) {
+        console.log('❌ [Auth] User not found:', decoded.userId);
         return ResponseHandler.unauthorized(res, 'User not found');
       }
 
+      console.log('✅ [Auth] User found:', user.email);
+
       // Check if user is active
       if (!user.isActive) {
+        console.log('❌ [Auth] User inactive:', user.email);
         return ResponseHandler.unauthorized(res, 'Account deactivated');
       }
 
       // Check if user is deleted
       if (user.deletedAt) {
+        console.log('❌ [Auth] User deleted:', user.email);
         return ResponseHandler.unauthorized(res, 'Account deleted');
       }
 
@@ -55,6 +66,7 @@ class AuthMiddleware {
       if (user.passwordChangedAt) {
         const changedTimestamp = Math.floor(user.passwordChangedAt.getTime() / 1000);
         if (decoded.iat < changedTimestamp) {
+          console.log('❌ [Auth] Password changed after token issued');
           return ResponseHandler.unauthorized(res, 'Password changed. Please login again.');
         }
       }
@@ -64,8 +76,10 @@ class AuthMiddleware {
       req.userId = user._id;
       req.userRole = user.role;
 
+      console.log('✅ [Auth] Authentication successful for:', user.email);
       next();
     } catch (error) {
+      console.error('❌ [Auth] Authentication error:', error.message);
       logger.error('Authentication error:', error);
       return ResponseHandler.unauthorized(res, 'Authentication failed');
     }

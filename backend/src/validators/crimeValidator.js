@@ -2,7 +2,7 @@
  * Crime Validator - Validation for crime-related endpoints
  */
 
-const { body, query, param } = require('express-validator');
+const { body, query, param, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
 class CrimeValidator {
@@ -35,24 +35,6 @@ class CrimeValidator {
         .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
         .withMessage('Invalid time format (HH:MM)'),
       
-      body('location')
-        .notEmpty().withMessage('Location is required')
-        .isObject().withMessage('Location must be an object'),
-      
-      body('location.coordinates')
-        .notEmpty().withMessage('Coordinates are required')
-        .isArray({ min: 2, max: 2 }).withMessage('Coordinates must be [longitude, latitude]'),
-      
-      body('location.address.district')
-        .notEmpty().withMessage('District is required')
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid district ID'),
-      
-      body('location.address.policeStation')
-        .notEmpty().withMessage('Police station is required')
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid police station ID'),
-      
       body('description')
         .notEmpty().withMessage('Description is required')
         .isLength({ min: 10, max: 10000 }).withMessage('Description must be 10-10000 characters'),
@@ -65,28 +47,7 @@ class CrimeValidator {
       body('status')
         .optional()
         .isIn(['reported', 'investigating', 'in_progress', 'resolved', 'closed', 'pending'])
-        .withMessage('Invalid status'),
-      
-      body('victims')
-        .optional()
-        .isArray().withMessage('Victims must be an array'),
-      
-      body('victims.*')
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid victim ID'),
-      
-      body('suspects')
-        .optional()
-        .isArray().withMessage('Suspects must be an array'),
-      
-      body('suspects.*')
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid suspect ID'),
-      
-      body('modusOperandi')
-        .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid modus operandi ID')
+        .withMessage('Invalid status')
     ];
   }
 
@@ -103,43 +64,6 @@ class CrimeValidator {
         .optional()
         .trim()
         .isLength({ min: 5, max: 50 }).withMessage('FIR number must be 5-50 characters'),
-      
-      body('incidentId')
-        .optional()
-        .trim()
-        .isLength({ min: 5, max: 50 }).withMessage('Incident ID must be 5-50 characters'),
-      
-      body('crimeType')
-        .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid crime type ID'),
-      
-      body('date')
-        .optional()
-        .isISO8601().withMessage('Invalid date format'),
-      
-      body('time')
-        .optional()
-        .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
-        .withMessage('Invalid time format (HH:MM)'),
-      
-      body('location')
-        .optional()
-        .isObject().withMessage('Location must be an object'),
-      
-      body('location.coordinates')
-        .optional()
-        .isArray({ min: 2, max: 2 }).withMessage('Coordinates must be [longitude, latitude]'),
-      
-      body('location.address.district')
-        .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid district ID'),
-      
-      body('location.address.policeStation')
-        .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid police station ID'),
       
       body('description')
         .optional()
@@ -185,16 +109,6 @@ class CrimeValidator {
         .custom(value => mongoose.Types.ObjectId.isValid(value))
         .withMessage('Invalid crime type ID'),
       
-      query('district')
-        .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid district ID'),
-      
-      query('policeStation')
-        .optional()
-        .custom(value => mongoose.Types.ObjectId.isValid(value))
-        .withMessage('Invalid police station ID'),
-      
       query('severity')
         .optional()
         .isIn(['low', 'medium', 'high', 'critical'])
@@ -231,7 +145,6 @@ class CrimeValidator {
       body('crimes')
         .notEmpty().withMessage('Crimes array is required')
         .isArray({ min: 1 }).withMessage('Must have at least one crime')
-        .isArray({ max: 1000 }).withMessage('Cannot upload more than 1000 crimes at once')
     ];
   }
 
@@ -275,6 +188,28 @@ class CrimeValidator {
         .isInt({ min: 1, max: 50000 }).withMessage('Radius must be between 1 and 50000 meters')
         .toInt()
     ];
+  }
+
+  /**
+   * Check validation results
+   */
+  static checkValidation(req, res, next) {
+    const errors = validationResult(req);
+    
+    if (errors.isEmpty()) {
+      return next();
+    }
+
+    const errorMessages = errors.array().map(error => ({
+      field: error.path,
+      message: error.msg
+    }));
+
+    return res.status(422).json({
+      success: false,
+      message: 'Validation error',
+      errors: errorMessages
+    });
   }
 }
 
