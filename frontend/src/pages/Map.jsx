@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   Box, Paper, Typography, IconButton, Slider, FormControl,
   InputLabel, Select, MenuItem, Chip, Drawer, CircularProgress, Button,
@@ -21,7 +21,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 })
 
-const severityColors = { low: '#4caf50', medium: '#ff9800', high: '#f44336', critical: '#e91e63' }
+const severityColors = { 
+  low: '#4caf50', 
+  medium: '#ff9800', 
+  high: '#f44336', 
+  critical: '#e91e63' 
+}
 
 const MapControls = ({ onZoomIn, onZoomOut, onCenter }) => (
   <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -36,19 +41,43 @@ const MapControls = ({ onZoomIn, onZoomOut, onCenter }) => (
 const CrimeMarkers = ({ crimes }) => {
   const map = useMap()
 
-  useEffect(() => {
-    if (!crimes || crimes.length === 0) return
+  React.useEffect(() => {
+    console.log('🔍 CrimeMarkers received:', crimes?.length || 0, 'crimes')
+
+    if (!crimes || crimes.length === 0) {
+      console.log('⚠️ No crimes to display')
+      return
+    }
+
+    const validCrimes = crimes.filter(c => {
+      return c.location?.coordinates && c.location.coordinates.length === 2
+    })
+
+    console.log('✅ Valid crimes with coordinates:', validCrimes.length)
+
+    if (validCrimes.length === 0) {
+      console.log('⚠️ No crimes with valid coordinates')
+      return
+    }
+
     const group = L.featureGroup()
 
-    crimes.forEach((crime) => {
-      if (!crime.location?.coordinates) return
+    validCrimes.forEach((crime) => {
       const [lng, lat] = crime.location.coordinates
       const color = severityColors[crime.severity] || '#1a237e'
-      const radius = crime.severity === 'critical' ? 12 : crime.severity === 'high' ? 10 : crime.severity === 'medium' ? 8 : 6
+      const radius = crime.severity === 'critical' ? 12 : 
+                     crime.severity === 'high' ? 10 : 
+                     crime.severity === 'medium' ? 8 : 6
 
       const marker = L.circleMarker([lat, lng], {
-        radius, color, weight: 2, opacity: 0.8, fillColor: color, fillOpacity: 0.6,
+        radius,
+        color,
+        weight: 2,
+        opacity: 0.8,
+        fillColor: color,
+        fillOpacity: 0.6,
       })
+      
       marker.bindPopup(`
         <div style="font-family:sans-serif;min-width:200px;">
           <h4 style="margin:0 0 8px 0;color:#1a237e;">${crime.firNumber || 'Unknown'}</h4>
@@ -58,16 +87,22 @@ const CrimeMarkers = ({ crimes }) => {
           <p style="margin:4px 0;"><strong>Status:</strong> ${crime.status || 'unknown'}</p>
         </div>
       `)
+      
       group.addLayer(marker)
     })
 
     map.addLayer(group)
-    const valid = crimes.filter(c => c.location?.coordinates)
-    if (valid.length > 0) {
-      const bounds = L.latLngBounds(valid.map(c => [c.location.coordinates[1], c.location.coordinates[0]]))
-      if (bounds.isValid()) map.fitBounds(bounds, { padding: [50, 50] })
+
+    if (validCrimes.length > 0) {
+      const bounds = L.latLngBounds(validCrimes.map(c => [c.location.coordinates[1], c.location.coordinates[0]]))
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [50, 50] })
+      }
     }
-    return () => { map.removeLayer(group) }
+
+    return () => {
+      map.removeLayer(group)
+    }
   }, [crimes, map])
 
   return null
@@ -82,15 +117,26 @@ const Map = () => {
     queryKey: ['map-crimes', filters],
     queryFn: () => crimeAPI.getAll({
       page: 1,
-      limit: 200,
+      limit: 500,
       severity: filters.severity || undefined,
       status: filters.status || undefined,
     }),
     retry: 1,
   })
 
-  const handleZoomIn = () => { if (mapRef.current) mapRef.current.setZoom(mapRef.current.getZoom() + 1) }
-  const handleZoomOut = () => { if (mapRef.current) mapRef.current.setZoom(mapRef.current.getZoom() - 1) }
+  // ✅ Define zoom handlers
+  const handleZoomIn = () => {
+    if (mapRef.current) {
+      mapRef.current.setZoom(mapRef.current.getZoom() + 1)
+    }
+  }
+
+  const handleZoomOut = () => {
+    if (mapRef.current) {
+      mapRef.current.setZoom(mapRef.current.getZoom() - 1)
+    }
+  }
+
   const handleCenter = () => {
     if (mapRef.current && crimes.length > 0) {
       const valid = crimes.filter(c => c.location?.coordinates)
@@ -101,7 +147,19 @@ const Map = () => {
     }
   }
 
-  const crimes = data?.data?.data?.crimes || []
+  // 🔍 DEBUG - Log the actual structure
+  console.log('📦 Full response:', data)
+  console.log('📦 data?.data:', data?.data)
+  
+  // ✅ Try ALL possible data paths
+  const crimes = data?.data?.data?.crimes ||  // Nested data (most likely)
+                 data?.data?.crimes ||        // Standard
+                 data?.crimes ||              // Direct
+                 []                           // Fallback
+
+  console.log('📍 Total crimes fetched:', crimes.length)
+  console.log('📍 First crime sample:', crimes[0])
+
   const center = crimes.length > 0 && crimes[0]?.location?.coordinates
     ? [crimes[0].location.coordinates[1], crimes[0].location.coordinates[0]]
     : [12.9716, 77.5946]
@@ -132,7 +190,11 @@ const Map = () => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <CrimeMarkers crimes={crimes} />
-          <MapControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} onCenter={handleCenter} />
+          <MapControls 
+            onZoomIn={handleZoomIn} 
+            onZoomOut={handleZoomOut} 
+            onCenter={handleCenter} 
+          />
         </MapContainer>
       </Paper>
 

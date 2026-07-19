@@ -66,15 +66,24 @@ class DashboardService {
       }
     });
 
-    // Get recent trend (last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    // ✅ FIXED: Get ALL trend data (not just last 30 days)
+    // Get the minimum date from the database
+    const minDateResult = await CrimeIncident.aggregate([
+      { $match: match },
+      { $group: { _id: null, minDate: { $min: '$date' } } }
+    ]);
+    
+    const minDate = minDateResult[0]?.minDate || new Date('2024-01-01');
+    
+    // If startDate filter is provided, use it, otherwise use min date
+    const startDate = filters.startDate ? new Date(filters.startDate) : minDate;
+    const endDate = filters.endDate ? new Date(filters.endDate) : new Date();
 
     const recentTrend = await CrimeIncident.aggregate([
       {
         $match: {
           ...match,
-          date: { $gte: thirtyDaysAgo }
+          date: { $gte: startDate, $lte: endDate }
         }
       },
       {
@@ -87,9 +96,11 @@ class DashboardService {
           count: { $sum: 1 }
         }
       },
-      { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } },
-      { $limit: 30 }
+      { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
     ]);
+
+    // ✅ Debug log
+    console.log('📊 Recent Trend length:', recentTrend.length);
 
     return {
       totalCrimes,

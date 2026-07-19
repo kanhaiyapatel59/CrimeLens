@@ -211,6 +211,10 @@ class CrimeService {
         { new: true, runValidators: true }
       );
 
+      if (!updatedCrime) {
+        throw new Error('Crime not found');
+      }
+
       // Log update
       const auditLog = new AuditLog({
         action: 'Update Crime',

@@ -55,6 +55,7 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             street: crime.location?.address?.street || '',
             area: crime.location?.address?.area || '',
             city: crime.location?.address?.city || '',
+            // IMPORTANT: backend expects ObjectId strings; empty string causes CastError.
             district: crime.location?.address?.district?._id || crime.location?.address?.district || '',
             policeStation: crime.location?.address?.policeStation?._id || crime.location?.address?.policeStation || '',
             pincode: crime.location?.address?.pincode || '',
@@ -85,11 +86,22 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
     setLoading(true)
     setError(null)
     try {
+      // Clone + sanitize: backend update uses runValidators: true,
+      // so empty strings for ObjectId fields ("" ) cause CastError -> 500.
+      const payload = JSON.parse(JSON.stringify(formData))
+
+      if (payload?.crimeType === '') delete payload.crimeType
+
+      if (payload?.location?.address) {
+        if (payload.location.address.district === '') delete payload.location.address.district
+        if (payload.location.address.policeStation === '') delete payload.location.address.policeStation
+      }
+
       if (crime) {
-        await crimeAPI.update(crime._id, formData)
+        await crimeAPI.update(crime._id, payload)
         toast.success('Crime updated successfully')
       } else {
-        await crimeAPI.create(formData)
+        await crimeAPI.create(payload)
         toast.success('Crime created successfully')
       }
       queryClient.invalidateQueries()

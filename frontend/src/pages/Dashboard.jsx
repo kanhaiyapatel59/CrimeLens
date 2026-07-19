@@ -21,26 +21,31 @@ const Dashboard = () => {
   const [filters] = useState({ days: 30 })
   const [refreshing, setRefreshing] = useState(false)
 
+  // Fetch KPIs
   const { data: kpis, isLoading: kpisLoading, refetch: refetchKpis } = useQuery({
     queryKey: ['dashboard-kpis', filters],
     queryFn: () => dashboardAPI.getKPIs(filters),
   })
 
+  // Fetch Crime Type Chart
   const { data: crimeTypeChart, refetch: refetchChart } = useQuery({
     queryKey: ['crime-type-chart', filters],
     queryFn: () => dashboardAPI.getCharts({ ...filters, groupBy: 'crimeType', limit: 8 }),
   })
 
+  // Fetch Severity Chart
   const { data: severityChart } = useQuery({
     queryKey: ['severity-chart', filters],
     queryFn: () => dashboardAPI.getCharts({ ...filters, groupBy: 'severity' }),
   })
 
+  // Fetch Recent Crimes
   const { data: recentCrimes, refetch: refetchRecent } = useQuery({
     queryKey: ['recent-crimes'],
     queryFn: () => crimeAPI.getAll({ limit: 10 }),
   })
 
+  // Fetch Overview
   const { data: overview } = useQuery({
     queryKey: ['overview', filters],
     queryFn: () => dashboardAPI.getOverview(filters),
@@ -60,11 +65,17 @@ const Dashboard = () => {
     setRefreshing(false)
   }
 
-  const kpiData = kpis?.data?.data
-  const chartData = crimeTypeChart?.data?.data
-  const severityData = severityChart?.data?.data
-  const recentCrimesList = recentCrimes?.data?.data?.crimes || []
-  const overviewData = overview?.data?.data
+  // ✅ Extract data from API responses
+  const kpiData = kpis?.data?.data || kpis?.data || {}
+  const chartData = crimeTypeChart?.data?.data || crimeTypeChart?.data || {}
+  const severityData = severityChart?.data?.data || severityChart?.data || {}
+  const recentCrimesList = recentCrimes?.data?.data?.crimes || recentCrimes?.data?.crimes || []
+  const overviewData = overview?.data?.data || overview?.data || {}
+
+  // ✅ Debug logs
+  console.log('📊 kpiData:', kpiData)
+  console.log('📊 recentTrend:', kpiData?.recentTrend)
+  console.log('📊 recentTrend length:', kpiData?.recentTrend?.length)
 
   if (kpisLoading) {
     return (
