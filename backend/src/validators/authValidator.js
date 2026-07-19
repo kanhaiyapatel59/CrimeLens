@@ -44,7 +44,34 @@ class AuthValidator {
       body('confirmPassword')
         .notEmpty().withMessage('Confirm password is required')
         .custom((value, { req }) => value === req.body.password)
-        .withMessage('Passwords do not match')
+        .withMessage('Passwords do not match'),
+
+      // ✅ Police ID validation - Required for all except admin
+      body('policeId')
+        .if((value, { req }) => req.body.role !== 'admin')
+        .notEmpty().withMessage('Police ID is required for police officers')
+        .trim()
+        .isLength({ min: 4, max: 15 }).withMessage('Police ID must be 4-15 characters')
+        .matches(/^[A-Z0-9]+$/).withMessage('Police ID must contain only uppercase letters and numbers'),
+      
+      // ✅ Police ID Document - Required for all except admin
+      body('policeIdDocument')
+        .if((value, { req }) => req.body.role !== 'admin')
+        .notEmpty().withMessage('Police ID document is required')
+        .isString().withMessage('Invalid document format'),
+      
+      // ✅ Department - Required for all except admin
+      body('department')
+        .if((value, { req }) => req.body.role !== 'admin')
+        .notEmpty().withMessage('Department is required')
+        .isIn(['State Crime Records Bureau', 'District Police', 'Police Station', 'Other'])
+        .withMessage('Invalid department'),
+      
+      // ✅ Role validation
+      body('role')
+        .optional()
+        .isIn(['admin', 'scrb_officer', 'district_officer', 'station_officer', 'analyst', 'viewer'])
+        .withMessage('Invalid role selected')
     ];
   }
 

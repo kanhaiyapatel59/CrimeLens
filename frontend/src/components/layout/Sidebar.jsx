@@ -26,14 +26,31 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../../redux/slices/authSlice'
 
-const menuItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
-  { path: '/crimes', label: 'Crimes', icon: CrimeIcon },
-  { path: '/map', label: 'Crime Map', icon: MapIcon },
-  { path: '/network', label: 'Network', icon: NetworkIcon },
-  { path: '/ai-chat', label: 'AI Assistant', icon: ChatIcon },
-  { path: '/reports', label: 'Reports', icon: ReportIcon },
-]
+// ✅ Role-based menu items
+const getMenuItems = (role) => {
+  const roleName = role?.name || 'viewer'
+  
+  const allItems = [
+    { path: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
+    { path: '/crimes', label: 'Crimes', icon: CrimeIcon },
+    { path: '/map', label: 'Crime Map', icon: MapIcon },
+    { path: '/network', label: 'Network', icon: NetworkIcon },
+    { path: '/ai-chat', label: 'AI Assistant', icon: ChatIcon },
+    { path: '/reports', label: 'Reports', icon: ReportIcon },
+  ]
+  
+  const roleAccess = {
+    admin: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports'],
+    scrb_officer: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports'],
+    district_officer: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports'],
+    station_officer: ['/dashboard', '/crimes', '/map', '/ai-chat'],
+    analyst: ['/dashboard', '/map', '/network', '/ai-chat', '/reports'],
+    viewer: ['/dashboard', '/ai-chat'],
+  }
+  
+  const allowedPaths = roleAccess[roleName] || ['/dashboard']
+  return allItems.filter(item => allowedPaths.includes(item.path))
+}
 
 const bottomMenuItems = [
   { path: '/profile', label: 'Profile', icon: PersonIcon },
@@ -44,6 +61,9 @@ const Sidebar = ({ open, onClose, isMobile }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
+
+  // Dynamically generate menu items based on the current user's role
+  const menuItems = getMenuItems(user?.role)
 
   const handleLogout = () => {
     dispatch(logoutUser())
@@ -110,8 +130,8 @@ const Sidebar = ({ open, onClose, isMobile }) => {
           <Typography variant="body2" fontWeight={600} noWrap fontSize="0.85rem">
             {user?.firstName} {user?.lastName}
           </Typography>
-          <Typography variant="caption" sx={{ opacity: 0.6, display: 'block', fontSize: '0.65rem' }}>
-            {user?.role?.displayName || 'Officer'}
+          <Typography variant="caption" sx={{ opacity: 0.6, display: 'block', fontSize: '0.65rem', textTransform: 'capitalize' }}>
+            {user?.role?.displayName || user?.role?.name?.replace('_', ' ') || 'Officer'}
           </Typography>
         </Box>
       </Box>

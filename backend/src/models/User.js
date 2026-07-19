@@ -5,6 +5,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto'); // Added since it is used in createPasswordResetToken
 
 const userSchema = new mongoose.Schema({
   // Personal Information
@@ -63,6 +64,41 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'District'
   },
+
+  // ============================================
+  // Police Identification (Optional for existing users)
+  // ============================================
+  policeId: {
+    type: String,
+    trim: true,
+    uppercase: true,
+    sparse: true,
+    match: [/^[A-Z0-9]{4,15}$/, 'Invalid Police ID format']
+  },
+  policeIdDocument: {
+    type: String, // URL to uploaded document
+    sparse: true
+  },
+  badgeNumber: {
+    type: String,
+    trim: true,
+    sparse: true
+  },
+  department: {
+    type: String,
+    enum: ['State Crime Records Bureau', 'District Police', 'Police Station', 'Other'],
+    default: 'Police Station'
+  },
+  verificationStatus: {
+    type: String,
+    enum: ['pending', 'verified', 'rejected', 'not_required'],
+    default: 'not_required'
+  },
+  verifiedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  verificationDate: Date,
   
   // Access & Security
   lastLogin: Date,
@@ -150,6 +186,7 @@ const userSchema = new mongoose.Schema({
 // Indexes for Performance
 // ============================================
 userSchema.index({ email: 1, isActive: 1 });
+userSchema.index({ policeId: 1 }, { sparse: true }); // Strategy optimization for dynamic legacy profiles
 userSchema.index({ policeStation: 1, role: 1 });
 userSchema.index({ 'devices.deviceId': 1 });
 

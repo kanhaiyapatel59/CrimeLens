@@ -32,6 +32,9 @@ import {
   Email as EmailIcon,
   Person as PersonIcon,
   Phone as PhoneIcon,
+  Badge as BadgeIcon,
+  Business as BusinessIcon,
+  CloudUpload as UploadFileIcon,
   GpsFixed,
   Analytics,
   NetworkCheck,
@@ -59,6 +62,9 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     role: 'station_officer',
+    policeId: '',
+    department: 'Police Station',
+    policeIdDocument: null,
   })
   const [errors, setErrors] = useState({})
 
@@ -83,6 +89,17 @@ const Register = () => {
       }
       if (formData.phone && !/^[0-9]{10}$/.test(formData.phone)) {
         newErrors.phone = 'Phone must be 10 digits'
+      }
+      if (!formData.policeId) {
+        newErrors.policeId = 'Police ID is required'
+      } else if (!/^[A-Za-z0-9]{6,15}$/.test(formData.policeId)) {
+        newErrors.policeId = 'Invalid Police ID format (6-15 alphanumeric characters)'
+      }
+      if (!formData.department) {
+        newErrors.department = 'Department is required'
+      }
+      if (!formData.policeIdDocument) {
+        newErrors.policeIdDocument = 'Police ID document is required'
       }
     }
 
@@ -125,12 +142,26 @@ const Register = () => {
     }
   }
 
+  const handlePoliceIdUpload = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setFormData({ ...formData, policeIdDocument: file })
+      if (errors.policeIdDocument) {
+        setErrors({ ...errors, policeIdDocument: '' })
+      }
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     
     if (!validateStep(1)) return
 
     try {
+      // If passing as Multipart Form Data to backend due to File Upload:
+      // const registerData = new FormData();
+      // Object.keys(formData).forEach(key => registerData.append(key, formData[key]));
+      
       const result = await dispatch(registerUser(formData))
       if (result.meta.requestStatus === 'fulfilled') {
         setActiveStep(2)
@@ -246,6 +277,85 @@ const Register = () => {
                   <MenuItem value="viewer">Viewer</MenuItem>
                 </Select>
               </FormControl>
+            </Grid>
+
+            {/* ✅ Police Identification Fields */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Police ID / Badge Number"
+                name="policeId"
+                value={formData.policeId}
+                onChange={handleChange}
+                error={!!errors.policeId}
+                helperText={errors.policeId}
+                required
+                placeholder="e.g., KSP123456"
+                sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BadgeIcon sx={{ color: '#1a237e' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Department"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                error={!!errors.department}
+                helperText={errors.department}
+                select
+                required
+                sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BusinessIcon sx={{ color: '#1a237e' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              >
+                <MenuItem value="State Crime Records Bureau">State Crime Records Bureau</MenuItem>
+                <MenuItem value="District Police">District Police</MenuItem>
+                <MenuItem value="Police Station">Police Station</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<UploadFileIcon />}
+                fullWidth
+                color={errors.policeIdDocument ? 'error' : 'primary'}
+                sx={{ py: 1.5, borderRadius: '12px', borderWidth: '1px', textTransform: 'none', fontWeight: 600 }}
+              >
+                Upload Police ID Document *
+                <input
+                  type="file"
+                  hidden
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handlePoliceIdUpload}
+                />
+              </Button>
+              {errors.policeIdDocument && (
+                <Typography variant="caption" color="error" sx={{ display: 'block', mt: 1, ml: 1 }}>
+                  {errors.policeIdDocument}
+                </Typography>
+              )}
+              {formData.policeIdDocument && (
+                <Typography variant="caption" color="success.main" sx={{ display: 'block', mt: 1, ml: 1, fontWeight: 600 }}>
+                  ✅ Document uploaded: {formData.policeIdDocument.name}
+                </Typography>
+              )}
             </Grid>
           </Grid>
         )

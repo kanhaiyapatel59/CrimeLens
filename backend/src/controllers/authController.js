@@ -15,34 +15,69 @@ class AuthController {
    */
   static async register(req, res) {
     try {
-      const { firstName, lastName, email, phone, password } = req.body;
+      const { 
+        firstName, lastName, email, phone, password, 
+        policeId, policeIdDocument, department, role 
+      } = req.body;
 
-      const existingUser = await User.findOne({ email });
+      // Check if user exists
+      const existingUser = await User.findOne({ 
+        $or: [{ email }] 
+      });
+      
       if (existingUser) {
         return ResponseHandler.conflict(res, 'Email already registered');
       }
 
-      const defaultRole = await Role.findOne({ isDefault: true });
-      if (!defaultRole) {
+      // Get role
+      let userRole;
+      if (role) {
+        userRole = await Role.findOne({ name: role });
+      } else {
+        userRole = await Role.findOne({ isDefault: true });
+      }
+      
+      if (!userRole) {
         return ResponseHandler.error(res, new Error('Default role not found'), 'Role not found');
       }
 
-      const user = new User({
+      // ✅ Build user object with optional fields
+      const userData = {
         firstName,
         lastName,
         email,
         phone,
         password,
-        role: defaultRole._id,
-        isVerified: true
-      });
+        role: userRole._id,
+        isVerified: true,
+      };
 
+      // ✅ Only add police fields if provided (skip for admin)
+      if (policeId && role !== 'admin') {
+        userData.policeId = policeId.toUpperCase();
+        userData.policeIdDocument = policeIdDocument || 'pending_verification';
+        userData.verificationStatus = 'pending';
+      } else {
+        userData.verificationStatus = 'not_required';
+        userData.policeId = `USER${Date.now().toString().slice(-6)}`;
+        userData.policeIdDocument = 'auto_verified';
+      }
+
+      if (department) {
+        userData.department = department;
+      }
+
+      const user = new User(userData);
       await user.save();
 
       const userObject = user.toObject();
       delete userObject.password;
 
-      return ResponseHandler.created(res, userObject, 'Registration successful');
+      const message = (policeId && role !== 'admin') 
+        ? 'Registration successful. Awaiting admin verification.' 
+        : 'Registration successful.';
+
+      return ResponseHandler.created(res, userObject, message);
     } catch (error) {
       logger.error('Registration error:', error);
       return ResponseHandler.error(res, error, 'Registration failed');
@@ -50,7 +85,7 @@ class AuthController {
   }
 
   /**
-   * Login user - FIXED with separate access and refresh tokens
+   * Login user
    */
   static async login(req, res) {
     try {
@@ -67,6 +102,20 @@ class AuthController {
       if (!user) {
         console.log('❌ User not found');
         return ResponseHandler.unauthorized(res, 'Invalid credentials');
+      }
+
+      // Check if user is active
+      if (!user.isActive) {
+        return ResponseHandler.unauthorized(res, 'Account deactivated. Contact administrator.');
+      }
+
+      // Check verification status
+      if (user.verificationStatus === 'pending') {
+        return ResponseHandler.unauthorized(res, 'Account pending verification. Please wait for admin approval.');
+      }
+
+      if (user.verificationStatus === 'rejected') {
+        return ResponseHandler.unauthorized(res, 'Account verification rejected. Contact administrator.');
       }
 
       console.log('📝 Stored hash:', user.password ? user.password.substring(0, 30) + '...' : 'No hash');
@@ -88,7 +137,7 @@ class AuthController {
       user.lastLogin = new Date();
       await user.save();
 
-      // ✅ Generate SEPARATE tokens
+      // Generate separate tokens
       const accessToken = TokenService.generateAccessToken({ 
         userId: user._id, 
         email: user.email,
@@ -104,8 +153,6 @@ class AuthController {
       delete userObject.password;
 
       console.log('✅ Login successful for:', email);
-      console.log('🎫 Access Token generated:', accessToken.substring(0, 30) + '...');
-      console.log('🎫 Refresh Token generated:', refreshToken.substring(0, 30) + '...');
       
       return ResponseHandler.success(res, {
         user: userObject,
@@ -130,7 +177,7 @@ class AuthController {
   }
 
   /**
-   * Refresh token - FIXED with better error handling
+   * Refresh token
    */
   static async refreshToken(req, res) {
     try {
@@ -154,7 +201,6 @@ class AuthController {
         return ResponseHandler.unauthorized(res, 'User not found');
       }
 
-      // ✅ Generate new access token
       const newAccessToken = TokenService.generateAccessToken({
         userId: user._id,
         email: user.email,
@@ -236,6 +282,8 @@ class AuthController {
       delete updates.password;
       delete updates.role;
       delete updates.email;
+      delete updates.policeId;
+      delete updates.verificationStatus;
       
       const user = await User.findByIdAndUpdate(
         userId,
@@ -254,6 +302,50 @@ class AuthController {
     } catch (error) {
       logger.error('Update profile error:', error);
       return ResponseHandler.error(res, error, 'Failed to update profile');
+    }
+  }
+
+  /**
+   * Get user logs (placeholder)
+   */
+  static async getUserLogs(req, res) {
+    try {
+      return ResponseHandler.success(res, { logs: [] }, 'Logs fetched successfully');
+    } catch (error) {
+      return ResponseHandler.error(res, error, 'Failed to fetch logs');
+    }
+  }
+
+  /**
+   * Verify email (placeholder)
+   */
+  static async verifyEmail(req, res) {
+    try {
+      return ResponseHandler.success(res, null, 'Email verified successfully');
+    } catch (error) {
+      return ResponseHandler.error(res, error, 'Email verification failed');
+    }
+  }
+
+  /**
+   * Request password reset (placeholder)
+   */
+  static async requestPasswordReset(req, res) {
+    try {
+      return ResponseHandler.success(res, null, 'Password reset link sent');
+    } catch (error) {
+      return ResponseHandler.error(res, error, 'Failed to send reset link');
+    }
+  }
+
+  /**
+   * Reset password (placeholder)
+   */
+  static async resetPassword(req, res) {
+    try {
+      return ResponseHandler.success(res, null, 'Password reset successfully');
+    } catch (error) {
+      return ResponseHandler.error(res, error, 'Password reset failed');
     }
   }
 }

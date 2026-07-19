@@ -21,6 +21,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const networkRoutes = require('./routes/networkRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const adminRoutes = require('./routes/adminRoutes'); // ✅ Added Admin Routes reference
 
 // Utils & Middleware
 const logger = require('./utils/logger');
@@ -204,6 +205,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/network', networkRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/admin', adminRoutes); // ✅ Added Admin Routes registration
 
 // Districts lookup endpoint
 const District = require('./models/District');
@@ -233,7 +235,7 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-// Connect to MongoDB
+    // Connect to MongoDB
     await connectDatabase();
     logger.info('✅ Database connected successfully');
 
