@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Layout from './components/layout/Layout'
 
 // Pages - Public
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
@@ -20,8 +21,8 @@ import Map from './pages/Map'
 import Network from './pages/Network'
 import AIChat from './pages/AIChat'
 import Reports from './pages/Reports'
-import Profile from './pages/Profile'       // ← ADD
-import Settings from './pages/Settings'     // ← ADD
+import Profile from './pages/Profile'
+import Settings from './pages/Settings'
 
 // Components
 import PrivateRoute from './components/common/PrivateRoute'
@@ -60,30 +61,36 @@ function App() {
         
         <AnimatePresence mode="wait">
           <Routes>
-            {/* Public Routes */}
+            {/* ============================================
+                PUBLIC ROUTES (No Authentication Required)
+                ============================================ */}
+            <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             
-            {/* Protected Routes */}
+            {/* ============================================
+                PROTECTED ROUTES (Authentication Required)
+                ============================================ */}
             <Route element={<PrivateRoute />}>
               <Route element={<Layout />}>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/crimes" element={<Crimes />} />
                 <Route path="/map" element={<Map />} />
                 <Route path="/network" element={<Network />} />
                 <Route path="/ai-chat" element={<AIChat />} />
                 <Route path="/reports" element={<Reports />} />
-                <Route path="/profile" element={<Profile />} />    {/* ← ADD */}
-                <Route path="/settings" element={<Settings />} />  {/* ← ADD */}
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
             </Route>
             
-            {/* 404 */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            {/* ============================================
+                404 - Not Found
+                ============================================ */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AnimatePresence>
       </div>
