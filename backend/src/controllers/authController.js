@@ -50,15 +50,13 @@ class AuthController {
   }
 
   /**
-   * Login user
+   * Login user - FIXED with separate access and refresh tokens
    */
   static async login(req, res) {
     try {
       console.log('🔑 [AuthController] JWT_SECRET from env:', process.env.JWT_SECRET ? 'Yes' : 'No');
-      console.log('🔑 [AuthController] JWT_SECRET value:', process.env.JWT_SECRET);
 
-      const { email, password: rawPassword } = req.body;
-      const password = rawPassword?.trim();
+      const { email, password } = req.body;
       console.log('🔍 Login attempt for:', email);
 
       // Find user
@@ -90,23 +88,29 @@ class AuthController {
       user.lastLogin = new Date();
       await user.save();
 
-      // Generate token using TokenService
-      const token = TokenService.generateAccessToken({ 
+      // ✅ Generate SEPARATE tokens
+      const accessToken = TokenService.generateAccessToken({ 
         userId: user._id, 
         email: user.email,
         role: user.role
+      });
+
+      const refreshToken = TokenService.generateRefreshToken({ 
+        userId: user._id, 
+        email: user.email
       });
 
       const userObject = user.toObject();
       delete userObject.password;
 
       console.log('✅ Login successful for:', email);
-      console.log('🎫 Token generated:', token.substring(0, 30) + '...');
+      console.log('🎫 Access Token generated:', accessToken.substring(0, 30) + '...');
+      console.log('🎫 Refresh Token generated:', refreshToken.substring(0, 30) + '...');
       
       return ResponseHandler.success(res, {
         user: userObject,
-        accessToken: token,
-        refreshToken: token
+        accessToken: accessToken,
+        refreshToken: refreshToken
       }, 'Login successful');
     } catch (error) {
       console.error('💥 Login error:', error);
@@ -126,7 +130,7 @@ class AuthController {
   }
 
   /**
-   * Refresh token
+   * Refresh token - FIXED with better error handling
    */
   static async refreshToken(req, res) {
     try {
@@ -136,20 +140,32 @@ class AuthController {
         return ResponseHandler.badRequest(res, 'Refresh token required');
       }
 
+      console.log('🔑 [AuthController] Refreshing token...');
+
       const decoded = TokenService.verifyRefreshToken(refreshToken);
+      
+      if (!decoded) {
+        return ResponseHandler.unauthorized(res, 'Invalid refresh token');
+      }
+
       const user = await User.findById(decoded.userId).populate('role');
       
       if (!user) {
         return ResponseHandler.unauthorized(res, 'User not found');
       }
 
-      const newToken = TokenService.generateAccessToken({
+      // ✅ Generate new access token
+      const newAccessToken = TokenService.generateAccessToken({
         userId: user._id,
         email: user.email,
         role: user.role
       });
 
-      return ResponseHandler.success(res, { accessToken: newToken }, 'Token refreshed');
+      console.log('✅ [AuthController] Token refreshed for:', user.email);
+
+      return ResponseHandler.success(res, { 
+        accessToken: newAccessToken 
+      }, 'Token refreshed successfully');
     } catch (error) {
       logger.error('Refresh token error:', error);
       return ResponseHandler.unauthorized(res, error.message || 'Invalid refresh token');

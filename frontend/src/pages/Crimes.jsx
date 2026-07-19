@@ -45,7 +45,6 @@ const Crimes = () => {
     retry: 1,
   })
 
-  // Fetch real crime types with ObjectIds for filter dropdown
   const { data: crimeTypesData } = useQuery({
     queryKey: ['crime-types'],
     queryFn: () => crimeAPI.getCrimeTypes(),
@@ -86,7 +85,6 @@ const Crimes = () => {
     return colors[status] || 'default'
   }
 
-  // ✅ FIXED: Export function
   const handleExport = async () => {
     try {
       const response = await crimeAPI.export(cleanFilters())
@@ -121,7 +119,7 @@ const Crimes = () => {
   const total = data?.data?.data?.pagination?.total || 0
 
   return (
-    <Box>
+    <Box sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box>
           <Typography variant="h4" fontWeight={700}>Crime Records</Typography>
@@ -137,7 +135,6 @@ const Crimes = () => {
         </Box>
       </Box>
 
-      {/* Filters */}
       <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={3}>
@@ -195,7 +192,6 @@ const Crimes = () => {
         </Grid>
       </Paper>
 
-      {/* Table */}
       <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
         <TableContainer>
           <Table>
@@ -271,46 +267,168 @@ const Crimes = () => {
         <AddIcon />
       </Fab>
 
-      {/* Crime Form Dialog */}
-      <Dialog open={openForm} onClose={() => setOpenForm(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          {selectedCrime ? 'Edit Crime' : 'New Crime'}
-          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => setOpenForm(false)}>
+      {/* ✅ FIXED: Crime Form Dialog - Centered */}
+      <Dialog 
+        open={openForm} 
+        onClose={() => setOpenForm(false)} 
+        maxWidth="md" 
+        fullWidth
+        disableEnforceFocus
+        PaperProps={{
+          sx: {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            margin: 0,
+            width: 'calc(100% - 32px)',
+            maxWidth: 'md',
+            borderRadius: 3,
+            maxHeight: '90vh',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
+            overflow: 'hidden',
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          pb: 1, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          bgcolor: '#f8f9fa',
+          borderBottom: '1px solid #e8ecf1',
+          px: 3,
+          py: 2,
+        }}>
+          <Typography variant="h6" fontWeight={600}>
+            {selectedCrime ? 'Edit Crime' : 'New Crime'}
+          </Typography>
+          <IconButton onClick={() => setOpenForm(false)} size="small">
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
-          <CrimeForm crime={selectedCrime}
-            onSuccess={() => { setOpenForm(false); setSelectedCrime(null) }}
-            onCancel={() => { setOpenForm(false); setSelectedCrime(null) }} />
+        <DialogContent sx={{ 
+          overflowX: 'hidden', 
+          overflowY: 'auto',
+          p: { xs: 2, md: 3 },
+          bgcolor: '#ffffff',
+        }}>
+          <CrimeForm 
+            crime={selectedCrime}
+            onSuccess={() => { 
+              setOpenForm(false); 
+              setSelectedCrime(null);
+              queryClient.invalidateQueries(['crimes']);
+            }}
+            onCancel={() => { 
+              setOpenForm(false); 
+              setSelectedCrime(null);
+            }} 
+          />
         </DialogContent>
       </Dialog>
 
       {/* Crime Detail Dialog */}
-      <Dialog open={openDetail} onClose={() => setOpenDetail(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          Crime Details
-          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => setOpenDetail(false)}>
+      <Dialog 
+        open={openDetail} 
+        onClose={() => setOpenDetail(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            margin: 0,
+            width: 'calc(100% - 32px)',
+            maxWidth: 'md',
+            borderRadius: 3,
+            maxHeight: '90vh',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
+            overflow: 'hidden',
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          pb: 1, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          bgcolor: '#f8f9fa',
+          borderBottom: '1px solid #e8ecf1',
+          px: 3,
+          py: 2,
+        }}>
+          <Typography variant="h6" fontWeight={600}>
+            Crime Details
+          </Typography>
+          <IconButton onClick={() => setOpenDetail(false)} size="small">
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ 
+          overflowX: 'hidden', 
+          overflowY: 'auto',
+          p: { xs: 2, md: 3 },
+          bgcolor: '#ffffff',
+        }}>
           <CrimeDetail crime={selectedCrime} />
         </DialogContent>
       </Dialog>
 
       {/* Bulk Upload Dialog */}
-      <Dialog open={openBulk} onClose={() => setOpenBulk(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          Bulk Upload
-          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => setOpenBulk(false)}>
+      <Dialog 
+        open={openBulk} 
+        onClose={() => setOpenBulk(false)} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            margin: 0,
+            width: 'calc(100% - 32px)',
+            maxWidth: 'md',
+            borderRadius: 3,
+            maxHeight: '90vh',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
+            overflow: 'hidden',
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          pb: 1, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          bgcolor: '#f8f9fa',
+          borderBottom: '1px solid #e8ecf1',
+          px: 3,
+          py: 2,
+        }}>
+          <Typography variant="h6" fontWeight={600}>
+            Bulk Upload
+          </Typography>
+          <IconButton onClick={() => setOpenBulk(false)} size="small">
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ 
+          overflowX: 'hidden', 
+          overflowY: 'auto',
+          p: { xs: 2, md: 3 },
+          bgcolor: '#ffffff',
+        }}>
           <BulkUpload
-            onSuccess={() => setOpenBulk(false)}
-            onCancel={() => setOpenBulk(false)} />
+            onSuccess={() => {
+              setOpenBulk(false);
+              queryClient.invalidateQueries(['crimes']);
+            }}
+            onCancel={() => setOpenBulk(false)} 
+          />
         </DialogContent>
       </Dialog>
     </Box>

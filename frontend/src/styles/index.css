@@ -69,3 +69,57 @@
     opacity: 0.5;
   }
 }
+
+/* ✅ FIX: Prevent sidebar from disappearing */
+.MuiDrawer-root {
+  display: block !important;
+}
+
+.MuiDrawer-paper {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ✅ Fix: Ensure sidebar stays visible when console is open */
+@media (max-width: 600px) {
+  .MuiDrawer-paper {
+    transform: none !important;
+  }
+}
+
+/* ✅ Fix: Prevent content from shifting */
+main {
+  transition: margin-left 0.25s ease-in-out !important;
+}
+
+/* ✅ Fix: Ensure sidebar is always visible */
+[role="presentation"] {
+  display: block !important;
+}
+
+/* ✅ FIX: Remove any gap between sidebar and content */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ FIX: Ensure main content starts at 0 */
+main {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* ✅ FIX: For desktop, content should start after sidebar */
+@media (min-width: 900px) {
+  main {
+    padding-left: 0 !important;
+  }
+}

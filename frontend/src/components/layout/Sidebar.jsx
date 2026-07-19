@@ -10,7 +10,6 @@ import {
   ListItemIcon,
   ListItemText,
   Avatar,
-  Divider,
 } from '@mui/material'
 import {
   Dashboard as DashboardIcon,
@@ -54,13 +53,14 @@ const Sidebar = ({ open, onClose, isMobile }) => {
   const drawerContent = (
     <Box
       sx={{
-        width: 260,
+        width: 280,
         height: '100%',
         backgroundColor: '#1a237e',
         color: '#fff',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        flexShrink: 0,
       }}
     >
       {/* Logo */}
@@ -208,10 +208,10 @@ const Sidebar = ({ open, onClose, isMobile }) => {
       open={open}
       onClose={onClose}
       sx={{
-        width: 260,
+        width: 280,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: 260,
+          width: 280,
           boxSizing: 'border-box',
           borderRight: 'none',
           boxShadow: '2px 0 12px rgba(0,0,0,0.1)',
@@ -220,7 +220,7 @@ const Sidebar = ({ open, onClose, isMobile }) => {
           left: 0,
           height: '100vh',
           zIndex: isMobile ? 1300 : 1100,
-          transform: isMobile ? 'none' : (open ? 'translateX(0)' : 'translateX(-260px)'),
+          transform: isMobile ? 'none' : (open ? 'translateX(0)' : 'translateX(-280px)'),
           transition: 'transform 0.25s ease-in-out',
           overflowX: 'hidden',
         },

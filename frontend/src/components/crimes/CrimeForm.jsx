@@ -80,7 +80,6 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
     }
   }
 
-  // ✅ FIXED: Complete handleSubmit with validation
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -89,7 +88,6 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
     try {
       const payload = JSON.parse(JSON.stringify(formData))
 
-      // ✅ Validate required fields
       if (!payload.firNumber || payload.firNumber.trim() === '') {
         throw new Error('FIR Number is required')
       }
@@ -106,18 +104,15 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
         throw new Error('Description is required')
       }
 
-      // ✅ Format date
       const dateObj = new Date(payload.date)
       if (isNaN(dateObj.getTime())) {
         throw new Error('Invalid date format')
       }
       payload.date = dateObj.toISOString().split('T')[0]
 
-      // ✅ Format time
       if (!payload.time) payload.time = '00:00'
       else if (!payload.time.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)) payload.time = '00:00'
 
-      // ✅ Clean location
       if (payload.location?.address) {
         Object.keys(payload.location.address).forEach(key => {
           if (payload.location.address[key] === '') delete payload.location.address[key]
@@ -127,15 +122,12 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
         payload.location.coordinates = payload.location.coordinates.map(Number)
       }
 
-      // ✅ Remove empty ObjectId fields
       if (payload.crimeType === '') delete payload.crimeType
       if (payload.location?.address?.district === '') delete payload.location.address.district
       if (payload.location?.address?.policeStation === '') delete payload.location.address.policeStation
 
       if (!payload.severity) payload.severity = 'medium'
       if (!payload.status) payload.status = 'reported'
-
-      console.log('📤 Sending payload:', JSON.stringify(payload, null, 2))
 
       if (crime) {
         await crimeAPI.update(crime._id, payload)
@@ -158,39 +150,117 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 1 }}>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      <Grid container spacing={2}>
+    <Box 
+      component="form" 
+      onSubmit={handleSubmit} 
+      sx={{ 
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        p: 0,
+        mt: 0,
+      }}
+    >
+      {error && (
+        <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+          {error}
+        </Alert>
+      )}
+      
+      <Grid container spacing={{ xs: 1.5, sm: 2 }}>
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="FIR Number" name="firNumber" value={formData.firNumber} onChange={handleChange} required />
+          <TextField
+            fullWidth
+            label="FIR Number"
+            name="firNumber"
+            value={formData.firNumber}
+            onChange={handleChange}
+            required
+            size="small"
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="Incident ID" name="incidentId" value={formData.incidentId} onChange={handleChange} required />
+          <TextField
+            fullWidth
+            label="Incident ID"
+            name="incidentId"
+            value={formData.incidentId}
+            onChange={handleChange}
+            required
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required>
+          <FormControl fullWidth required size="small">
             <InputLabel>Crime Type</InputLabel>
-            <Select name="crimeType" value={formData.crimeType} onChange={handleChange} label="Crime Type">
+            <Select
+              name="crimeType"
+              value={formData.crimeType}
+              onChange={handleChange}
+              label="Crime Type"
+            >
               <MenuItem value="">Select Crime Type</MenuItem>
               {crimeTypeOptions.map((type) => (
-                <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
+                <MenuItem key={type._id} value={type._id}>
+                  {type.name}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
+
         <Grid item xs={12} sm={3}>
-          <TextField fullWidth type="date" label="Date" name="date" value={formData.date} onChange={handleChange} required InputLabelProps={{ shrink: true }} />
+          <TextField
+            fullWidth
+            type="date"
+            label="Date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            required
+            InputLabelProps={{ shrink: true }}
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12} sm={3}>
-          <TextField fullWidth type="time" label="Time" name="time" value={formData.time} onChange={handleChange} required InputLabelProps={{ shrink: true }} />
+          <TextField
+            fullWidth
+            type="time"
+            label="Time"
+            name="time"
+            value={formData.time}
+            onChange={handleChange}
+            required
+            InputLabelProps={{ shrink: true }}
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12}>
-          <TextField fullWidth label="Description" name="description" value={formData.description} onChange={handleChange} multiline rows={4} required />
+          <TextField
+            fullWidth
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            multiline
+            rows={3}
+            required
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
+          <FormControl fullWidth size="small">
             <InputLabel>Severity</InputLabel>
-            <Select name="severity" value={formData.severity} onChange={handleChange} label="Severity">
+            <Select
+              name="severity"
+              value={formData.severity}
+              onChange={handleChange}
+              label="Severity"
+            >
               <MenuItem value="low">Low</MenuItem>
               <MenuItem value="medium">Medium</MenuItem>
               <MenuItem value="high">High</MenuItem>
@@ -198,10 +268,16 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             </Select>
           </FormControl>
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
+          <FormControl fullWidth size="small">
             <InputLabel>Status</InputLabel>
-            <Select name="status" value={formData.status} onChange={handleChange} label="Status">
+            <Select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              label="Status"
+            >
               <MenuItem value="reported">Reported</MenuItem>
               <MenuItem value="investigating">Investigating</MenuItem>
               <MenuItem value="in_progress">In Progress</MenuItem>
@@ -210,40 +286,103 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             </Select>
           </FormControl>
         </Grid>
+
         <Grid item xs={12}>
-          <Typography variant="subtitle2" fontWeight={600} gutterBottom>Location Details</Typography>
+          <Typography variant="subtitle2" fontWeight={600} gutterBottom sx={{ fontSize: '0.85rem' }}>
+            Location Details
+          </Typography>
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="Street" name="location.address.street" value={formData.location.address.street} onChange={handleChange} />
+          <TextField
+            fullWidth
+            label="Street"
+            name="location.address.street"
+            value={formData.location.address.street}
+            onChange={handleChange}
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="Area" name="location.address.area" value={formData.location.address.area} onChange={handleChange} />
+          <TextField
+            fullWidth
+            label="Area"
+            name="location.address.area"
+            value={formData.location.address.area}
+            onChange={handleChange}
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="City" name="location.address.city" value={formData.location.address.city} onChange={handleChange} />
+          <TextField
+            fullWidth
+            label="City"
+            name="location.address.city"
+            value={formData.location.address.city}
+            onChange={handleChange}
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth>
+          <FormControl fullWidth size="small">
             <InputLabel>District</InputLabel>
-            <Select name="location.address.district" value={formData.location.address.district} onChange={handleChange} label="District" disabled={districtsLoading}>
+            <Select
+              name="location.address.district"
+              value={formData.location.address.district}
+              onChange={handleChange}
+              label="District"
+              disabled={districtsLoading}
+            >
               <MenuItem value="">Select District</MenuItem>
               {districts.map((d) => (
-                <MenuItem key={d._id} value={d._id}>{d.name}</MenuItem>
+                <MenuItem key={d._id} value={d._id}>
+                  {d.name}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="Pincode" name="location.address.pincode" value={formData.location.address.pincode} onChange={handleChange} />
+          <TextField
+            fullWidth
+            label="Pincode"
+            name="location.address.pincode"
+            value={formData.location.address.pincode}
+            onChange={handleChange}
+            size="small"
+          />
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="Landmark" name="location.address.landmark" value={formData.location.address.landmark} onChange={handleChange} />
+          <TextField
+            fullWidth
+            label="Landmark"
+            name="location.address.landmark"
+            value={formData.location.address.landmark}
+            onChange={handleChange}
+            size="small"
+          />
         </Grid>
       </Grid>
+
       <Box sx={{ display: 'flex', gap: 2, mt: 3, justifyContent: 'flex-end' }}>
-        <Button onClick={onCancel} disabled={loading}>Cancel</Button>
-        <Button type="submit" variant="contained" disabled={loading}
-          sx={{ bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}>
+        <Button onClick={onCancel} disabled={loading} variant="outlined">
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={loading}
+          sx={{ 
+            bgcolor: '#1a237e', 
+            '&:hover': { bgcolor: '#283593' },
+            minWidth: 100,
+          }}
+        >
           {loading ? <CircularProgress size={24} /> : (crime ? 'Update' : 'Create')}
         </Button>
       </Box>

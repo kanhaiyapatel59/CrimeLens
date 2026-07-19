@@ -1,0 +1,11 @@
+firNumber,incidentId,crimeType,date,description,severity,status,victims,suspects
+FIR2026001,INC2026001,6a5b1fac7b17180638046a6b,2024-01-15,Robbery at MG Road - Cash stolen,high,reported,Rajesh Kumar|Priya Sharma,Amit Singh|Vikram Reddy
+FIR2026002,INC2026002,6a5b1fac7b17180638046a74,2024-01-16,Burglary at Indiranagar,medium,reported,Sunita Patel,Suresh Kumar
+FIR2026003,INC2026003,6a5b1fac7b17180638046a68,2024-01-17,Murder in Whitefield,critical,reported,Anita Desai,Kiran Raj
+FIR2026004,INC2026004,6a5b1fac7b17180638046a77,2024-01-18,Drug Possession in Electronic City,low,reported,Mohan Kumar,Sanjay Singh
+FIR2026005,INC2026005,6a5b1fac7b17180638046a6b,2024-01-19,Robbery in Jayanagar,high,reported,Lakshmi Narayan,Prakash Rao
+FIR2026006,INC2026006,6a5b1fac7b17180638046a7a,2024-01-20,Cyber Fraud in Rajajinagar,medium,reported,Suresh Reddy,Unknown
+FIR2026007,INC2026007,6a5b1fac7b17180638046a86,2024-01-21,Kidnapping in Malleswaram,critical,reported,Bank Manager,Gang Members
+FIR2026008,INC2026008,6a5b1fac7b17180638046a74,2024-01-22,Burglary in Koramangala,medium,reported,Priya Sharma,Vikram Reddy
+FIR2026009,INC2026009,6a5b1fac7b17180638046a6b,2024-01-23,Robbery in Electronic City,high,reported,Rajesh Kumar,Amit Singh
+FIR2026010,INC2026010,6a5b1fac7b17180638046a68,2024-01-24,Murder in Indiranagar,critical,reported,Anita Desai,Kiran Raj

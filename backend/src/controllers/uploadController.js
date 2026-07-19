@@ -116,29 +116,33 @@ class UploadController {
   }
 
   /**
-   * Map police data to CrimeLens schema
+   * Map police data to CrimeLens schema - UPDATED with victims/suspects
    */
   static mapPoliceData(data) {
     return data.map(record => ({
-      firNumber: record.CrimeNo || record.firNumber || `FIR${Date.now()}`,
-      incidentId: record.CaseNo || record.incidentId || `INC${Date.now()}`,
+      firNumber: String(record.CrimeNo || record.firNumber || `FIR${Date.now()}`),
+      incidentId: String(record.CaseNo || record.incidentId || `INC${Date.now()}`),
+      crimeType: record.CrimeType || record.crimeType || '6a5b1fac7b17180638046a6b',
       date: record.CrimeRegisteredDate || record.date || new Date(),
       description: record.BriefFacts || record.description || 'Imported from police data',
       severity: UploadController.mapSeverity(record.GravityOffenceID || record.severity),
-      status: UploadController.mapStatus(record.CaseStatusID || record.status),
+      status: UploadController.mapStatus(record.CaseStatusID || record.status || 'reported'),
+      // ✅ NEW: Support victims and suspects from CSV
+      victims: record.victims || record.Victims || '',
+      suspects: record.suspects || record.Suspects || '',
       location: {
         coordinates: [
           parseFloat(record.longitude) || 77.5946,
           parseFloat(record.latitude) || 12.9716
         ],
         address: {
-          street: '',
-          area: '',
-          city: '',
+          street: record.Street || '',
+          area: record.Area || '',
+          city: record.City || 'Bengaluru',
           district: record.DistrictID || '',
           policeStation: record.PoliceStationID || '',
-          pincode: '',
-          landmark: ''
+          pincode: record.Pincode || '',
+          landmark: record.Landmark || ''
         }
       },
       complainant: {
@@ -189,7 +193,7 @@ class UploadController {
   }
 
   /**
-   * Import mapped data
+   * Import mapped data - UPDATED with victims/suspects creation
    */
   static async importMappedData(mappedData) {
     const results = {
@@ -203,10 +207,11 @@ class UploadController {
 
     for (const record of mappedData) {
       try {
-        // Create crime
+        // ✅ Create crime
         const crime = new CrimeIncident({
           firNumber: record.firNumber,
           incidentId: record.incidentId,
+          crimeType: record.crimeType,
           date: new Date(record.date),
           description: record.description,
           severity: record.severity,
@@ -215,39 +220,94 @@ class UploadController {
           metaData: {
             source: 'police_import',
             complainant: record.complainant,
-            accused: record.accused
+            accused: record.accused,
+            victims: record.victims,
+            suspects: record.suspects
           }
         });
         await crime.save();
         results.crimes++;
 
-        // Create victim (complainant)
-        if (record.complainant.name) {
+        // ✅ Create Victims from CSV (pipe separated)
+        if (record.victims && typeof record.victims === 'string') {
+          const victimNames = record.victims.split('|').map(v => v.trim()).filter(v => v);
+          for (const name of victimNames) {
+            const parts = name.split(' ');
+            const victim = new Victim({
+              firstName: parts[0] || name,
+              lastName: parts.slice(1).join(' ') || '',
+              crimes: [{ crime: crime._id, role: 'primary' }],
+              createdBy: null
+            });
+            await victim.save();
+            results.victims++;
+
+            // ✅ Update crime with victim reference
+            await CrimeIncident.findByIdAndUpdate(crime._id, {
+              $push: { victims: victim._id }
+            });
+          }
+        }
+
+        // ✅ Create Suspects from CSV (pipe separated)
+        if (record.suspects && typeof record.suspects === 'string') {
+          const suspectNames = record.suspects.split('|').map(s => s.trim()).filter(s => s);
+          for (const name of suspectNames) {
+            const parts = name.split(' ');
+            const suspect = new Suspect({
+              firstName: parts[0] || name,
+              lastName: parts.slice(1).join(' ') || '',
+              status: 'under_investigation',
+              currentCrimes: [{ crime: crime._id, role: 'primary', status: 'active' }],
+              createdBy: null
+            });
+            await suspect.save();
+            results.suspects++;
+
+            // ✅ Update crime with suspect reference
+            await CrimeIncident.findByIdAndUpdate(crime._id, {
+              $push: { suspects: suspect._id }
+            });
+          }
+        }
+
+        // ✅ Create victim from complainant (if exists and no victims were added)
+        if (record.complainant.name && results.victims === 0) {
           const victim = new Victim({
             firstName: record.complainant.name.split(' ')[0] || '',
             lastName: record.complainant.name.split(' ').slice(1).join(' ') || '',
             age: record.complainant.age || 0,
-            crimes: [{ crime: crime._id, role: 'primary' }]
+            crimes: [{ crime: crime._id, role: 'primary' }],
+            createdBy: null
           });
           await victim.save();
           results.victims++;
+          await CrimeIncident.findByIdAndUpdate(crime._id, {
+            $push: { victims: victim._id }
+          });
         }
 
-        // Create suspect (accused)
-        if (record.accused.name) {
+        // ✅ Create suspect from accused (if exists and no suspects were added)
+        if (record.accused.name && results.suspects === 0) {
           const suspect = new Suspect({
             firstName: record.accused.name.split(' ')[0] || '',
             lastName: record.accused.name.split(' ').slice(1).join(' ') || '',
             age: record.accused.age || 0,
             status: 'under_investigation',
-            currentCrimes: [{ crime: crime._id, role: 'primary', status: 'active' }]
+            currentCrimes: [{ crime: crime._id, role: 'primary', status: 'active' }],
+            createdBy: null
           });
           await suspect.save();
           results.suspects++;
+          await CrimeIncident.findByIdAndUpdate(crime._id, {
+            $push: { suspects: suspect._id }
+          });
         }
 
         results.success.push({ firNumber: record.firNumber, id: crime._id });
+        console.log(`✅ Created: ${record.firNumber} with ${results.victims} victims and ${results.suspects} suspects`);
       } catch (error) {
+        console.error(`❌ Failed: ${record.firNumber} - ${error.message}`);
         results.failed.push({ 
           record: record.firNumber || 'Unknown', 
           error: error.message 
@@ -255,6 +315,7 @@ class UploadController {
       }
     }
 
+    console.log(`📊 Import Summary: ${results.crimes} crimes, ${results.victims} victims, ${results.suspects} suspects`);
     return results;
   }
 }
