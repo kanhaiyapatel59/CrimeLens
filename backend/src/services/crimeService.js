@@ -9,12 +9,9 @@ const logger = require('../utils/logger');
 
 class CrimeService {
   /**
-   * Create a new crime incident
+   * Create a new crime incident - FIXED (no transactions)
    */
   static async createCrime(crimeData, userId) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
       // Check if FIR number already exists
       const existing = await CrimeIncident.findOne({ 
@@ -49,7 +46,7 @@ class CrimeService {
         reportingDate: new Date()
       });
 
-      await crime.save({ session });
+      await crime.save();
 
       // Log creation
       const auditLog = new AuditLog({
@@ -68,10 +65,7 @@ class CrimeService {
         },
         status: 'success'
       });
-      await auditLog.save({ session });
-
-      await session.commitTransaction();
-      session.endSession();
+      await auditLog.save();
 
       return crime.populate([
         { path: 'crimeType' },
@@ -81,8 +75,6 @@ class CrimeService {
         { path: 'suspects' }
       ]);
     } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
       throw error;
     }
   }
@@ -178,12 +170,9 @@ class CrimeService {
   }
 
   /**
-   * Update crime
+   * Update crime - FIXED (no transactions)
    */
   static async updateCrime(crimeId, updateData, userId) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
       // Get existing crime
       const existingCrime = await CrimeIncident.findById(crimeId);
@@ -233,10 +222,7 @@ class CrimeService {
         },
         status: 'success'
       });
-      await auditLog.save({ session });
-
-      await session.commitTransaction();
-      session.endSession();
+      await auditLog.save();
 
       return updatedCrime.populate([
         { path: 'crimeType' },
@@ -246,19 +232,14 @@ class CrimeService {
         { path: 'suspects' }
       ]);
     } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
       throw error;
     }
   }
 
   /**
-   * Delete crime (soft delete)
+   * Delete crime (soft delete) - FIXED (no transactions)
    */
   static async deleteCrime(crimeId, userId) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
       const crime = await CrimeIncident.findById(crimeId);
       if (!crime || crime.deletedAt) {
@@ -268,7 +249,7 @@ class CrimeService {
       // Soft delete
       crime.deletedAt = new Date();
       crime.deletedBy = userId;
-      await crime.save({ session });
+      await crime.save();
 
       // Log deletion
       const auditLog = new AuditLog({
@@ -287,15 +268,10 @@ class CrimeService {
         },
         status: 'success'
       });
-      await auditLog.save({ session });
-
-      await session.commitTransaction();
-      session.endSession();
+      await auditLog.save();
 
       return { message: 'Crime deleted successfully' };
     } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
       throw error;
     }
   }

@@ -55,7 +55,6 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             street: crime.location?.address?.street || '',
             area: crime.location?.address?.area || '',
             city: crime.location?.address?.city || '',
-            // IMPORTANT: backend expects ObjectId strings; empty string causes CastError.
             district: crime.location?.address?.district?._id || crime.location?.address?.district || '',
             policeStation: crime.location?.address?.policeStation?._id || crime.location?.address?.policeStation || '',
             pincode: crime.location?.address?.pincode || '',
@@ -81,21 +80,62 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
     }
   }
 
+  // ✅ FIXED: Complete handleSubmit with validation
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    
     try {
-      // Clone + sanitize: backend update uses runValidators: true,
-      // so empty strings for ObjectId fields ("" ) cause CastError -> 500.
       const payload = JSON.parse(JSON.stringify(formData))
 
-      if (payload?.crimeType === '') delete payload.crimeType
-
-      if (payload?.location?.address) {
-        if (payload.location.address.district === '') delete payload.location.address.district
-        if (payload.location.address.policeStation === '') delete payload.location.address.policeStation
+      // ✅ Validate required fields
+      if (!payload.firNumber || payload.firNumber.trim() === '') {
+        throw new Error('FIR Number is required')
       }
+      if (!payload.incidentId || payload.incidentId.trim() === '') {
+        throw new Error('Incident ID is required')
+      }
+      if (!payload.crimeType || payload.crimeType.trim() === '') {
+        throw new Error('Crime Type is required')
+      }
+      if (!payload.date) {
+        throw new Error('Date is required')
+      }
+      if (!payload.description || payload.description.trim() === '') {
+        throw new Error('Description is required')
+      }
+
+      // ✅ Format date
+      const dateObj = new Date(payload.date)
+      if (isNaN(dateObj.getTime())) {
+        throw new Error('Invalid date format')
+      }
+      payload.date = dateObj.toISOString().split('T')[0]
+
+      // ✅ Format time
+      if (!payload.time) payload.time = '00:00'
+      else if (!payload.time.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)) payload.time = '00:00'
+
+      // ✅ Clean location
+      if (payload.location?.address) {
+        Object.keys(payload.location.address).forEach(key => {
+          if (payload.location.address[key] === '') delete payload.location.address[key]
+        })
+      }
+      if (payload.location?.coordinates) {
+        payload.location.coordinates = payload.location.coordinates.map(Number)
+      }
+
+      // ✅ Remove empty ObjectId fields
+      if (payload.crimeType === '') delete payload.crimeType
+      if (payload.location?.address?.district === '') delete payload.location.address.district
+      if (payload.location?.address?.policeStation === '') delete payload.location.address.policeStation
+
+      if (!payload.severity) payload.severity = 'medium'
+      if (!payload.status) payload.status = 'reported'
+
+      console.log('📤 Sending payload:', JSON.stringify(payload, null, 2))
 
       if (crime) {
         await crimeAPI.update(crime._id, payload)
@@ -104,12 +144,14 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
         await crimeAPI.create(payload)
         toast.success('Crime created successfully')
       }
+      
       queryClient.invalidateQueries()
       onSuccess()
     } catch (err) {
-      const msg = err.response?.data?.message || err.response?.data?.errors?.[0]?.message || 'Failed to save crime'
+      const msg = err.message || err.response?.data?.message || 'Failed to save crime'
       setError(msg)
       toast.error(msg)
+      console.error('❌ Submit error:', err.response?.data || err.message)
     } finally {
       setLoading(false)
     }

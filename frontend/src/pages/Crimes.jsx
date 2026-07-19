@@ -86,6 +86,29 @@ const Crimes = () => {
     return colors[status] || 'default'
   }
 
+  // ✅ FIXED: Export function
+  const handleExport = async () => {
+    try {
+      const response = await crimeAPI.export(cleanFilters())
+      
+      const data = response.data?.data || response.data
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `crimes_export_${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      
+      toast.success('Export successful!')
+    } catch (error) {
+      toast.error('Failed to export crimes')
+      console.error('Export error:', error)
+    }
+  }
+
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -106,7 +129,7 @@ const Crimes = () => {
         </Box>
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <Button variant="outlined" startIcon={<UploadIcon />} onClick={() => setOpenBulk(true)}>Bulk Upload</Button>
-          <Button variant="outlined" startIcon={<DownloadIcon />} onClick={() => crimeAPI.export(cleanFilters())}>Export</Button>
+          <Button variant="outlined" startIcon={<DownloadIcon />} onClick={handleExport}>Export</Button>
           <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setSelectedCrime(null); setOpenForm(true) }}
             sx={{ bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}>
             New Crime
