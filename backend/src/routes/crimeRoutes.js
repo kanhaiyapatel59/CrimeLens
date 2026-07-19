@@ -7,6 +7,7 @@ const router = express.Router();
 
 // Controllers
 const CrimeController = require('../controllers/crimeController');
+const CrimeType = require('../models/CrimeType');
 
 // Middleware
 const AuthMiddleware = require('../middlewares/auth');
@@ -42,6 +43,20 @@ router.get(
   CrimeValidator.validateList(),
   CrimeValidator.checkValidation,
   CrimeController.getCrimes
+);
+
+/**
+ * @route GET /api/crimes/types
+ * @desc Get all crime types (for dropdowns)
+ * @access Private
+ */
+router.get(
+  '/types',
+  AuthMiddleware.authenticate,
+  async (req, res) => {
+    const types = await CrimeType.find({ isActive: true }).select('_id name category code').lean();
+    res.json({ success: true, data: types });
+  }
 );
 
 /**

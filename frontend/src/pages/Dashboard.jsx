@@ -1,25 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Grid,
-  Paper,
-  Typography,
-  Box,
-  CircularProgress,
-  Card,
-  CardContent,
-  LinearProgress,
-  Chip,
+  Grid, Paper, Typography, Box, CircularProgress, Chip,
 } from '@mui/material'
 import {
-  TrendingUp,
-  TrendingDown,
-  Warning,
-  CheckCircle,
-  AccessTime,
-  LocationOn,
-  Refresh as RefreshIcon,
+  TrendingUp, Warning, CheckCircle, AccessTime, Refresh as RefreshIcon,
 } from '@mui/icons-material'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { IconButton } from '@mui/material'
 import { dashboardAPI } from '../api/dashboard'
 import { crimeAPI } from '../api/crimes'
 import StatCard from '../components/common/StatCard'
@@ -28,75 +15,56 @@ import LineChart from '../components/charts/LineChart'
 import PieChart from '../components/charts/PieChart'
 import CrimeMap from '../components/maps/CrimeMap'
 import { motion } from 'framer-motion'
-import { IconButton } from '@mui/material'
 
 const Dashboard = () => {
-  const [filters, setFilters] = useState({ days: 30 })
+  const queryClient = useQueryClient()
+  const [filters] = useState({ days: 30 })
   const [refreshing, setRefreshing] = useState(false)
 
-  // Fetch KPIs
   const { data: kpis, isLoading: kpisLoading, refetch: refetchKpis } = useQuery({
     queryKey: ['dashboard-kpis', filters],
     queryFn: () => dashboardAPI.getKPIs(filters),
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
   })
 
-  // Fetch Charts
   const { data: crimeTypeChart, refetch: refetchChart } = useQuery({
     queryKey: ['crime-type-chart', filters],
     queryFn: () => dashboardAPI.getCharts({ ...filters, groupBy: 'crimeType', limit: 8 }),
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
   })
 
   const { data: severityChart } = useQuery({
     queryKey: ['severity-chart', filters],
     queryFn: () => dashboardAPI.getCharts({ ...filters, groupBy: 'severity' }),
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
   })
 
-  // Fetch Recent Crimes
   const { data: recentCrimes, refetch: refetchRecent } = useQuery({
     queryKey: ['recent-crimes'],
-    queryFn: () => crimeAPI.getAll({ limit: 10, sort: '-createdAt' }),
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
+    queryFn: () => crimeAPI.getAll({ limit: 10 }),
   })
 
-  // Fetch Overview
   const { data: overview } = useQuery({
     queryKey: ['overview', filters],
     queryFn: () => dashboardAPI.getOverview(filters),
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
   })
 
-  // ✅ Auto-refresh every 30 seconds
+  // Auto-refresh every 60 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      refetchKpis()
-      refetchChart()
-      refetchRecent()
-    }, 30000)
+      queryClient.invalidateQueries()
+    }, 60000)
     return () => clearInterval(interval)
-  }, [refetchKpis, refetchChart, refetchRecent])
+  }, [queryClient])
 
   const handleRefresh = async () => {
     setRefreshing(true)
-    await Promise.all([
-      refetchKpis(),
-      refetchChart(),
-      refetchRecent()
-    ])
+    await queryClient.invalidateQueries()
     setRefreshing(false)
   }
 
-  const kpiData = kpis?.data
-  const chartData = crimeTypeChart?.data
-  const severityData = severityChart?.data
-  const recentCrimesList = recentCrimes?.data?.crimes || []
+  const kpiData = kpis?.data?.data
+  const chartData = crimeTypeChart?.data?.data
+  const severityData = severityChart?.data?.data
+  const recentCrimesList = recentCrimes?.data?.data?.crimes || []
+  const overviewData = overview?.data?.data
 
   if (kpisLoading) {
     return (
@@ -108,24 +76,16 @@ const Dashboard = () => {
 
   return (
     <Box>
-      {/* Header with Refresh */}
+      {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Box>
-          <Typography variant="h4" fontWeight={700} gutterBottom>
-            Dashboard
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Real-time crime intelligence overview
-          </Typography>
+          <Typography variant="h4" fontWeight={700} gutterBottom>Dashboard</Typography>
+          <Typography variant="body2" color="textSecondary">Real-time crime intelligence overview</Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <Chip 
-            label={`Last updated: ${new Date().toLocaleTimeString()}`} 
-            size="small" 
-            variant="outlined"
-          />
+          <Chip label={`Last updated: ${new Date().toLocaleTimeString()}`} size="small" variant="outlined" />
           <IconButton onClick={handleRefresh} disabled={refreshing}>
-            <RefreshIcon className={refreshing ? 'animate-spin' : ''} />
+            <RefreshIcon />
           </IconButton>
         </Box>
       </Box>
@@ -133,37 +93,22 @@ const Dashboard = () => {
       {/* KPIs */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Total Crimes"
-            value={kpiData?.totalCrimes || 0}
-            change={kpiData?.percentChange || 0}
-            icon={<Warning />}
-            color="#1a237e"
-          />
+          <StatCard title="Total Crimes" value={kpiData?.totalCrimes || 0}
+            change={kpiData?.percentChange || 0} icon={<Warning />} color="#1a237e" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="High Risk Cases"
-            value={kpiData?.highRiskCount || 0}
-            icon={<TrendingUp />}
-            color="#e91e63"
-          />
+          <StatCard title="High Risk Cases" value={kpiData?.highRiskCount || 0}
+            icon={<TrendingUp />} color="#e91e63" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Detection Rate"
-            value="78%"
-            icon={<CheckCircle />}
-            color="#4caf50"
-          />
+          <StatCard title="Resolved Cases"
+            value={kpiData?.status?.resolved || 0}
+            icon={<CheckCircle />} color="#4caf50" />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Active Investigations"
-            value={overview?.data?.systemStats?.activeInvestigations || 156}
-            icon={<AccessTime />}
-            color="#ff9800"
-          />
+          <StatCard title="Active Investigations"
+            value={(kpiData?.status?.investigating || 0) + (kpiData?.status?.in_progress || 0)}
+            icon={<AccessTime />} color="#ff9800" />
         </Grid>
       </Grid>
 
@@ -171,9 +116,7 @@ const Dashboard = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3, borderRadius: 2 }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              Crime Trends
-            </Typography>
+            <Typography variant="h6" fontWeight={600} gutterBottom>Crime Trends</Typography>
             <Box sx={{ height: 300 }}>
               <LineChart data={kpiData?.recentTrend || []} />
             </Box>
@@ -181,9 +124,7 @@ const Dashboard = () => {
         </Grid>
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3, borderRadius: 2, height: '100%' }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              Crime Severity
-            </Typography>
+            <Typography variant="h6" fontWeight={600} gutterBottom>Crime Severity</Typography>
             <Box sx={{ height: 250 }}>
               <PieChart
                 data={severityData?.datasets?.[0]?.data || []}
@@ -199,9 +140,7 @@ const Dashboard = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={7}>
           <Paper sx={{ p: 2, borderRadius: 2, height: 400 }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              Crime Heatmap
-            </Typography>
+            <Typography variant="h6" fontWeight={600} gutterBottom>Crime Heatmap</Typography>
             <Box sx={{ height: 330 }}>
               <CrimeMap />
             </Box>
@@ -209,9 +148,7 @@ const Dashboard = () => {
         </Grid>
         <Grid item xs={12} md={5}>
           <Paper sx={{ p: 3, borderRadius: 2, height: 400 }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              Crime Type Distribution
-            </Typography>
+            <Typography variant="h6" fontWeight={600} gutterBottom>Crime Type Distribution</Typography>
             <Box sx={{ height: 320 }}>
               <BarChart
                 data={chartData?.datasets?.[0]?.data || []}
@@ -226,69 +163,36 @@ const Dashboard = () => {
       {/* Recent Crimes */}
       <Paper sx={{ mt: 4, p: 3, borderRadius: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" fontWeight={600}>
-            Recent Crime Incidents
-          </Typography>
-          <Chip 
-            label={`${recentCrimesList.length} records`} 
-            size="small" 
-            color="primary" 
-            variant="outlined"
-          />
+          <Typography variant="h6" fontWeight={600}>Recent Crime Incidents</Typography>
+          <Chip label={`${recentCrimesList.length} records`} size="small" color="primary" variant="outlined" />
         </Box>
-        <Box>
-          {recentCrimesList.length === 0 ? (
-            <Box sx={{ textAlign: 'center', py: 4 }}>
-              <Typography variant="body1" color="textSecondary">
-                No crime records found. Upload data to see recent crimes.
-              </Typography>
-            </Box>
-          ) : (
-            recentCrimesList.slice(0, 5).map((crime, index) => (
-              <motion.div
-                key={crime._id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    py: 2,
-                    borderBottom: index < 4 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  }}
-                >
-                  <Box>
-                    <Typography variant="body2" fontWeight={500}>
-                      {crime.firNumber || 'Unknown FIR'}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {crime.date ? new Date(crime.date).toLocaleDateString() : 'N/A'} • {crime.crimeType?.name || 'Unknown'}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Chip
-                      label={crime.severity || 'unknown'}
-                      size="small"
-                      color={
-                        crime.severity === 'critical' ? 'error' :
-                        crime.severity === 'high' ? 'warning' :
-                        crime.severity === 'medium' ? 'info' : 'success'
-                      }
-                    />
-                    <Chip
-                      label={crime.status || 'reported'}
-                      size="small"
-                      variant="outlined"
-                    />
-                  </Box>
+        {recentCrimesList.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="body1" color="textSecondary">
+              No crime records found. Add or upload data to see recent crimes.
+            </Typography>
+          </Box>
+        ) : (
+          recentCrimesList.slice(0, 5).map((crime, index) => (
+            <motion.div key={crime._id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2,
+                borderBottom: index < 4 ? '1px solid rgba(0,0,0,0.06)' : 'none' }}>
+                <Box>
+                  <Typography variant="body2" fontWeight={500}>{crime.firNumber || 'Unknown FIR'}</Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    {crime.date ? new Date(crime.date).toLocaleDateString() : 'N/A'} • {crime.crimeType?.name || 'Unknown'}
+                  </Typography>
                 </Box>
-              </motion.div>
-            ))
-          )}
-        </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Chip label={crime.severity || 'unknown'} size="small"
+                    color={crime.severity === 'critical' ? 'error' : crime.severity === 'high' ? 'warning' : crime.severity === 'medium' ? 'info' : 'success'} />
+                  <Chip label={crime.status || 'reported'} size="small" variant="outlined" />
+                </Box>
+              </Box>
+            </motion.div>
+          ))
+        )}
       </Paper>
     </Box>
   )

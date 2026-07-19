@@ -12,8 +12,7 @@ const districtSchema = new mongoose.Schema({
     type: String,
     required: [true, 'District name is required'],
     unique: true,
-    trim: true,
-    index: true
+    trim: true
   },
   code: {
     type: String,
@@ -44,8 +43,7 @@ const districtSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number], // [longitude, latitude]
-      required: true,
-      index: '2dsphere'
+      required: true
     }
   },
   boundary: {
@@ -192,7 +190,6 @@ const districtSchema = new mongoose.Schema({
 // ============================================
 // Indexes for Performance
 // ============================================
-districtSchema.index({ name: 1, code: 1 });
 districtSchema.index({ division: 1 });
 districtSchema.index({ 'location.coordinates': '2dsphere' });
 districtSchema.index({ 'crimeStats.crimeRate': -1 });

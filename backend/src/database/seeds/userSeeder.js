@@ -33,18 +33,10 @@ const seedUsers = async () => {
       isVerified: true
     };
 
-    const existingAdmin = await User.findOne({ email: adminData.email });
-    
-    if (existingAdmin) {
-      // Update existing admin
-      await User.updateOne({ email: adminData.email }, adminData);
-      logger.info(`✅ Updated admin user: ${adminData.email}`);
-    } else {
-      // Create admin
-      const admin = new User(adminData);
-      await admin.save();
-      logger.info(`✅ Created admin user: ${adminData.email}`);
-    }
+    await User.deleteOne({ email: adminData.email });
+    const admin = new User(adminData);
+    await admin.save();
+    logger.info(`✅ Created admin user: ${adminData.email}`);
 
     // SCRB Officer
     const scrbRole = await Role.findOne({ name: 'scrb_officer' });
@@ -61,16 +53,10 @@ const seedUsers = async () => {
         isVerified: true
       };
 
-      const existingScrb = await User.findOne({ email: scrbData.email });
-      
-      if (existingScrb) {
-        await User.updateOne({ email: scrbData.email }, scrbData);
-        logger.info(`✅ Updated SCRB officer: ${scrbData.email}`);
-      } else {
-        const scrb = new User(scrbData);
-        await scrb.save();
-        logger.info(`✅ Created SCRB officer: ${scrbData.email}`);
-      }
+      await User.deleteOne({ email: scrbData.email });
+      const scrb = new User(scrbData);
+      await scrb.save();
+      logger.info(`✅ Created SCRB officer: ${scrbData.email}`);
     }
 
     logger.info('✅ Users seeded successfully!');

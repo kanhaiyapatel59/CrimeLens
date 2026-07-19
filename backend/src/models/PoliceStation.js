@@ -125,7 +125,6 @@ const policeStationSchema = new mongoose.Schema({
 // ============================================
 // Indexes
 // ============================================
-policeStationSchema.index({ code: 1 });
 policeStationSchema.index({ district: 1 });
 policeStationSchema.index({ 'location.coordinates': '2dsphere' });
 

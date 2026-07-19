@@ -293,7 +293,6 @@ const criminalNetworkSchema = new mongoose.Schema({
 // ============================================
 // Indexes
 // ============================================
-criminalNetworkSchema.index({ name: 1 });
 criminalNetworkSchema.index({ type: 1 });
 criminalNetworkSchema.index({ 'intelligence.threatLevel': 1 });
 criminalNetworkSchema.index({ 'territory.districts': 1 });

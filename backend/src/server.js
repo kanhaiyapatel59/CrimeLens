@@ -205,6 +205,14 @@ app.use('/api/network', networkRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/upload', uploadRoutes);
 
+// Districts lookup endpoint
+const District = require('./models/District');
+const AuthMiddleware = require('./middlewares/auth');
+app.get('/api/districts', AuthMiddleware.authenticate, async (req, res) => {
+  const districts = await District.find({ isActive: true }).select('_id name code').lean();
+  res.json({ success: true, data: districts });
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({

@@ -57,7 +57,8 @@ class AuthController {
       console.log('🔑 [AuthController] JWT_SECRET from env:', process.env.JWT_SECRET ? 'Yes' : 'No');
       console.log('🔑 [AuthController] JWT_SECRET value:', process.env.JWT_SECRET);
 
-      const { email, password } = req.body;
+      const { email, password: rawPassword } = req.body;
+      const password = rawPassword?.trim();
       console.log('🔍 Login attempt for:', email);
 
       // Find user

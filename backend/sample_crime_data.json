@@ -1,106 +1,162 @@
 [
   {
-    "CrimeNo": "104430006202600001",
-    "CaseNo": "202600001",
-    "CrimeRegisteredDate": "2024-01-15",
-    "BriefFacts": "Robbery at MG Road - Cash and valuables stolen from a jewelry store",
-    "GravityOffenceID": 2,
-    "latitude": 12.9716,
-    "longitude": 77.5946,
-    "ComplainantName": "Rajesh Kumar",
-    "AccusedName": "Amit Singh",
-    "DistrictID": "DIST001",
-    "PoliceStationID": "PS001"
+    "firNumber": "104430006202600001",
+    "incidentId": "INC-2026-00001",
+    "crimeType": "6a5bc3b59a25c6506bdd29b7",
+    "date": "2024-01-15",
+    "time": "10:30",
+    "description": "Robbery at MG Road - Cash and valuables stolen from a jewelry store",
+    "severity": "high",
+    "status": "reported",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.5946, 12.9716],
+      "address": {
+        "street": "MG Road",
+        "area": "Central",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299c"
+      }
+    }
   },
   {
-    "CrimeNo": "104430006202600002",
-    "CaseNo": "202600002",
-    "CrimeRegisteredDate": "2024-01-16",
-    "BriefFacts": "Burglary at Indiranagar - Laptop, cash and jewelry stolen",
-    "GravityOffenceID": 3,
-    "latitude": 12.9784,
-    "longitude": 77.6408,
-    "ComplainantName": "Priya Sharma",
-    "AccusedName": "Vikram Reddy",
-    "DistrictID": "DIST001",
-    "PoliceStationID": "PS002"
+    "firNumber": "104430006202600002",
+    "incidentId": "INC-2026-00002",
+    "crimeType": "6a5bc3b59a25c6506bdd29c0",
+    "date": "2024-01-16",
+    "time": "02:15",
+    "description": "Burglary at Indiranagar - Laptop, cash and jewelry stolen",
+    "severity": "medium",
+    "status": "investigating",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.6408, 12.9784],
+      "address": {
+        "street": "Indiranagar",
+        "area": "East",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299c"
+      }
+    }
   },
   {
-    "CrimeNo": "104430006202600003",
-    "CaseNo": "202600003",
-    "CrimeRegisteredDate": "2024-01-17",
-    "BriefFacts": "Chain snatching in Koramangala - Gold chain stolen from elderly woman",
-    "GravityOffenceID": 3,
-    "latitude": 12.9352,
-    "longitude": 77.6245,
-    "ComplainantName": "Sunita Patel",
-    "AccusedName": "Ravi Kumar",
-    "DistrictID": "DIST001",
-    "PoliceStationID": "PS001"
+    "firNumber": "104430006202600003",
+    "incidentId": "INC-2026-00003",
+    "crimeType": "6a5bc3b59a25c6506bdd29ba",
+    "date": "2024-01-17",
+    "time": "08:45",
+    "description": "Chain snatching in Koramangala - Gold chain stolen from elderly woman",
+    "severity": "medium",
+    "status": "reported",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.6245, 12.9352],
+      "address": {
+        "street": "Koramangala",
+        "area": "South",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299c"
+      }
+    }
   },
   {
-    "CrimeNo": "104430006202600004",
-    "CaseNo": "202600004",
-    "CrimeRegisteredDate": "2024-01-18",
-    "BriefFacts": "Murder case in Whitefield - Victim found dead with stab wounds",
-    "GravityOffenceID": 1,
-    "latitude": 12.9698,
-    "longitude": 77.7499,
-    "ComplainantName": "Anita Desai",
-    "AccusedName": "Kiran Raj",
-    "DistrictID": "DIST002",
-    "PoliceStationID": "PS003"
+    "firNumber": "104430006202600004",
+    "incidentId": "INC-2026-00004",
+    "crimeType": "6a5bc3b59a25c6506bdd29b4",
+    "date": "2024-01-18",
+    "time": "23:00",
+    "description": "Murder case in Whitefield - Victim found dead with stab wounds",
+    "severity": "critical",
+    "status": "investigating",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.7499, 12.9698],
+      "address": {
+        "street": "Whitefield",
+        "area": "East",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299f"
+      }
+    }
   },
   {
-    "CrimeNo": "104430006202600005",
-    "CaseNo": "202600005",
-    "CrimeRegisteredDate": "2024-01-19",
-    "BriefFacts": "Drug possession in Electronic City - 2kg of narcotics seized",
-    "GravityOffenceID": 4,
-    "latitude": 12.8399,
-    "longitude": 77.677,
-    "ComplainantName": "Mohan Kumar",
-    "AccusedName": "Sanjay Singh",
-    "DistrictID": "DIST001",
-    "PoliceStationID": "PS004"
+    "firNumber": "104430006202600005",
+    "incidentId": "INC-2026-00005",
+    "crimeType": "6a5bc3b59a25c6506bdd29c3",
+    "date": "2024-01-19",
+    "time": "14:20",
+    "description": "Drug possession in Electronic City - 2kg of narcotics seized",
+    "severity": "high",
+    "status": "in_progress",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.6770, 12.8399],
+      "address": {
+        "street": "Electronic City",
+        "area": "South",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299c"
+      }
+    }
   },
   {
-    "CrimeNo": "104430006202600006",
-    "CaseNo": "202600006",
-    "CrimeRegisteredDate": "2024-01-20",
-    "BriefFacts": "Hit and run accident in Jayanagar - Pedestrian killed",
-    "GravityOffenceID": 2,
-    "latitude": 12.9304,
-    "longitude": 77.5825,
-    "ComplainantName": "Lakshmi Narayan",
-    "AccusedName": "Prakash Rao",
-    "DistrictID": "DIST001",
-    "PoliceStationID": "PS005"
+    "firNumber": "104430006202600006",
+    "incidentId": "INC-2026-00006",
+    "crimeType": "6a5bc3cb02893979202f314b",
+    "date": "2024-01-20",
+    "time": "19:10",
+    "description": "Hit and run accident in Jayanagar - Pedestrian killed",
+    "severity": "critical",
+    "status": "reported",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.5825, 12.9304],
+      "address": {
+        "street": "Jayanagar",
+        "area": "South",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299c"
+      }
+    }
   },
   {
-    "CrimeNo": "104430006202600007",
-    "CaseNo": "202600007",
-    "CrimeRegisteredDate": "2024-01-21",
-    "BriefFacts": "Cyber fraud in Rajajinagar - 5 lakhs fraudulently transferred",
-    "GravityOffenceID": 3,
-    "latitude": 12.9985,
-    "longitude": 77.5543,
-    "ComplainantName": "Suresh Reddy",
-    "AccusedName": "Unknown",
-    "DistrictID": "DIST001",
-    "PoliceStationID": "PS001"
+    "firNumber": "104430006202600007",
+    "incidentId": "INC-2026-00007",
+    "crimeType": "6a5bc3b59a25c6506bdd29c6",
+    "date": "2024-01-21",
+    "time": "11:00",
+    "description": "Cyber fraud in Rajajinagar - 5 lakhs fraudulently transferred",
+    "severity": "medium",
+    "status": "investigating",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.5543, 12.9985],
+      "address": {
+        "street": "Rajajinagar",
+        "area": "West",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299c"
+      }
+    }
   },
   {
-    "CrimeNo": "104430006202600008",
-    "CaseNo": "202600008",
-    "CrimeRegisteredDate": "2024-01-22",
-    "BriefFacts": "Armed robbery at Bank in Malleswaram - 10 lakhs stolen",
-    "GravityOffenceID": 1,
-    "latitude": 13.003,
-    "longitude": 77.5685,
-    "ComplainantName": "Bank Manager",
-    "AccusedName": "Gang Members",
-    "DistrictID": "DIST001",
-    "PoliceStationID": "PS006"
+    "firNumber": "104430006202600008",
+    "incidentId": "INC-2026-00008",
+    "crimeType": "6a5bc3b59a25c6506bdd29b7",
+    "date": "2024-01-22",
+    "time": "09:30",
+    "description": "Armed robbery at Bank in Malleswaram - 10 lakhs stolen",
+    "severity": "critical",
+    "status": "in_progress",
+    "location": {
+      "type": "Point",
+      "coordinates": [77.5700, 13.0035],
+      "address": {
+        "street": "Malleswaram",
+        "area": "North",
+        "city": "Bengaluru",
+        "district": "6a5bc3b59a25c6506bdd299c"
+      }
+    }
   }
 ]

@@ -293,7 +293,6 @@ const investigationSchema = new mongoose.Schema({
 // ============================================
 // Indexes
 // ============================================
-investigationSchema.index({ caseNumber: 1 });
 investigationSchema.index({ status: 1 });
 investigationSchema.index({ 'primaryCrime': 1 });
 investigationSchema.index({ investigatingOfficer: 1 });

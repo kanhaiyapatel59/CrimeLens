@@ -12,13 +12,12 @@ import { theme } from './styles/theme'
 import './styles/index.css'
 import './styles/globals.css'
 
-// React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 0,
     },
   },
 })
@@ -29,7 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <App />
           </BrowserRouter>
         </ThemeProvider>

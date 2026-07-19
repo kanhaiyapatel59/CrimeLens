@@ -185,7 +185,6 @@ const modusOperandiSchema = new mongoose.Schema({
 // ============================================
 // Indexes
 // ============================================
-modusOperandiSchema.index({ code: 1 });
 modusOperandiSchema.index({ crimeTypes: 1 });
 modusOperandiSchema.index({ 'statistics.frequency': -1 });
 modusOperandiSchema.index({ severity: 1 });

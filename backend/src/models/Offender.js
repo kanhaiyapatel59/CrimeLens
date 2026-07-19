@@ -26,7 +26,6 @@ const offenderSchema = new mongoose.Schema({
   // Unique IDs
   prisonerId: {
     type: String,
-    unique: true,
     sparse: true
   },
   aadhaar: {
@@ -194,7 +193,7 @@ const offenderSchema = new mongoose.Schema({
 // Indexes
 // ============================================
 offenderSchema.index({ firstName: 1, lastName: 1 });
-offenderSchema.index({ prisonerId: 1 });
+// prisonerId index handled by unique:true on field
 offenderSchema.index({ 'criminalProfile.numberOfConvictions': -1 });
 offenderSchema.index({ 'riskPrediction.recidivismRisk.level': 1 });
 

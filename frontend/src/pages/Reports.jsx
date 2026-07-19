@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   Box,
   Paper,
@@ -39,12 +39,14 @@ import {
   Description as DescriptionIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { dashboardAPI } from '../api/dashboard'
+import { crimeAPI } from '../api/crimes'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
 const Reports = () => {
+  const queryClient = useQueryClient()
   const [selectedReport, setSelectedReport] = useState(null)
   const [openPreview, setOpenPreview] = useState(false)
   const [openUploadDialog, setOpenUploadDialog] = useState(false)
@@ -59,6 +61,13 @@ const Reports = () => {
     includeCharts: true,
     includeMap: false,
   })
+
+  // Fetch real crime types for mapping during upload
+  const { data: crimeTypesData } = useQuery({
+    queryKey: ['crime-types'],
+    queryFn: () => crimeAPI.getCrimeTypes(),
+  })
+  const crimeTypesList = crimeTypesData?.data?.data || []
 
   // Fetch report data
   const { data: reportData, isLoading } = useQuery({
@@ -103,12 +112,22 @@ const Reports = () => {
     setOpenPreview(true)
   }
 
+  const handleNewReport = () => {
+    setSelectedReport(null)
+    setOpenPreview(true)
+  }
+
   const handleDownload = (format) => {
     toast.success(`Downloading ${format.toUpperCase()} report...`)
   }
 
   const handleScheduleReport = () => {
     toast.success('Report scheduled for weekly delivery')
+  }
+
+  const mapSeverity = (value) => {
+    const map = { 1: 'critical', 2: 'high', 3: 'medium', 4: 'low', critical: 'critical', high: 'high', medium: 'medium', low: 'low' }
+    return map[value] || 'medium'
   }
 
   // File Upload Handler with Data Extraction
@@ -135,72 +154,7 @@ const Reports = () => {
       // Extract data based on file type
       const extracted = await extractDataFromFile(file)
       setExtractedData(extracted)
-
-      // ✅ Real import so uploaded data appears in Dashboard/Crimes/Map/Network.
-      // Your sample CSV headers:
-      // CrimeNo,CaseNo,CrimeRegisteredDate,BriefFacts,GravityOffenceID,latitude,longitude,ComplainantName,AccusedName,DistrictID,PoliceStationID
-      // Backend bulkUpload needs: firNumber, incidentId, crimeType (and optional date/time/location/severity/status).
-      const records = extracted?.allRecords || extracted?.records || []
-
-      toast.success(`Successfully extracted ${extracted.records || 0} records from ${file.name}`)
-      setOpenUploadDialog(false)
-
-      // If we have parsed records, map and bulk upload.
-      if (Array.isArray(records) && records.length > 0) {
-        try {
-          // Lazy import to avoid changing imports at top.
-          const { crimeAPI } = await import('../api/crimes')
-
-          const mappedCrimes = records
-            .map((r) => ({
-              firNumber: r.CrimeNo || r.firNumber,
-              incidentId: r.CaseNo || r.incidentId,
-              // NOTE: CSV GravityOffenceID must be converted to a CrimeType ObjectId.
-              // Current implementation assumes the backend accepts this value as-is.
-              crimeType: r.GravityOffenceID || r.crimeType,
-              date: r.CrimeRegisteredDate || r.date,
-              description: r.BriefFacts || r.description,
-              severity: r.GravityOffenceID
-                ? String(r.GravityOffenceID) === '2'
-                  ? 'high'
-                  : String(r.GravityOffenceID) === '3'
-                    ? 'medium'
-                    : 'low'
-                : 'medium',
-              status: 'reported',
-              time: '00:00',
-              location: {
-                coordinates: [
-                  parseFloat(r.longitude ?? r.Longitude ?? r.lng) || 77.5946,
-                  parseFloat(r.latitude ?? r.Latitude ?? r.lat) || 12.9716,
-                ],
-                address: {
-                  district: r.DistrictID || r.district || '',
-                  policeStation: r.PoliceStationID || r.policeStation || '',
-                },
-              },
-            }))
-            .filter((c) => c.firNumber && c.incidentId && c.crimeType)
-
-          if (mappedCrimes.length === 0) {
-            toast.warning('Parsed records did not match required fields for bulk upload.')
-          } else {
-            await crimeAPI.bulkUpload({ crimes: mappedCrimes })
-            toast.success(`Imported ${mappedCrimes.length} crimes. Updating dashboard...`)
-          }
-        } catch (e) {
-          console.error('Bulk import from Reports failed:', e)
-          toast.error(e?.response?.data?.message || 'Import failed (dashboard not updated)')
-        }
-      }
-
-      // Reload to refresh all sections (Dashboard/Crimes/Map/Network/Reports)
-      // If auth fails, user may be redirected to login; don't force reload in that case.
-
-
-      // Reload to refresh all sections (Dashboard/Crimes/Map/Network/Reports)
-      // If auth fails, user may be redirected to login; don't force reload in that case.
-      setTimeout(() => window.location.reload(), 800)
+      toast.success(`Extracted ${extracted.totalRecords} records from ${file.name} — click Import Data to save`)
 
     } catch (error) {
       toast.error(`Failed to extract data: ${error.message}`)
@@ -298,6 +252,7 @@ const Reports = () => {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
+            onClick={handleNewReport}
             sx={{ bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}
           >
             New Report
@@ -610,8 +565,54 @@ const Reports = () => {
           <Button onClick={() => setOpenUploadDialog(false)}>Cancel</Button>
           <Button
             variant="contained"
-            disabled={!uploadedFile || uploading}
-            onClick={() => setOpenUploadDialog(false)}
+            disabled={!extractedData || uploading}
+            onClick={async () => {
+              if (!extractedData) return
+              const records = extractedData.allRecords || []
+              if (records.length === 0) { toast.error('No records to import'); return }
+              setUploading(true)
+              try {
+                const typeMap = {}
+                crimeTypesList.forEach(t => {
+                  typeMap[t.name?.toLowerCase()] = t._id
+                  typeMap[String(t.code)?.toLowerCase()] = t._id
+                })
+                const fallbackTypeId = crimeTypesList[0]?._id
+                const mappedCrimes = records.map((r, i) => {
+                  const rawType = r.GravityOffenceID || r.crimeType || r.crime_type || ''
+                  const resolvedType = typeMap[String(rawType).toLowerCase()] || (String(rawType).match(/^[a-f\d]{24}$/i) ? rawType : null) || fallbackTypeId
+                  return {
+                    firNumber: r.CrimeNo || r.firNumber || `FIR-${Date.now()}-${i}`,
+                    incidentId: r.CaseNo || r.incidentId || `INC-${Date.now()}-${i}`,
+                    crimeType: resolvedType,
+                    date: r.CrimeRegisteredDate || r.date || new Date().toISOString(),
+                    time: r.time || '00:00',
+                    description: r.BriefFacts || r.description || 'Imported record',
+                    severity: mapSeverity(r.GravityOffenceID || r.severity),
+                    status: 'reported',
+                    location: {
+                      coordinates: [parseFloat(r.longitude ?? r.Longitude ?? r.lng) || 77.5946, parseFloat(r.latitude ?? r.Latitude ?? r.lat) || 12.9716],
+                      address: { district: r.DistrictID || r.district || '', policeStation: r.PoliceStationID || r.policeStation || '' },
+                    },
+                  }
+                }).filter(c => c.firNumber && c.incidentId && c.crimeType)
+                if (mappedCrimes.length === 0) {
+                  toast.warning('No valid records — check that crime types exist in the system')
+                } else {
+                  const result = await crimeAPI.bulkUpload({ crimes: mappedCrimes })
+                  const res = result?.data?.data || result?.data
+                  toast.success(`Imported ${res?.success?.length || mappedCrimes.length} crimes`)
+                  queryClient.invalidateQueries()
+                  setOpenUploadDialog(false)
+                  setUploadedFile(null)
+                  setExtractedData(null)
+                }
+              } catch (e) {
+                toast.error(e?.response?.data?.message || 'Import failed')
+              } finally {
+                setUploading(false)
+              }
+            }}
             sx={{ bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}
           >
             {uploading ? <CircularProgress size={24} /> : 'Import Data'}
@@ -660,7 +661,7 @@ const Reports = () => {
                       <Typography variant="subtitle2" fontWeight={500}>
                         Total Crimes
                       </Typography>
-                      <Typography variant="h4">{reportData?.data?.totalCrimes || 0}</Typography>
+                      <Typography variant="h4">{reportData?.data?.data?.summary?.total || 0}</Typography>
                     </Paper>
                   </Grid>
                   <Grid item xs={6}>

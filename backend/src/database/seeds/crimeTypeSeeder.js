@@ -178,7 +178,7 @@ const crimeTypes = [
   {
     name: 'Human Trafficking',
     code: 'IPC370',
-    category: 'human_trafficking',
+    category: 'other',
     subCategory: 'Trafficking',
     ipcSections: ['370', '371', '372', '373'],
     bnsSections: ['128', '129'],

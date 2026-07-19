@@ -50,8 +50,7 @@ const crimeIncidentSchema = new mongoose.Schema({
     },
     coordinates: {
       type: [Number], // [longitude, latitude]
-      required: [true, 'Coordinates are required'],
-      index: '2dsphere'
+      required: [true, 'Coordinates are required']
     },
     address: {
       street: String,
@@ -173,7 +172,7 @@ const crimeIncidentSchema = new mongoose.Schema({
   metaData: {
     source: {
       type: String,
-      enum: ['manual', 'excel_upload', 'api', 'mobile_app'],
+      enum: ['manual', 'excel_upload', 'api', 'mobile_app', 'police_import', 'bulk_upload'],
       default: 'manual'
     },
     tags: [String],
@@ -210,7 +209,7 @@ crimeIncidentSchema.index({ status: 1, severity: 1 });
 crimeIncidentSchema.index({ riskScore: -1 });
 
 // Compound indexes for analytics
-crimeIncidentSchema.index({ date: -1, district: 1 });
+crimeIncidentSchema.index({ date: -1, 'location.address.district': 1 });
 crimeIncidentSchema.index({ crimeType: 1, date: -1 });
 
 // ============================================

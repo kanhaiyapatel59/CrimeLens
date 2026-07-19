@@ -66,7 +66,6 @@ const roleSchema = new mongoose.Schema({
 });
 
 // Indexes
-roleSchema.index({ name: 1 });
 roleSchema.index({ level: 1 });
 
 // Static method to get default role
