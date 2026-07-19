@@ -52,6 +52,7 @@ const getMenuItems = (role) => {
   return allItems.filter(item => allowedPaths.includes(item.path))
 }
 
+// ✅ Profile & Settings in Sidebar Bottom
 const bottomMenuItems = [
   { path: '/profile', label: 'Profile', icon: PersonIcon },
   { path: '/settings', label: 'Settings', icon: SettingsIcon },
@@ -62,7 +63,6 @@ const Sidebar = ({ open, onClose, isMobile }) => {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
 
-  // Dynamically generate menu items based on the current user's role
   const menuItems = getMenuItems(user?.role)
 
   const handleLogout = () => {
@@ -168,7 +168,7 @@ const Sidebar = ({ open, onClose, isMobile }) => {
         ))}
       </List>
 
-      {/* Bottom Menu - Profile & Settings */}
+      {/* ✅ Bottom Menu - Profile & Settings */}
       <Box sx={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         {bottomMenuItems.map((item) => (
           <ListItem key={item.path} disablePadding sx={{ px: 1, py: 0.5 }}>

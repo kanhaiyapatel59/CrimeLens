@@ -22,6 +22,7 @@ const networkRoutes = require('./routes/networkRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const adminRoutes = require('./routes/adminRoutes'); // ✅ Added Admin Routes reference
+const correlationRoutes = require('./routes/correlationRoutes');
 
 // Utils & Middleware
 const logger = require('./utils/logger');
@@ -29,8 +30,10 @@ const { connectDatabase } = require('./database/connection');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { requestLogger } = require('./middlewares/requestLogger');
 
+
 const app = express();
 const httpServer = createServer(app);
+
 
 // ============================================
 // CORS - ULTIMATE FIX (Place this FIRST)
@@ -206,6 +209,7 @@ app.use('/api/network', networkRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes); // ✅ Added Admin Routes registration
+app.use('/api/correlation', correlationRoutes);
 
 // Districts lookup endpoint
 const District = require('./models/District');

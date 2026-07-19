@@ -29,72 +29,69 @@ import PrivateRoute from './components/common/PrivateRoute'
 
 // Context
 import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'  // ✅ ADD THIS
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-            success: {
-              duration: 3000,
-              iconTheme: {
-                primary: '#4caf50',
-                secondary: '#fff',
+    <ThemeProvider>
+      <AuthProvider>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#363636',
+                color: '#fff',
               },
-            },
-            error: {
-              duration: 5000,
-              iconTheme: {
-                primary: '#f44336',
-                secondary: '#fff',
+              success: {
+                duration: 3000,
+                iconTheme: {
+                  primary: '#4caf50',
+                  secondary: '#fff',
+                },
               },
-            },
-          }}
-        />
-        
-        <AnimatePresence mode="wait">
-          <Routes>
-            {/* ============================================
-                PUBLIC ROUTES (No Authentication Required)
-                ============================================ */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            
-            {/* ============================================
-                PROTECTED ROUTES (Authentication Required)
-                ============================================ */}
-            <Route element={<PrivateRoute />}>
-              <Route element={<Layout />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/crimes" element={<Crimes />} />
-                <Route path="/map" element={<Map />} />
-                <Route path="/network" element={<Network />} />
-                <Route path="/ai-chat" element={<AIChat />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
+              error: {
+                duration: 5000,
+                iconTheme: {
+                  primary: '#f44336',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
+          
+          <AnimatePresence mode="wait">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              
+              {/* Protected Routes */}
+              <Route element={<PrivateRoute />}>
+                <Route element={<Layout />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/crimes" element={<Crimes />} />
+                  <Route path="/map" element={<Map />} />
+                  <Route path="/network" element={<Network />} />
+                  <Route path="/ai-chat" element={<AIChat />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Route>
               </Route>
-            </Route>
-            
-            {/* ============================================
-                404 - Not Found
-                ============================================ */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </AnimatePresence>
-      </div>
-    </AuthProvider>
+              
+              {/* 404 */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AnimatePresence>
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

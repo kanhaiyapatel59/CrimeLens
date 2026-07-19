@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Grid, Paper, Typography, Box, CircularProgress, Chip, Avatar, useTheme,
+  Grid, Paper, Typography, Box, CircularProgress, Chip, Avatar, useTheme, alpha, Alert,
 } from '@mui/material'
 import {
   TrendingUp, Warning, CheckCircle, AccessTime, Refresh as RefreshIcon,
   TrendingDown, ArrowUpward, ArrowDownward,
 } from '@mui/icons-material'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { IconButton, alpha } from '@mui/material'
+import { IconButton } from '@mui/material'
 import { dashboardAPI } from '../api/dashboard'
 import { crimeAPI } from '../api/crimes'
+import { correlationAPI } from '../api/correlation'
 import StatCard from '../components/common/StatCard'
 import BarChart from '../components/charts/BarChart'
 import LineChart from '../components/charts/LineChart'
 import PieChart from '../components/charts/PieChart'
 import CrimeMap from '../components/maps/CrimeMap'
+import CorrelationChart from '../components/charts/CorrelationChart'
 import { motion } from 'framer-motion'
 
 const Dashboard = () => {
@@ -48,6 +50,13 @@ const Dashboard = () => {
     queryFn: () => dashboardAPI.getOverview(filters),
   })
 
+  // Fetch correlation data
+  const { data: correlationData, isLoading: correlationLoading } = useQuery({
+    queryKey: ['correlation-matrix'],
+    queryFn: () => correlationAPI.getMatrix(),
+    refetchOnWindowFocus: false,
+  })
+
   useEffect(() => {
     const interval = setInterval(() => {
       queryClient.invalidateQueries()
@@ -65,6 +74,16 @@ const Dashboard = () => {
   const chartData = crimeTypeChart?.data?.data || crimeTypeChart?.data || {}
   const severityData = severityChart?.data?.data || severityChart?.data || {}
   const recentCrimesList = recentCrimes?.data?.data?.crimes || recentCrimes?.data?.crimes || []
+
+  // Get correlation data for the first district (or aggregate)
+  const correlationInsights = correlationData?.data?.data?.[0]?.insights || []
+  const correlationFactors = correlationData?.data?.data?.[0]?.correlations || []
+
+  // Convert correlation object to array for chart
+  const correlationChartData = Object.entries(correlationFactors).map(([key, value]) => ({
+    name: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+    value: value || 0,
+  }))
 
   const stats = [
     { title: 'Total Crimes', value: kpiData?.totalCrimes || 0, icon: Warning, color: '#1a237e', change: '+12%' },
@@ -172,7 +191,7 @@ const Dashboard = () => {
         ))}
       </Grid>
 
-      {/* Charts */}
+      {/* Charts Row */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
@@ -219,6 +238,94 @@ const Dashboard = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* ✅ Socio-Economic Correlation Analysis */}
+      <Paper sx={{ mt: 4, p: 3, borderRadius: 3 }}>
+        <Typography variant="h6" fontWeight={600} gutterBottom>
+          Socio-Economic Correlation Analysis
+        </Typography>
+        <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mb: 2 }}>
+          Relationship between crime rates and socio-economic factors
+        </Typography>
+
+        {correlationLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : correlationChartData.length > 0 ? (
+          <Grid container spacing={3}>
+            {/* Chart */}
+            <Grid item xs={12} md={8}>
+              <Box sx={{ height: 280 }}>
+                <CorrelationChart 
+                  data={correlationChartData}
+                  title="Correlation with Crime Rate"
+                  height={280}
+                />
+              </Box>
+            </Grid>
+
+            {/* Insights */}
+            <Grid item xs={12} md={4}>
+              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                Key Insights
+              </Typography>
+              {correlationInsights.length > 0 ? (
+                correlationInsights.slice(0, 3).map((insight, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Paper
+                      sx={{
+                        p: 1.5,
+                        mb: 1.5,
+                        borderRadius: 2,
+                        bgcolor: insight.severity === 'high' ? 'rgba(244,67,54,0.05)' :
+                                insight.severity === 'medium' ? 'rgba(255,152,0,0.05)' :
+                                'rgba(76,175,80,0.05)',
+                        border: `1px solid ${
+                          insight.severity === 'high' ? 'rgba(244,67,54,0.15)' :
+                          insight.severity === 'medium' ? 'rgba(255,152,0,0.15)' :
+                          'rgba(76,175,80,0.15)'
+                        }`,
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Chip
+                          label={insight.severity?.toUpperCase() || 'INFO'}
+                          size="small"
+                          color={
+                            insight.severity === 'high' ? 'error' :
+                            insight.severity === 'medium' ? 'warning' : 'success'
+                          }
+                          sx={{ height: 20, fontSize: '0.6rem' }}
+                        />
+                        <Typography variant="caption" fontWeight={500}>
+                          {insight.title}
+                        </Typography>
+                      </Box>
+                      <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>
+                        {insight.description}
+                      </Typography>
+                    </Paper>
+                  </motion.div>
+                ))
+              ) : (
+                <Typography variant="body2" color="textSecondary">
+                  No insights available. Add economic data for districts.
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+        ) : (
+          <Alert severity="info" sx={{ borderRadius: 2 }}>
+            No correlation data available. Please seed economic data for districts.
+          </Alert>
+        )}
+      </Paper>
 
       {/* Recent Crimes */}
       <Paper sx={{ mt: 4, p: 3, borderRadius: 3 }}>

@@ -16,17 +16,19 @@ import {
 import {
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
-  Person as PersonIcon,
-  Settings as SettingsIcon,
+  Brightness4 as DarkModeIcon,
+  Brightness7 as LightModeIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../../redux/slices/authSlice'
+import { useThemeContext } from '../../context/ThemeContext'
 
 const Header = ({ onMenuClick }) => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
+  const { mode, toggleTheme } = useThemeContext()
   const [anchorEl, setAnchorEl] = useState(null)
   const [notifAnchorEl, setNotifAnchorEl] = useState(null)
 
@@ -57,14 +59,15 @@ const Header = ({ onMenuClick }) => {
       color="default"
       elevation={0}
       sx={{
-        backgroundColor: '#fff',
-        borderBottom: '1px solid #e8ecf1',
-        zIndex: 1100,
+        backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : 'rgba(255,255,255,0.8)',
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(0,0,0,0.06)',
+        zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar sx={{ minHeight: 64, justifyContent: 'space-between', px: { xs: 2, sm: 3 } }}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         {/* Left */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <IconButton
             edge="start"
             color="inherit"
@@ -75,10 +78,10 @@ const Header = ({ onMenuClick }) => {
           </IconButton>
           
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <Typography variant="subtitle2" fontWeight={600} color="text.primary">
+            <Typography variant="subtitle1" fontWeight={600}>
               Welcome back, {user?.firstName}
             </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+            <Typography variant="caption" color="textSecondary">
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -91,54 +94,85 @@ const Header = ({ onMenuClick }) => {
 
         {/* Right */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {/* Notifications */}
           <IconButton onClick={handleNotifications}>
             <Badge badgeContent={3} color="error">
               <NotificationsIcon />
             </Badge>
           </IconButton>
 
+          {/* ✅ Dark/Light Mode Toggle */}
+          <IconButton 
+            onClick={toggleTheme}
+            size="small"
+            sx={{ 
+              ml: 0.5,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+              p: 0.8,
+            }}
+          >
+            {mode === 'dark' ? (
+              <LightModeIcon fontSize="small" sx={{ color: '#ffb74d' }} />
+            ) : (
+              <DarkModeIcon fontSize="small" sx={{ color: '#1a237e' }} />
+            )}
+          </IconButton>
+
+          {/* User Avatar - Click shows ONLY Logout */}
           <Chip
             avatar={
-              <Avatar sx={{ bgcolor: '#1a237e', color: '#fff', width: 28, height: 28, fontSize: '0.75rem' }}>
+              <Avatar sx={{ bgcolor: '#1a237e', color: '#fff' }}>
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </Avatar>
             }
             label={`${user?.firstName} ${user?.lastName}`}
             onClick={handleProfileMenu}
-            sx={{
-              fontWeight: 500,
-              borderRadius: 2,
+            sx={{ 
+              fontWeight: 500, 
               display: { xs: 'none', sm: 'flex' },
-              '& .MuiChip-label': { px: 1.5, fontSize: '0.8rem' },
+              ml: 0.5,
             }}
           />
 
+          {/* ✅ User Menu - ONLY LOGOUT (No Profile/Settings) */}
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleProfileClose}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            PaperProps={{
+              sx: {
+                minWidth: 150,
+                borderRadius: 2,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+              }
+            }}
           >
-            <MenuItem onClick={handleProfileClose}>
-              <PersonIcon sx={{ mr: 1, fontSize: 20 }} /> Profile
-            </MenuItem>
-            <MenuItem onClick={handleProfileClose}>
-              <SettingsIcon sx={{ mr: 1, fontSize: 20 }} /> Settings
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
+            <MenuItem 
+              onClick={handleLogout} 
+              sx={{ 
+                color: 'error.main',
+                fontWeight: 500,
+                '&:hover': { bgcolor: 'rgba(244, 67, 54, 0.04)' },
+              }}
+            >
               <LogoutIcon sx={{ mr: 1, fontSize: 20 }} /> Logout
             </MenuItem>
           </Menu>
 
+          {/* Notifications Menu */}
           <Menu
             anchorEl={notifAnchorEl}
             open={Boolean(notifAnchorEl)}
             onClose={handleNotifClose}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            PaperProps={{ sx: { width: 340, maxHeight: 400 } }}
+            PaperProps={{
+              sx: { width: 340, maxHeight: 400, borderRadius: 2 },
+            }}
           >
             <Typography variant="subtitle2" sx={{ p: 2, fontWeight: 600 }}>
               Notifications
