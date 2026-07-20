@@ -1,33 +1,27 @@
 import axios from './axios'
 
 export const aiAPI = {
-  health: () =>
-    axios.get('/api/ai/health'),
+  // Chat with AI
+  chat: (data) =>
+    axios.post('/api/ai/chat', data),
   
-  status: () =>
-    axios.get('/api/ai/status'),
+  // Analyze crime patterns
+  analyze: (data) =>
+    axios.post('/api/ai/analyze', data),
   
-  insights: () =>
-    axios.get('/api/ai/insights'),
+  // Predict hotspots
+  predictHotspots: (data) =>
+    axios.post('/api/ai/predict-hotspots', data),
   
-  predictCrime: (data) =>
-    axios.post('/api/ai/predict/crime', data),
+  // Analyze network
+  analyzeNetwork: (data) =>
+    axios.post('/api/ai/analyze-network', data),
   
-  predictRisk: (data) =>
-    axios.post('/api/ai/predict/risk', data),
+  // Generate report
+  generateReport: (data) =>
+    axios.post('/api/ai/generate-report', data),
   
-  detectAnomalies: (data = {}) =>
-    axios.post('/api/ai/detect/anomalies', data),
-  
-  detectMO: (data = {}) =>
-    axios.post('/api/ai/detect/mo', data),
-  
-  train: (modelType = 'all') =>
-    axios.post('/api/ai/train', { modelType }),
-  
-  getTrends: (params = {}) =>
-    axios.get('/api/ai/trends', { params }),
-  
-  getHotspots: (params = {}) =>
-    axios.get('/api/ai/hotspots', { params }),
+  // Quick query
+  query: (data) =>
+    axios.post('/api/ai/query', data),
 }

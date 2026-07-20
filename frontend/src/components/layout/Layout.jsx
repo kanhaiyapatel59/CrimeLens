@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -11,18 +11,33 @@ const Layout = () => {
   const theme = useTheme()
   const location = useLocation()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
+  // Hide Header & Footer on AI Chat page
+  const isAIChat = location.pathname === '/ai-chat'
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f0f2f5' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        bgcolor: '#f0f2f5',
+      }}
+    >
       <Box sx={{ display: 'flex', flex: 1, position: 'relative' }}>
         {/* Sidebar */}
-        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} isMobile={isMobile} />
-        
+        <Sidebar
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          isMobile={isMobile}
+        />
+
         {/* Main Content */}
         <Box
           component="main"
@@ -34,27 +49,39 @@ const Layout = () => {
             width: '100%',
             ml: !isMobile && sidebarOpen ? '260px' : '0px',
             transition: 'margin-left 0.25s ease-in-out',
-            overflowX: 'hidden',
+            overflow: 'hidden',
             position: 'relative',
           }}
         >
-          <Header onMenuClick={toggleSidebar} />
-          
+          {/* Header */}
+          {!isAIChat && (
+            <Header onMenuClick={toggleSidebar} />
+          )}
+
+          {/* Page Content */}
           <Box
             sx={{
               flex: 1,
-              p: { xs: 2, sm: 3, md: 4 },
+              p: isAIChat ? 0 : { xs: 2, sm: 3, md: 4 },
               backgroundColor: '#f0f2f5',
-              minHeight: 'calc(100vh - 64px)',
+              minHeight: isAIChat ? '100vh' : 'calc(100vh - 64px)',
               width: '100%',
               maxWidth: '100%',
-              overflowX: 'hidden',
+              overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: isAIChat ? 'stretch' : 'center',
             }}
           >
-            <Box sx={{ width: '100%', maxWidth: '1200px' }}>
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: isAIChat ? '100%' : '1200px',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={location.pathname}
@@ -62,7 +89,13 @@ const Layout = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.25 }}
-                  style={{ width: '100%' }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                  }}
                 >
                   <Outlet />
                 </motion.div>
@@ -70,7 +103,8 @@ const Layout = () => {
             </Box>
           </Box>
 
-          <Footer />
+          {/* Footer */}
+          {!isAIChat && <Footer />}
         </Box>
       </Box>
     </Box>

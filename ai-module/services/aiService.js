@@ -10,19 +10,12 @@ class AIService {
   constructor() {
     this.apiKey = process.env.GROQ_API_KEY;
     this.baseURL = 'https://api.groq.com/openai/v1';
-    // ✅ Use the working model
-    this.model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
-    
-    // Available models:
-    // - llama-3.1-70b-versatile (Best)
-    // - llama-3.1-8b-instant (Fastest)
-    // - llama-3.1-405b-reasoning (Most powerful)
-    // - mixtral-8x7b-32768 (Deprecated - DO NOT USE)
+    this.model = process.env.GROQ_MODEL || 'mixtral-8x7b-32768';
     
     if (!this.apiKey) {
       logger.warn('⚠️ GROQ_API_KEY not found in environment variables');
     } else {
-      logger.info('✅ Groq API initialized with model:', this.model);
+      logger.info('✅ Groq API initialized');
     }
   }
 
@@ -31,14 +24,6 @@ class AIService {
    */
   async chat(message, context = '', history = []) {
     try {
-      if (!this.apiKey) {
-        logger.error('❌ GROQ_API_KEY is missing!');
-        return {
-          success: false,
-          error: 'API key not configured. Please contact administrator.'
-        };
-      }
-
       const systemPrompt = `You are CrimeLens AI, an expert crime intelligence analyst for the Karnataka State Police. 
         Your role is to provide professional, data-driven insights about crime patterns, predictions, and analysis.
         
@@ -57,9 +42,6 @@ class AIService {
         { role: 'user', content: message }
       ];
 
-      logger.info('🤖 Sending request to Groq API...');
-      logger.info('📝 Model:', this.model);
-
       const response = await axios.post(
         `${this.baseURL}/chat/completions`,
         {
@@ -74,13 +56,12 @@ class AIService {
           headers: {
             'Authorization': `Bearer ${this.apiKey}`,
             'Content-Type': 'application/json'
-          },
-          timeout: 30000
+          }
         }
       );
 
       const result = response.data.choices[0].message.content;
-      logger.info(`✅ AI response generated (${result.length} chars)`);
+      logger.info(`🤖 AI response generated (${result.length} chars)`);
       
       return {
         success: true,
@@ -88,42 +69,18 @@ class AIService {
         usage: response.data.usage
       };
     } catch (error) {
-      logger.error('❌ Groq API error:', error.message);
+      logger.error('❌ Groq API error:', error.response?.data || error.message);
       
-      if (error.response) {
-        logger.error('📝 Response status:', error.response.status);
-        logger.error('📝 Response data:', JSON.stringify(error.response.data, null, 2));
-        
-        if (error.response.status === 401) {
-          return {
-            success: false,
-            error: 'Invalid API key. Please check your Groq API key.'
-          };
-        }
-        
-        if (error.response.status === 429) {
-          return {
-            success: false,
-            error: 'Rate limit exceeded. Please try again in a moment.'
-          };
-        }
-        
-        if (error.response.status === 500) {
-          return {
-            success: false,
-            error: 'Groq service error. Please try again later.'
-          };
-        }
-        
+      if (error.response?.status === 429) {
         return {
           success: false,
-          error: error.response.data?.error?.message || 'Failed to get AI response'
+          error: 'Rate limit exceeded. Please try again in a moment.'
         };
       }
       
       return {
         success: false,
-        error: error.message || 'Failed to get AI response'
+        error: error.response?.data?.error?.message || 'Failed to get AI response'
       };
     }
   }
@@ -157,7 +114,7 @@ class AIService {
   }
 
   /**
-   * Analyze suspect network
+   * Analyze suspect connections
    */
   async analyzeSuspectNetwork(suspectData) {
     const context = `Suspect information: ${JSON.stringify(suspectData)}`;

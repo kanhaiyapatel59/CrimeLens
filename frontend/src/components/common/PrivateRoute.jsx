@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, CircularProgress } from '@mui/material'
 import { restoreSession } from '../../redux/slices/authSlice'
+
 
 // ✅ Role-based route access mapping
 const rolePermissions = {
@@ -37,9 +38,15 @@ const PrivateRoute = () => {
   const location = useLocation()
   const { isAuthenticated, isLoading, user } = useSelector((state) => state.auth)
 
+  const [restoring, setRestoring] = useState(true)
+
   useEffect(() => {
     dispatch(restoreSession())
+    // restoreSession is a sync reducer reading localStorage.
+    // Let one render pass occur before we enforce redirects.
+    setRestoring(false)
   }, [dispatch])
+
 
   // ✅ Check role-based access against the user profile structure
   const hasAccess = () => {
@@ -75,10 +82,35 @@ const PrivateRoute = () => {
     )
   }
 
-  // Redirect to sign-in page if user session is completely unauthenticated
-  if (!isAuthenticated) {
+  const hasToken = useMemo(() => {
+    try {
+      return !!localStorage.getItem('accessToken')
+    } catch {
+      return false
+    }
+  }, [])
+
+  // Redirect to sign-in page if user session is completely unauthenticated.
+  // If we are still restoring session, block redirects to prevent /dashboard refresh -> /login.
+  if (!isAuthenticated && !hasToken && !restoring) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
+
+  if (restoring) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
 
   // ✅ Redirect to their specific landing fallback path if route limits violate permissions
   if (!hasAccess()) {

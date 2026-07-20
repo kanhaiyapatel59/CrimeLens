@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
+
 import {
   Box,
   Container,
@@ -53,9 +54,12 @@ const Login = () => {
     e.preventDefault()
     const result = await dispatch(loginUser(formData))
     if (result.meta.requestStatus === 'fulfilled') {
-      navigate('/dashboard')
+      // Redirect to originally requested protected route if present, else go to /dashboard
+      const from = location?.state?.from?.pathname
+      navigate(from || '/dashboard')
     }
   }
+
 
   const features = [
     { icon: <GpsFixed />, text: 'Geospatial Intelligence' },
