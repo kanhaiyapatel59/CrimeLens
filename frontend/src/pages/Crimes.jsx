@@ -10,7 +10,7 @@ import {
   Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon,
   Refresh as RefreshIcon, Upload as UploadIcon, Download as DownloadIcon,
   Visibility as ViewIcon, Close as CloseIcon,
-  DeleteSweep as DeleteSweepIcon,
+  DeleteSweep as DeleteSweepIcon, FilterList as FilterListIcon,
 } from '@mui/icons-material'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { crimeAPI } from '../api/crimes'
@@ -32,6 +32,7 @@ const Crimes = () => {
   const [openDetail, setOpenDetail] = useState(false)
   const [openBulk, setOpenBulk] = useState(false)
   const [openBulkDeleteDialog, setOpenBulkDeleteDialog] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
 
   const cleanFilters = () => {
     const clean = {}
@@ -145,6 +146,14 @@ const Crimes = () => {
     setSelectedIds([])
   }
 
+  // ✅ Clear all filters
+  const clearFilters = () => {
+    setFilters({})
+    setPage(0)
+    setSelectedIds([])
+    toast.success('Filters cleared')
+  }
+
   const getSeverityColor = (severity) => {
     const colors = { low: 'success', medium: 'info', high: 'warning', critical: 'error' }
     return colors[severity] || 'default'
@@ -177,6 +186,9 @@ const Crimes = () => {
     }
   }
 
+  // ✅ Check if any filters are active
+  const hasActiveFilters = Object.values(filters).some(val => val && val !== '' && val !== 'all')
+
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -197,6 +209,20 @@ const Crimes = () => {
           <Typography variant="body2" color="textSecondary">Manage and analyze crime incidents</Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          {/* ✅ Filter Button - Blue Background */}
+          <Button
+            variant="contained"
+            startIcon={<FilterListIcon />}
+            onClick={() => setShowFilters(!showFilters)}
+            sx={{
+              bgcolor: '#1a237e',
+              '&:hover': { bgcolor: '#283593' },
+              textTransform: 'none',
+              fontWeight: 600,
+            }}
+          >
+            Filter {hasActiveFilters && `(${Object.values(filters).filter(v => v && v !== '' && v !== 'all').length})`}
+          </Button>
           <Button variant="outlined" startIcon={<UploadIcon />} onClick={() => setOpenBulk(true)}>Bulk Upload</Button>
           <Button variant="outlined" startIcon={<DownloadIcon />} onClick={handleExport}>Export</Button>
           <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setSelectedCrime(null); setOpenForm(true) }}
@@ -253,132 +279,354 @@ const Crimes = () => {
         </Paper>
       )}
 
-      <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={3}>
-            <TextField fullWidth size="small" label="Search" name="search"
-              placeholder="FIR Number, Description..." value={filters.search || ''} onChange={handleFilterChange} />
+      {/* ✅ Filter Panel - Collapsible */}
+      <Collapse in={showFilters}>
+        <Paper sx={{ p: 3, mb: 3, borderRadius: 2, bgcolor: '#f8f9fa' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="subtitle1" fontWeight={600}>
+              <FilterListIcon sx={{ mr: 1, verticalAlign: 'middle', fontSize: 20 }} />
+              Filter Crimes
+            </Typography>
+            <Button
+              size="small"
+              onClick={clearFilters}
+              sx={{ textTransform: 'none', color: 'error.main' }}
+            >
+              Clear All
+            </Button>
+          </Box>
+          
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} sm={3}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Search"
+                name="search"
+                placeholder="FIR Number, Description..."
+                value={filters.search || ''}
+                onChange={handleFilterChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Crime Type</InputLabel>
+                <Select
+                  name="crimeType"
+                  value={filters.crimeType || ''}
+                  onChange={handleFilterChange}
+                  label="Crime Type"
+                >
+                  <MenuItem value="">All</MenuItem>
+                  {Array.isArray(crimeTypeOptions) && crimeTypeOptions.map((type) => (
+                    <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Severity</InputLabel>
+                <Select
+                  name="severity"
+                  value={filters.severity || ''}
+                  onChange={handleFilterChange}
+                  label="Severity"
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="low">Low</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
+                  <MenuItem value="high">High</MenuItem>
+                  <MenuItem value="critical">Critical</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Status</InputLabel>
+                <Select
+                  name="status"
+                  value={filters.status || ''}
+                  onChange={handleFilterChange}
+                  label="Status"
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="reported">Reported</MenuItem>
+                  <MenuItem value="investigating">Investigating</MenuItem>
+                  <MenuItem value="in_progress">In Progress</MenuItem>
+                  <MenuItem value="resolved">Resolved</MenuItem>
+                  <MenuItem value="closed">Closed</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <TextField
+                fullWidth
+                size="small"
+                type="date"
+                label="From Date"
+                name="startDate"
+                value={filters.startDate || ''}
+                onChange={handleFilterChange}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={1}>
+              <Tooltip title="Apply Filters">
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => {
+                    setShowFilters(false)
+                    refetch()
+                  }}
+                  sx={{
+                    bgcolor: '#1a237e',
+                    '&:hover': { bgcolor: '#283593' },
+                    minWidth: '100%',
+                  }}
+                >
+                  Apply
+                </Button>
+              </Tooltip>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={2}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Crime Type</InputLabel>
-              <Select name="crimeType" value={filters.crimeType || ''} onChange={handleFilterChange} label="Crime Type">
-                <MenuItem value="">All</MenuItem>
-                {Array.isArray(crimeTypeOptions) && crimeTypeOptions.map((type) => (
-                  <MenuItem key={type._id} value={type._id}>{type.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Severity</InputLabel>
-              <Select name="severity" value={filters.severity || ''} onChange={handleFilterChange} label="Severity">
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="low">Low</MenuItem>
-                <MenuItem value="medium">Medium</MenuItem>
-                <MenuItem value="high">High</MenuItem>
-                <MenuItem value="critical">Critical</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Status</InputLabel>
-              <Select name="status" value={filters.status || ''} onChange={handleFilterChange} label="Status">
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="reported">Reported</MenuItem>
-                <MenuItem value="investigating">Investigating</MenuItem>
-                <MenuItem value="in_progress">In Progress</MenuItem>
-                <MenuItem value="resolved">Resolved</MenuItem>
-                <MenuItem value="closed">Closed</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField fullWidth size="small" type="date" label="From Date" name="startDate"
-              value={filters.startDate || ''} onChange={handleFilterChange} InputLabelProps={{ shrink: true }} />
-          </Grid>
-          <Grid item xs={12} sm={1}>
-            <Tooltip title="Clear Filters">
-              <IconButton onClick={() => { setFilters({}); setPage(0); setSelectedIds([]) }}><CloseIcon /></IconButton>
-            </Tooltip>
-            <Tooltip title="Refresh">
-              <IconButton onClick={() => refetch()}><RefreshIcon /></IconButton>
-            </Tooltip>
-          </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      </Collapse>
 
-      <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+      {/* ✅ Professional Table */}
+      <Paper sx={{ borderRadius: 2, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ bgcolor: '#f5f7fa' }}>
-              <TableRow>
-                <TableCell padding="checkbox">
+            {/* ✅ Professional Table Header */}
+            <TableHead>
+              <TableRow
+                sx={{
+                  bgcolor: '#1a237e',
+                  '& th': {
+                    color: '#ffffff',
+                    fontWeight: 600,
+                    fontSize: '0.75rem',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                    py: 2,
+                    borderBottom: 'none',
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 10,
+                  },
+                }}
+              >
+                <TableCell padding="checkbox" sx={{ bgcolor: '#1a237e' }}>
                   <Checkbox
                     indeterminate={selectedIds.length > 0 && selectedIds.length < crimes.length}
                     checked={isAllSelected}
                     onChange={handleSelectAll}
-                    sx={{ color: '#1a237e' }}
+                    sx={{
+                      color: 'rgba(255,255,255,0.5)',
+                      '&.Mui-checked': { color: '#4fc3f7' },
+                      '&.MuiCheckbox-indeterminate': { color: '#4fc3f7' },
+                    }}
                   />
                 </TableCell>
-                <TableCell>FIR Number</TableCell>
-                <TableCell>Incident ID</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Crime Type</TableCell>
-                <TableCell>Severity</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell sx={{ bgcolor: '#1a237e' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Typography component="span" sx={{ color: '#ffffff', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                      FIR Number
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell sx={{ bgcolor: '#1a237e' }}>
+                  <Typography sx={{ color: '#ffffff', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    Incident ID
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ bgcolor: '#1a237e' }}>
+                  <Typography sx={{ color: '#ffffff', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    Date
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ bgcolor: '#1a237e' }}>
+                  <Typography sx={{ color: '#ffffff', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    Crime Type
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ bgcolor: '#1a237e' }}>
+                  <Typography sx={{ color: '#ffffff', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    Severity
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ bgcolor: '#1a237e' }}>
+                  <Typography sx={{ color: '#ffffff', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    Status
+                  </Typography>
+                </TableCell>
+                <TableCell align="right" sx={{ bgcolor: '#1a237e' }}>
+                  <Typography sx={{ color: '#ffffff', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    Actions
+                  </Typography>
+                </TableCell>
               </TableRow>
             </TableHead>
+            
+            {/* ✅ Table Body with Hover Effects */}
             <TableBody>
               <AnimatePresence>
                 {crimes.map((crime, index) => (
-                  <motion.tr key={crime._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }} style={{ display: 'table-row' }}>
+                  <motion.tr
+                    key={crime._id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    style={{ display: 'table-row' }}
+                    sx={{
+                      '&:hover': {
+                        bgcolor: alpha('#1a237e', 0.04),
+                      },
+                      '&:nth-of-type(even)': {
+                        bgcolor: '#fafafa',
+                      },
+                      '&:nth-of-type(even):hover': {
+                        bgcolor: alpha('#1a237e', 0.04),
+                      },
+                    }}
+                  >
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedIds.includes(crime._id)}
                         onChange={() => handleSelect(crime._id)}
-                        sx={{ color: '#1a237e' }}
+                        sx={{
+                          color: '#1a237e',
+                          '&.Mui-checked': { color: '#1a237e' },
+                        }}
                       />
                     </TableCell>
-                    <TableCell><Typography variant="body2" fontWeight={500}>{crime.firNumber}</Typography></TableCell>
-                    <TableCell>{crime.incidentId}</TableCell>
-                    <TableCell>{new Date(crime.date).toLocaleDateString()}</TableCell>
-                    <TableCell>{crime.crimeType?.name || 'Unknown'}</TableCell>
                     <TableCell>
-                      <Chip label={crime.severity} size="small" color={getSeverityColor(crime.severity)} />
+                      <Typography variant="body2" fontWeight={600} sx={{ color: '#1a237e' }}>
+                        {crime.firNumber}
+                      </Typography>
                     </TableCell>
                     <TableCell>
-                      <Chip label={crime.status} size="small" color={getStatusColor(crime.status)} variant="outlined" />
+                      <Typography variant="body2" color="textSecondary">
+                        {crime.incidentId}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {new Date(crime.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={crime.crimeType?.name || 'Unknown'}
+                        size="small"
+                        sx={{
+                          bgcolor: alpha('#1a237e', 0.08),
+                          color: '#1a237e',
+                          fontWeight: 500,
+                          fontSize: '0.7rem',
+                          '& .MuiChip-label': { px: 1.5 },
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={crime.severity}
+                        size="small"
+                        color={getSeverityColor(crime.severity)}
+                        sx={{
+                          fontWeight: 500,
+                          fontSize: '0.65rem',
+                          textTransform: 'capitalize',
+                          '& .MuiChip-label': { px: 1.5 },
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={crime.status?.replace('_', ' ')}
+                        size="small"
+                        color={getStatusColor(crime.status)}
+                        variant="outlined"
+                        sx={{
+                          fontWeight: 500,
+                          fontSize: '0.65rem',
+                          textTransform: 'capitalize',
+                          '& .MuiChip-label': { px: 1.5 },
+                        }}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      <Tooltip title="View">
-                        <IconButton size="small" onClick={() => { setSelectedCrime(crime); setOpenDetail(true) }}>
-                          <ViewIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Edit">
-                        <IconButton size="small" color="primary" onClick={() => { setSelectedCrime(crime); setOpenForm(true) }}>
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton size="small" color="error" onClick={() => handleDelete(crime._id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
+                        <Tooltip title="View Details">
+                          <IconButton
+                            size="small"
+                            onClick={() => { setSelectedCrime(crime); setOpenDetail(true) }}
+                            sx={{
+                              color: '#1a237e',
+                              bgcolor: alpha('#1a237e', 0.05),
+                              '&:hover': { bgcolor: alpha('#1a237e', 0.15) },
+                              width: 32,
+                              height: 32,
+                            }}
+                          >
+                            <ViewIcon sx={{ fontSize: 18 }} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Edit">
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => { setSelectedCrime(crime); setOpenForm(true) }}
+                            sx={{
+                              bgcolor: alpha('#1976d2', 0.05),
+                              '&:hover': { bgcolor: alpha('#1976d2', 0.15) },
+                              width: 32,
+                              height: 32,
+                            }}
+                          >
+                            <EditIcon sx={{ fontSize: 18 }} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => handleDelete(crime._id)}
+                            sx={{
+                              bgcolor: alpha('#d32f2f', 0.05),
+                              '&:hover': { bgcolor: alpha('#d32f2f', 0.15) },
+                              width: 32,
+                              height: 32,
+                            }}
+                          >
+                            <DeleteIcon sx={{ fontSize: 18 }} />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
                     </TableCell>
                   </motion.tr>
                 ))}
               </AnimatePresence>
               {crimes.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
-                    <Typography variant="body1" color="textSecondary">No crimes found</Typography>
-                    <Button variant="text" startIcon={<AddIcon />} onClick={() => setOpenForm(true)} sx={{ mt: 1 }}>
+                  <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
+                    <Typography variant="h6" color="textSecondary" gutterBottom>
+                      No crimes found
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                      Start by creating your first crime record
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      startIcon={<AddIcon />}
+                      onClick={() => setOpenForm(true)}
+                      sx={{ bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}
+                    >
                       Create First Crime Record
                     </Button>
                   </TableCell>
@@ -387,11 +635,28 @@ const Crimes = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        
+        {/* ✅ Professional Pagination */}
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 50]} component="div" count={total}
-          rowsPerPage={rowsPerPage} page={page}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          component="div"
+          count={total}
+          rowsPerPage={rowsPerPage}
+          page={page}
           onPageChange={(e, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); setSelectedIds([]) }}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10))
+            setPage(0)
+            setSelectedIds([])
+          }}
+          sx={{
+            borderTop: '1px solid #e8ecf1',
+            bgcolor: '#fafafa',
+            '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+              fontWeight: 500,
+              color: '#1a237e',
+            },
+          }}
         />
       </Paper>
 

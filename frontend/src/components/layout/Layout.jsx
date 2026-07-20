@@ -47,8 +47,8 @@ const Layout = () => {
             flexDirection: 'column',
             minHeight: '100vh',
             width: '100%',
-            ml: !isMobile && sidebarOpen ? '260px' : '0px',
-            transition: 'margin-left 0.25s ease-in-out',
+            ml: !isMobile && sidebarOpen ? '0px' : '0px',
+            transition: 'margin-left 0.3s ease-in-out',
             overflow: 'hidden',
             position: 'relative',
           }}
