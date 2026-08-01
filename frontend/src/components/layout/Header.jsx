@@ -12,6 +12,7 @@ import {
   Divider,
   Chip,
   useTheme,
+  Button,
 } from '@mui/material'
 import {
   Menu as MenuIcon,
@@ -19,10 +20,12 @@ import {
   Brightness4 as DarkModeIcon,
   Brightness7 as LightModeIcon,
   Logout as LogoutIcon,
+  Security as SecurityIcon,
 } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../../redux/slices/authSlice'
 import { useThemeContext } from '../../context/ThemeContext'
+import ScrbReportDialog from '../common/ScrbReportDialog'
 
 const Header = ({ onMenuClick }) => {
   const theme = useTheme()
@@ -31,6 +34,7 @@ const Header = ({ onMenuClick }) => {
   const { mode, toggleTheme } = useThemeContext()
   const [anchorEl, setAnchorEl] = useState(null)
   const [notifAnchorEl, setNotifAnchorEl] = useState(null)
+  const [openScrbReport, setOpenScrbReport] = useState(false)
 
   const handleProfileMenu = (event) => {
     setAnchorEl(event.currentTarget)
@@ -94,6 +98,24 @@ const Header = ({ onMenuClick }) => {
 
         {/* Right */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {/* SCRB Briefing Button */}
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<SecurityIcon />}
+            onClick={() => setOpenScrbReport(true)}
+            sx={{
+              bgcolor: '#1a237e',
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: '0.75rem',
+              display: { xs: 'none', md: 'flex' },
+              '&:hover': { bgcolor: '#283593' }
+            }}
+          >
+            SCRB Briefing
+          </Button>
+
           {/* Notifications */}
           <IconButton onClick={handleNotifications}>
             <Badge badgeContent={3} color="error">
@@ -207,6 +229,7 @@ const Header = ({ onMenuClick }) => {
           </Menu>
         </Box>
       </Toolbar>
+      <ScrbReportDialog open={openScrbReport} onClose={() => setOpenScrbReport(false)} />
     </AppBar>
   )
 }

@@ -21,4 +21,10 @@ export const dashboardAPI = {
   
   getTimeline: (params = {}) =>
     axios.get('/api/dashboard/timeline', { params }),
+
+  getPredictions: (params = {}) =>
+    axios.get('/api/dashboard/predictions', { params }),
+
+  getAnomalies: (params = {}) =>
+    axios.get('/api/dashboard/anomalies', { params }),
 }

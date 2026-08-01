@@ -138,6 +138,32 @@ class DashboardController {
       return ResponseHandler.error(res, error, 'Failed to fetch timeline');
     }
   }
+
+  /**
+   * Get predictive risk scores
+   */
+  static async getPredictions(req, res) {
+    try {
+      const predictions = await DashboardService.getPredictions(req.query);
+      return ResponseHandler.success(res, predictions, 'Predictions fetched successfully');
+    } catch (error) {
+      logger.error('Get predictions error:', error);
+      return ResponseHandler.error(res, error, 'Failed to fetch predictions');
+    }
+  }
+
+  /**
+   * Get anomaly alerts
+   */
+  static async getAnomalies(req, res) {
+    try {
+      const anomalies = await DashboardService.getAnomalies(req.query);
+      return ResponseHandler.success(res, anomalies, 'Anomalies fetched successfully');
+    } catch (error) {
+      logger.error('Get anomalies error:', error);
+      return ResponseHandler.error(res, error, 'Failed to fetch anomalies');
+    }
+  }
 }
 
 module.exports = DashboardController;

@@ -1,0 +1,13 @@
+relationshipId,sourceEntityId,sourceLabel,sourceType,targetEntityId,targetLabel,targetType,relationshipType,strengthScore,crossJurisdiction,notes
+REL202601,SUS202601,Amit Singh (Chota Imran),suspect,SUS202602,Vikram Reddy (Don),suspect,co_offender,0.95,true,Joint heist planning across Mysuru and Bengaluru
+REL202602,SUS202601,Amit Singh (Chota Imran),suspect,FIR2026101,FIR2026101 (Armed Robbery),crime,suspect_in,0.90,true,Primary suspect identified from CCTV footage
+REL202603,SUS202602,Vikram Reddy (Don),suspect,FIR2026101,FIR2026101 (Armed Robbery),crime,suspect_in,0.88,true,Fencer & getaway route provider
+REL202604,SUS202604,Kiran Raj (Bullet),suspect,SUS202601,Amit Singh (Chota Imran),suspect,co_offender,0.92,true,Supplies weapons & stolen getaway vehicles
+REL202605,SUS202604,Kiran Raj (Bullet),suspect,FIR2026104,FIR2026104 (Highway Robbery),crime,suspect_in,0.94,false,Leader of NH-48 highway robbery gang
+REL202606,SUS202606,Cyber Syndicate Alpha,suspect,FIR2026103,FIR2026103 (Cyber Phishing),crime,suspect_in,0.85,true,Operates remote call center phishing ring
+REL202607,SUS202606,Cyber Syndicate Alpha,suspect,FIR2026107,FIR2026107 (ATM Tampering),crime,suspect_in,0.89,true,Installed illegal skimmer devices across ATMs
+REL202608,SUS202603,Suresh Kumar (Kallu),suspect,FIR2026102,FIR2026102 (Burglary),crime,suspect_in,0.80,false,Matched iron grill bending MO signature
+REL202609,MO_CUTTER,Night Shutter Cutting,mo,FIR2026101,FIR2026101 (Armed Robbery),crime,mo_used_in,0.90,true,Hydraulic cutter tool signature
+REL202610,MO_SKIMMER,ATM Hardware Skimming,mo,FIR2026107,FIR2026107 (ATM Tampering),crime,mo_used_in,0.95,true,Bluetooth skimmer module signature
+REL202611,LOC_MGROAD,MG Road Commercial Hub,location,FIR2026101,FIR2026101 (Armed Robbery),crime,occurred_at,1.00,false,High density commercial district
+REL202612,LOC_NH48,NH-48 Highway Toll,location,FIR2026104,FIR2026104 (Highway Robbery),crime,occurred_at,1.00,false,Diurnal dark stretch between 01:00-04:00 AM

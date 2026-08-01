@@ -31,6 +31,9 @@ export const crimeAPI = {
   bulkUpload: (data) =>
     axios.post('/api/crimes/bulk', data),     
   
+  matchMO: (query) =>
+    axios.post('/api/crimes/match-mo', { query }),
+
   export: (params = {}) =>
     axios.get('/api/crimes/export', { params, responseType: 'blob' }),
 }

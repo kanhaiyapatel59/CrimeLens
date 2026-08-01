@@ -33,6 +33,23 @@ const Crimes = () => {
   const [openBulk, setOpenBulk] = useState(false)
   const [openBulkDeleteDialog, setOpenBulkDeleteDialog] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [openMoMatcher, setOpenMoMatcher] = useState(false)
+  const [moQuery, setMoQuery] = useState('')
+  const [moResults, setMoResults] = useState(null)
+  const [moLoading, setMoLoading] = useState(false)
+
+  const handleMatchMo = async () => {
+    if (!moQuery.trim()) return
+    setMoLoading(true)
+    try {
+      const res = await crimeAPI.matchMO(moQuery)
+      setMoResults(res?.data?.data || res?.data || null)
+    } catch (err) {
+      toast.error('Failed to match MO pattern')
+    } finally {
+      setMoLoading(false)
+    }
+  }
 
   const cleanFilters = () => {
     const clean = {}
@@ -222,6 +239,14 @@ const Crimes = () => {
             }}
           >
             Filter {hasActiveFilters && `(${Object.values(filters).filter(v => v && v !== '' && v !== 'all').length})`}
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => setOpenMoMatcher(true)}
+            sx={{ bgcolor: '#e91e63', '&:hover': { bgcolor: '#c2185b' }, fontWeight: 600 }}
+          >
+            MO Pattern Matcher
           </Button>
           <Button variant="outlined" startIcon={<UploadIcon />} onClick={() => setOpenBulk(true)}>Bulk Upload</Button>
           <Button variant="outlined" startIcon={<DownloadIcon />} onClick={handleExport}>Export</Button>
@@ -696,7 +721,7 @@ const Crimes = () => {
           px: 3,
           py: 2,
         }}>
-          <Typography variant="h6" fontWeight={600}>
+          <Typography component="div" variant="h6" fontWeight={600}>
             {selectedCrime ? 'Edit Crime' : 'New Crime'}
           </Typography>
           <IconButton onClick={() => setOpenForm(false)} size="small">
@@ -755,7 +780,7 @@ const Crimes = () => {
           px: 3,
           py: 2,
         }}>
-          <Typography variant="h6" fontWeight={600}>
+          <Typography component="div" variant="h6" fontWeight={600}>
             Crime Details
           </Typography>
           <IconButton onClick={() => setOpenDetail(false)} size="small">
@@ -803,7 +828,7 @@ const Crimes = () => {
           px: 3,
           py: 2,
         }}>
-          <Typography variant="h6" fontWeight={600}>
+          <Typography component="div" variant="h6" fontWeight={600}>
             Bulk Upload
           </Typography>
           <IconButton onClick={() => setOpenBulk(false)} size="small">
@@ -852,7 +877,7 @@ const Crimes = () => {
           px: 3,
           py: 2,
         }}>
-          <Typography variant="h6" fontWeight={600} sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'error.main' }}>
+          <Typography component="div" variant="h6" fontWeight={600} sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'error.main' }}>
             <DeleteSweepIcon /> Delete Confirmation
           </Typography>
         </DialogTitle>
@@ -887,6 +912,95 @@ const Crimes = () => {
           >
             {bulkDeleteMutation.isLoading ? 'Deleting...' : `Delete ${selectedIds.length}`}
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* ✅ Modus Operandi (MO) Pattern Matcher Dialog */}
+      <Dialog
+        open={openMoMatcher}
+        onClose={() => setOpenMoMatcher(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6" component="span" fontWeight={700} sx={{ color: '#1a237e' }}>
+            Modus Operandi (MO) Pattern Matcher
+          </Typography>
+          <IconButton onClick={() => setOpenMoMatcher(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: 3 }}>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+            Enter crime tactics, entry methods, or weapon details (e.g. <em>"night lock break two-wheeler helmet"</em>) to search historical FIR records and suspect leads.
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="Search Modus Operandi tactics or description keywords..."
+              value={moQuery}
+              onChange={(e) => setMoQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleMatchMo()}
+            />
+            <Button
+              variant="contained"
+              onClick={handleMatchMo}
+              disabled={moLoading}
+              sx={{ bgcolor: '#1a237e', minWidth: 120 }}
+            >
+              {moLoading ? <CircularProgress size={20} /> : 'Match MO'}
+            </Button>
+          </Box>
+
+          {moResults && (
+            <Box>
+              <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
+                Matched FIR Incidents ({moResults.count || 0})
+              </Typography>
+              {moResults.matches && moResults.matches.length > 0 ? (
+                moResults.matches.map((m, i) => (
+                  <Paper key={i} elevation={1} sx={{ p: 2, mb: 1.5, borderRadius: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                      <Typography variant="subtitle2" fontWeight={700} color="primary">{m.firNumber}</Typography>
+                      <Chip label={m.crimeType?.name || 'Incident'} size="small" />
+                    </Box>
+                    <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mb: 1 }}>
+                      {m.description}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: '#555' }}>
+                      📍 Location: {m.location?.address?.district?.name || 'Karnataka District'} • Date: {new Date(m.date).toLocaleDateString()}
+                    </Typography>
+                  </Paper>
+                ))
+              ) : (
+                <Typography variant="body2" color="textSecondary">No matching FIR records found.</Typography>
+              )}
+
+              {moResults.leads && moResults.leads.length > 0 && (
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle2" fontWeight={700} color="error.main" sx={{ mb: 1 }}>
+                    Suspect Leads Generated ({moResults.leads.length})
+                  </Typography>
+                  {moResults.leads.map((lead, idx) => (
+                    <Paper key={idx} sx={{ p: 1.5, mb: 1, borderRadius: 2, bgcolor: 'rgba(233,30,99,0.05)', border: '1px solid rgba(233,30,99,0.2)' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="body2" fontWeight={700}>{lead.name}</Typography>
+                        <Chip label={`${lead.similarityScore}% Match`} color="error" size="small" />
+                      </Box>
+                      <Typography variant="caption" color="textSecondary">
+                        Matched FIR: {lead.matchedFIR} • Offence Type: {lead.crimeType}
+                      </Typography>
+                    </Paper>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setOpenMoMatcher(false)}>Close</Button>
         </DialogActions>
       </Dialog>
     </Box>

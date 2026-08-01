@@ -5,7 +5,7 @@ const MAX_RETRIES = 5;
 const RETRY_INTERVAL = 5000;
 
 const connectDatabase = async (retryCount = 0) => {
-  const mongoURI = process.env.MONGODB_URI || 
+  const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI || 
     `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}?authSource=admin`;
 
   const options = {

@@ -1,0 +1,6 @@
+firNumber,incidentId,crimeType,date,time,description,severity,status,latitude,longitude,district,policeStation
+FIR2026C01,INCC001,Maritime Smuggling,2026-01-24,03:20,Contraband seizure near New Mangalore Port quay,critical,investigating,12.9231,74.8118,Mangaluru,Panambur PS
+FIR2026C02,INCC002,Chain Snatching,2026-01-25,17:50,Gold chain snatching near Kadri Park Avenue,medium,reported,12.8875,74.8560,Mangaluru,Kadri PS
+FIR2026C03,INCC003,Commercial Theft,2026-01-26,02:10,Timber yard warehouse break-in at Urwa,high,reported,12.8950,74.8320,Mangaluru,Urwa PS
+FIR2026C04,INCC004,Extortion,2026-01-27,16:00,Threat call to coastal fish processing unit owner,critical,investigating,12.8610,74.8410,Mangaluru,Pandeshwar PS
+FIR2026C05,INCC005,Drug Possession,2026-01-28,21:40,Inter-state Ganja transport intercept at Surathkal,medium,arrested,12.9810,74.7950,Mangaluru,Surathkal PS

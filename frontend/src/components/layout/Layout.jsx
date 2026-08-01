@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import Footer from './Footer'
+import GlobalAiCopilot from '../common/GlobalAiCopilot'
 
 const Layout = () => {
   const theme = useTheme()
@@ -107,6 +108,8 @@ const Layout = () => {
           {!isAIChat && <Footer />}
         </Box>
       </Box>
+      {/* Global Floating AI Copilot Assistant */}
+      <GlobalAiCopilot />
     </Box>
   )
 }

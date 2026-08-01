@@ -95,6 +95,17 @@ router.get(
 );
 
 /**
+ * @route POST /api/crimes/match-mo
+ * @desc Match crime incident by Modus Operandi (MO) pattern
+ * @access Private
+ */
+router.post(
+  '/match-mo',
+  AuthMiddleware.authenticate,
+  CrimeController.matchMO
+);
+
+/**
  * @route POST /api/crimes/bulk
  * @desc Bulk upload crimes
  * @access Private (Admin only)

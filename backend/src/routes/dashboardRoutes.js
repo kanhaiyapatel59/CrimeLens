@@ -110,4 +110,26 @@ router.get(
   DashboardController.getTimeline
 );
 
+/**
+ * @route GET /api/dashboard/predictions
+ * @desc Get 7-day predictive risk scores per district
+ * @access Private
+ */
+router.get(
+  '/predictions',
+  AuthMiddleware.authenticate,
+  DashboardController.getPredictions
+);
+
+/**
+ * @route GET /api/dashboard/anomalies
+ * @desc Get statistical anomaly call-outs
+ * @access Private
+ */
+router.get(
+  '/anomalies',
+  AuthMiddleware.authenticate,
+  DashboardController.getAnomalies
+);
+
 module.exports = router;

@@ -1,0 +1,11 @@
+suspectId,firstName,lastName,aliasName,gender,age,primaryDistrict,policeStation,status,riskScore,crossJurisdiction,linkedFIRs,moTactics
+SUS202601,Amit,Singh,Chota Imran,male,34,Bengaluru Urban,MG Road PS,Active,95,true,FIR2026101|FIR2026110,Night cutter lock breaking; Diurnal getaway biker
+SUS202602,Vikram,Reddy,Don,male,38,Mysuru City,Gokulam PS,Wanted,94,true,FIR2026101|FIR2026108,Extortion call intimidation; Cross-district hideout
+SUS202603,Suresh,Kumar,Kallu,male,29,Mysuru City,Devaraja PS,Under Surveillance,78,false,FIR2026102,Residential rear-window iron grill bending
+SUS202604,Kiran,Raj,Bullet,male,31,Hubballi-Dharwad,Vidyanagar PS,Active,89,true,FIR2026104|FIR2026110,Highway truck blocking; Heavy blunt weapon assault
+SUS202605,Sanjay,Singh,Chota,male,27,Belagavi,Tilakwadi PS,Arrested,72,false,FIR2026106,Industrial warehouse shutter lifting
+SUS202606,Cyber,Syndicate,Alpha,male,35,Bengaluru Urban,Cyber Crime PS,Active,88,true,FIR2026103|FIR2026107,Phishing OTP spoofing & ATM hardware skimming
+SUS202607,Ramesh,Patil,Ranga,male,36,Hubballi-Dharwad,Gokul Road PS,Wanted,84,true,FIR2026104,Highway cargo looting; Fake police uniform impersonation
+SUS202608,Prakash,Rao,Pandu,male,32,Bengaluru Urban,Jayanagar PS,Active,68,false,FIR2026110,Local gang enforcement & extortion collection
+SUS202609,Mohan,Kumar,Moni,male,28,Mangaluru,Kadri PS,Under Surveillance,61,false,FIR2026105,Two-wheeler chain snatching in quiet avenues
+SUS202610,Santosh,Shetty,Anna,male,42,Mangaluru,Urwa PS,Wanted,91,true,FIR2026101|FIR2026108,Sea-coast smuggling & illegal arms trade

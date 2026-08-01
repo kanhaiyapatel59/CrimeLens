@@ -6,7 +6,8 @@ const Role = require('./src/models/Role');
 
 async function createAdmin() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/crimelens');
+    const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/crimelens';
+    await mongoose.connect(mongoURI);
     console.log('Connected to MongoDB');
 
     // Get admin role

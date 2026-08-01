@@ -12,5 +12,6 @@ router.get('/statistics',      AuthMiddleware.authenticate, NetworkController.ge
 router.get('/centrality/:id',  AuthMiddleware.authenticate, NetworkController.getCentrality);
 router.get('/suspect/:id',     AuthMiddleware.authenticate, NetworkController.getSuspectNetwork);
 router.get('/crime/:id',       AuthMiddleware.authenticate, NetworkController.getCrimeNetwork);
+router.get('/repeat-offenders', AuthMiddleware.authenticate, NetworkController.getRepeatOffenders);
 
 module.exports = router;

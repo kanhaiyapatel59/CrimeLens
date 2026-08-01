@@ -1,0 +1,6 @@
+firNumber,incidentId,crimeType,date,time,description,severity,status,latitude,longitude,district,policeStation
+FIR2026H01,INCH001,Highway Robbery,2026-01-29,01:45,Truck driver assault and cargo looting on NH-48 toll,critical,investigating,15.3647,75.1240,Hubballi-Dharwad,Vidyanagar PS
+FIR2026H02,INCH002,Vehicle Hijacking,2026-01-30,03:10,Commercial container truck stolen near Gokul Road,high,reported,15.3500,75.1050,Hubballi-Dharwad,Gokul Road PS
+FIR2026H03,INCH003,Commercial Theft,2026-01-31,23:40,Cotton mill godown door breaking at Unkal,medium,resolved,15.3780,75.1400,Hubballi-Dharwad,Navanagar PS
+FIR2026H04,INCH004,Cyber Phishing,2026-02-01,12:10,Agriculture subsidy online portal login credential theft,medium,under_review,15.4589,75.0078,Hubballi-Dharwad,Dharwad Town PS
+FIR2026H05,INCH005,Armed Assault,2026-02-02,22:00,Highway roadside hotel violent clash between drivers,high,arrested,15.3410,75.1120,Hubballi-Dharwad,Vidyanagar PS

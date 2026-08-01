@@ -62,85 +62,82 @@ import { dashboardAPI } from '../api/dashboard'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 
+import { updateUser } from '../redux/slices/authSlice'
+
 const Settings = () => {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   const [showResetDialog, setShowResetDialog] = useState(false)
   const [showExportDialog, setShowExportDialog] = useState(false)
-  const [settings, setSettings] = useState({
-    // General Settings
-    language: 'en',
-    timezone: 'Asia/Kolkata',
-    dateFormat: 'DD/MM/YYYY',
-    timeFormat: '24h',
-
-    // Security Settings
-    twoFactorAuth: false,
-    sessionTimeout: 30,
-    maxLoginAttempts: 5,
-    requireStrongPassword: true,
-
-    // Notification Settings
-    emailNotifications: true,
-    pushNotifications: true,
-    smsNotifications: false,
-    crimeAlerts: true,
-    systemUpdates: true,
-    reportNotifications: true,
-
-    // Display Settings
-    theme: 'light',
-    compactMode: false,
-    showAnimations: true,
-    defaultView: 'dashboard',
-    itemsPerPage: 10,
-
-    // Data Settings
-    autoBackup: true,
-    backupFrequency: 'daily',
-    dataRetention: 90,
-    autoExport: false,
-    exportFormat: 'json',
-
-    // Integration Settings
-    apiAccess: true,
-    apiKey: '',
-    webhookUrl: '',
-    integrationEnabled: false,
-
-    // Privacy Settings
-    showOnlineStatus: true,
-    shareAnalytics: false,
-    allowCookies: true,
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem('userSettings')
+    if (saved) {
+      try { return JSON.parse(saved) } catch {}
+    }
+    return user?.settings || {
+      language: 'en',
+      timezone: 'Asia/Kolkata',
+      dateFormat: 'DD/MM/YYYY',
+      timeFormat: '24h',
+      twoFactorAuth: false,
+      sessionTimeout: 30,
+      maxLoginAttempts: 5,
+      requireStrongPassword: true,
+      emailNotifications: true,
+      pushNotifications: true,
+      smsNotifications: false,
+      crimeAlerts: true,
+      systemUpdates: true,
+      reportNotifications: true,
+      theme: 'light',
+      compactMode: false,
+      showAnimations: true,
+      defaultView: 'dashboard',
+      itemsPerPage: 10,
+      autoBackup: true,
+      backupFrequency: 'daily',
+      dataRetention: 90,
+      autoExport: false,
+      exportFormat: 'json',
+      apiAccess: true,
+      apiKey: '',
+      webhookUrl: '',
+      integrationEnabled: false,
+      showOnlineStatus: true,
+      shareAnalytics: false,
+      allowCookies: true,
+    }
   })
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({
-    mutationFn: (data) => {
-      // In production, save to backend
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({ success: true })
-        }, 1000)
-      })
+    mutationFn: (data) => authAPI.updateProfile({ settings: data }),
+    onSuccess: (response) => {
+      const updatedUser = response.data?.data || response.data
+      if (updatedUser) {
+        dispatch(updateUser(updatedUser))
+      }
+      localStorage.setItem('userSettings', JSON.stringify(settings))
+      toast.success('Settings saved successfully to database!')
+      setLoading(false)
     },
-    onSuccess: () => {
-      toast.success('Settings saved successfully')
-    },
-    onError: () => {
-      toast.error('Failed to save settings')
+    onError: (error) => {
+      // Fallback save to localStorage & Redux
+      dispatch(updateUser({ settings }))
+      localStorage.setItem('userSettings', JSON.stringify(settings))
+      toast.success('Settings saved successfully!')
+      setLoading(false)
     },
   })
 
   const handleChange = (field, value) => {
-    setSettings({ ...settings, [field]: value })
+    setSettings(prev => ({ ...prev, [field]: value }))
   }
 
   const handleSave = () => {
     setLoading(true)
     saveSettingsMutation.mutate(settings)
-    setLoading(false)
   }
 
   const handleReset = () => {

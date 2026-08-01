@@ -182,6 +182,19 @@ class NetworkController {
       return ResponseHandler.error(res, error, 'Failed to fetch network statistics');
     }
   }
+
+  /**
+   * Get repeat offenders
+   */
+  static async getRepeatOffenders(req, res) {
+    try {
+      const offenders = await NetworkService.getRepeatOffenders();
+      return ResponseHandler.success(res, offenders, 'Repeat offenders fetched successfully');
+    } catch (error) {
+      logger.error('Get repeat offenders error:', error);
+      return ResponseHandler.error(res, error, 'Failed to fetch repeat offenders');
+    }
+  }
 }
 
 module.exports = NetworkController;

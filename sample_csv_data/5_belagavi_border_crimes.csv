@@ -1,0 +1,6 @@
+firNumber,incidentId,crimeType,date,time,description,severity,status,latitude,longitude,district,policeStation
+FIR2026K01,INCK001,Industrial Warehouse Theft,2026-02-03,02:30,Copper coils stolen from Tilakwadi Industrial Estate,high,resolved,15.8497,74.5089,Belagavi,Tilakwadi PS
+FIR2026K02,INCK002,Inter-State Arms Trafficking,2026-02-04,04:15,Unlicensed country pistol haul seized at border checkpost,critical,investigating,15.8600,74.5200,Belagavi,Khade Bazar PS
+FIR2026K03,INCK003,Residential Burglary,2026-02-05,03:00,Gold jewelry stolen in Camp Area residential layout,medium,reported,15.8520,74.5150,Belagavi,Camp PS
+FIR2026K04,INCK004,Liquor Smuggling,2026-02-06,23:20,Non-duty paid liquor consignment intercepted in van,medium,arrested,15.8700,74.4980,Belagavi,Shahapur PS
+FIR2026K05,INCK005,Vehicle Theft,2026-02-07,18:45,Tractor stolen from sugarcane market yard,medium,reported,15.8410,74.5310,Belagavi,Tilakwadi PS

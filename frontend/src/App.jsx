@@ -26,10 +26,11 @@ import Settings from './pages/Settings'
 
 // Components
 import PrivateRoute from './components/common/PrivateRoute'
+import PublicRoute from './components/common/PublicRoute'
 
 // Context
 import { AuthProvider } from './context/AuthContext'
-import { ThemeProvider } from './context/ThemeContext'  // ✅ ADD THIS
+import { ThemeProvider } from './context/ThemeContext'
 
 function App() {
   return (
@@ -63,13 +64,15 @@ function App() {
           
           <AnimatePresence mode="wait">
             <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
+              {/* Public Routes (Redirect logged in users to /dashboard) */}
+              <Route element={<PublicRoute />}>
+                <Route path="/" element={<Landing />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+              </Route>
               
               {/* Protected Routes */}
               <Route element={<PrivateRoute />}>

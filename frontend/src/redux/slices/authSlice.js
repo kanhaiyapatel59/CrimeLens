@@ -108,6 +108,10 @@ const authSlice = createSlice({
         console.log('[auth-debug] No session to restore')
       }
     },
+    updateUser: (state, action) => {
+      state.user = { ...state.user, ...action.payload }
+      localStorage.setItem('user', JSON.stringify(state.user))
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -154,5 +158,5 @@ const authSlice = createSlice({
   },
 })
 
-export const { clearError, restoreSession } = authSlice.actions
+export const { clearError, restoreSession, updateUser } = authSlice.actions
 export default authSlice.reducer

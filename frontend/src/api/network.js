@@ -27,4 +27,7 @@ export const networkAPI = {
   
   getStats: () =>
     axios.get('/api/network/statistics'),
+
+  getRepeatOffenders: () =>
+    axios.get('/api/network/repeat-offenders'),
 }

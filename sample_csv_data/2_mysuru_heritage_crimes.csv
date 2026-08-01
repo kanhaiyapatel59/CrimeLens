@@ -1,0 +1,7 @@
+firNumber,incidentId,crimeType,date,time,description,severity,status,latitude,longitude,district,policeStation
+FIR2026M01,INCM001,Antique Theft,2026-01-18,01:30,Heritage artifact theft near Devaraja Market Colony,high,investigating,12.3052,76.6552,Mysuru City,Devaraja PS
+FIR2026M02,INCM002,Extortion,2026-01-19,15:45,Anonymous protection money demand to hotelier in Gokulam,critical,reported,12.3245,76.6210,Mysuru City,Vontikoppal PS
+FIR2026M03,INCM003,Residential Burglary,2026-01-20,02:50,Unoccupied house burglary in Saraswathipuram,medium,reported,12.3011,76.6348,Mysuru City,Saraswathipuram PS
+FIR2026M04,INCM004,Vehicle Theft,2026-01-21,22:15,Motorcycle theft near Chamundi Hill steps,low,resolved,12.2741,76.6710,Mysuru City,KR Puram PS
+FIR2026M05,INCM005,Armed Assault,2026-01-22,23:30,Brawl and blade attack outside commercial theater,high,arrested,12.3100,76.6500,Mysuru City,Lashkar PS
+FIR2026M06,INCM006,Cyber Fraud,2026-01-23,10:15,Fake tour package online payment scam,medium,under_review,12.3080,76.6450,Mysuru City,Devaraja PS

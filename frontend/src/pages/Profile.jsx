@@ -41,6 +41,7 @@ import {
   Lock as LockIcon,
 } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
+import { updateUser } from '../redux/slices/authSlice'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { authAPI } from '../api/auth'
 import toast from 'react-hot-toast'
@@ -101,6 +102,10 @@ const Profile = () => {
   const updateProfileMutation = useMutation({
     mutationFn: (data) => authAPI.updateProfile(data),
     onSuccess: (response) => {
+      const updatedUser = response.data?.data || response.data
+      if (updatedUser) {
+        dispatch(updateUser(updatedUser))
+      }
       toast.success('Profile updated successfully')
       setEditMode(false)
       queryClient.invalidateQueries(['profile'])

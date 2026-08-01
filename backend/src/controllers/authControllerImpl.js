@@ -77,8 +77,35 @@ const AuthController = {
   },
 
   updateProfile: async (req, res) => {
-    // Not implemented in current service; keep stub to prevent server crash if wired.
-    return ResponseHandler.badRequest(res, 'Not implemented');
+    try {
+      const userId = req.userId;
+      const updates = { ...req.body };
+      const User = require('../models/User');
+
+      // Remove sensitive fields
+      delete updates.password;
+      delete updates.role;
+      delete updates.email;
+      delete updates.policeId;
+      delete updates.verificationStatus;
+
+      const user = await User.findByIdAndUpdate(
+        userId,
+        updates,
+        { new: true, runValidators: true }
+      ).populate('role');
+
+      if (!user) {
+        return ResponseHandler.notFound(res, 'User not found');
+      }
+
+      const userObject = user.toObject();
+      delete userObject.password;
+
+      return ResponseHandler.success(res, userObject, 'Profile updated successfully');
+    } catch (err) {
+      return ResponseHandler.error(res, err, err.message || 'Failed to update profile', 400);
+    }
   },
 
   getUserLogs: async (req, res) => {

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Grid, Paper, Typography, Box, CircularProgress, Chip, Avatar, useTheme, alpha, Alert,
+  Grid, Paper, Typography, Box, CircularProgress, Chip, Avatar, useTheme, alpha, Alert, Button, IconButton,
 } from '@mui/material'
 import {
   TrendingUp, Warning, CheckCircle, AccessTime, Refresh as RefreshIcon,
-  TrendingDown, ArrowUpward, ArrowDownward,
+  TrendingDown, ArrowUpward, ArrowDownward, Security as SecurityIcon,
 } from '@mui/icons-material'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { IconButton } from '@mui/material'
 import { dashboardAPI } from '../api/dashboard'
 import { crimeAPI } from '../api/crimes'
 import { correlationAPI } from '../api/correlation'
@@ -17,6 +16,7 @@ import LineChart from '../components/charts/LineChart'
 import PieChart from '../components/charts/PieChart'
 import CrimeMap from '../components/maps/CrimeMap'
 import CorrelationChart from '../components/charts/CorrelationChart'
+import ScrbReportDialog from '../components/common/ScrbReportDialog'
 import { motion } from 'framer-motion'
 
 const Dashboard = () => {
@@ -24,6 +24,7 @@ const Dashboard = () => {
   const queryClient = useQueryClient()
   const [filters] = useState({ days: 30 })
   const [refreshing, setRefreshing] = useState(false)
+  const [openScrbReport, setOpenScrbReport] = useState(false)
 
   const { data: kpis, isLoading: kpisLoading, refetch: refetchKpis } = useQuery({
     queryKey: ['dashboard-kpis', filters],
@@ -56,6 +57,21 @@ const Dashboard = () => {
     queryFn: () => correlationAPI.getMatrix(),
     refetchOnWindowFocus: false,
   })
+
+  // Fetch predictive risk scores
+  const { data: predictionsData } = useQuery({
+    queryKey: ['predictions-risk'],
+    queryFn: () => dashboardAPI.getPredictions(),
+  })
+
+  // Fetch statistical anomalies
+  const { data: anomaliesData } = useQuery({
+    queryKey: ['anomalies-list'],
+    queryFn: () => dashboardAPI.getAnomalies(),
+  })
+
+  const predictionsList = predictionsData?.data?.data || predictionsData?.data || []
+  const anomaliesList = anomaliesData?.data?.data || anomaliesData?.data || []
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -126,6 +142,15 @@ const Dashboard = () => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', position: 'relative', zIndex: 1 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<SecurityIcon />}
+            onClick={() => setOpenScrbReport(true)}
+            sx={{ bgcolor: '#e91e63', '&:hover': { bgcolor: '#c2185b' }, fontWeight: 600 }}
+          >
+            SCRB Executive Report
+          </Button>
           <Chip 
             label={`Last updated: ${new Date().toLocaleTimeString()}`} 
             size="small" 
@@ -307,9 +332,6 @@ const Dashboard = () => {
                           {insight.title}
                         </Typography>
                       </Box>
-                      <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>
-                        {insight.description}
-                      </Typography>
                     </Paper>
                   </motion.div>
                 ))
@@ -326,6 +348,76 @@ const Dashboard = () => {
           </Alert>
         )}
       </Paper>
+
+      {/* ✅ AI Predictive Risk Scoring & Anomaly Call-outs */}
+      <Grid container spacing={3} sx={{ mt: 1 }}>
+        {/* 7-Day Predictive Risk Forecast */}
+        <Grid item xs={12} md={7}>
+          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Box>
+                <Typography variant="h6" fontWeight={600}>7-Day AI Predictive Risk Forecast</Typography>
+                <Typography variant="caption" color="textSecondary">Forecasted district risk ratings based on trend velocity & economic correlations</Typography>
+              </Box>
+              <Chip label="AI Forecast Engine" size="small" color="primary" sx={{ bgcolor: '#1a237e' }} />
+            </Box>
+
+            {predictionsList.slice(0, 5).map((pred, i) => (
+              <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.5, borderBottom: i < 4 ? '1px solid rgba(0,0,0,0.06)' : 'none' }}>
+                <Box sx={{ width: '35%' }}>
+                  <Typography variant="body2" fontWeight={600}>{pred.districtName}</Typography>
+                  <Typography variant="caption" color="textSecondary">{pred.primaryFactor}</Typography>
+                </Box>
+                <Box sx={{ width: '40%', px: 1 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                    <Typography variant="caption" color="textSecondary">Risk Rating</Typography>
+                    <Typography variant="caption" fontWeight={700} color={pred.riskScore >= 70 ? 'error.main' : pred.riskScore >= 40 ? 'warning.main' : 'success.main'}>
+                      {pred.riskScore} / 100
+                    </Typography>
+                  </Box>
+                  <Box sx={{ width: '100%', bgcolor: '#e0e0e0', borderRadius: 1, height: 6, overflow: 'hidden' }}>
+                    <Box sx={{ width: `${pred.riskScore}%`, bgcolor: pred.riskScore >= 70 ? '#e91e63' : pred.riskScore >= 40 ? '#ff9800' : '#4caf50', height: '100%' }} />
+                  </Box>
+                </Box>
+                <Box sx={{ textAlign: 'right', width: '25%' }}>
+                  <Chip
+                    label={`${pred.forecastTrend}`}
+                    size="small"
+                    color={pred.forecastTrend.startsWith('+') ? 'error' : 'success'}
+                    sx={{ height: 20, fontSize: '0.65rem' }}
+                  />
+                  <Typography variant="caption" sx={{ display: 'block', opacity: 0.7, fontSize: '0.65rem', mt: 0.2 }}>
+                    ~{pred.projectedIncidents7Days} incidents
+                  </Typography>
+                </Box>
+              </Box>
+            ))}
+          </Paper>
+        </Grid>
+
+        {/* Emerging Anomaly Call-outs */}
+        <Grid item xs={12} md={5}>
+          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" fontWeight={600}>Emerging Anomaly Call-outs</Typography>
+              <Chip label="Statistical Outliers" size="small" color="error" variant="outlined" />
+            </Box>
+
+            {anomaliesList.map((anom, i) => (
+              <Paper key={i} elevation={0} sx={{ p: 1.5, mb: 1.5, borderRadius: 2, bgcolor: 'rgba(233,30,99,0.04)', border: '1px solid rgba(233,30,99,0.15)' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                  <Chip label={anom.severity?.toUpperCase()} size="small" color={anom.severity === 'critical' ? 'error' : 'warning'} sx={{ height: 18, fontSize: '0.6rem' }} />
+                  <Typography variant="caption" fontWeight={600} color="error.main">{anom.confidenceScore}% Confidence</Typography>
+                </Box>
+                <Typography variant="subtitle2" fontWeight={600} sx={{ color: '#1a237e' }}>{anom.title}</Typography>
+                <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>
+                  <strong>📍 {anom.district}:</strong> {anom.description}
+                </Typography>
+              </Paper>
+            ))}
+          </Paper>
+        </Grid>
+      </Grid>
 
       {/* Recent Crimes */}
       <Paper sx={{ mt: 4, p: 3, borderRadius: 3 }}>
@@ -356,6 +448,9 @@ const Dashboard = () => {
           ))
         )}
       </Paper>
+
+      {/* SCRB Report Dialog */}
+      <ScrbReportDialog open={openScrbReport} onClose={() => setOpenScrbReport(false)} />
     </Box>
   )
 }

@@ -60,13 +60,36 @@ const BulkUpload = ({ onSuccess, onCancel }) => {
         const parsed = JSON.parse(text)
         crimes = Array.isArray(parsed) ? parsed : [parsed]
       } else if (file.name.endsWith('.csv')) {
-        const lines = text.split('\n').filter(line => line.trim())
+        const cleanText = text.replace(/\r/g, '')
+        const lines = cleanText.split('\n').filter(line => line.trim())
         if (lines.length < 2) throw new Error('CSV must have headers and at least one data row')
-        const headers = lines[0].split(',').map(h => h.trim())
+
+        const parseCSVLine = (str) => {
+          const arr = []
+          let quote = false
+          let col = ''
+          for (let i = 0; i < str.length; i++) {
+            const c = str[i]
+            if (c === '"') {
+              quote = !quote
+            } else if (c === ',' && !quote) {
+              arr.push(col.trim().replace(/^"+|"+$/g, ''))
+              col = ''
+            } else {
+              col += c
+            }
+          }
+          arr.push(col.trim().replace(/^"+|"+$/g, ''))
+          return arr
+        }
+
+        const headers = parseCSVLine(lines[0])
         crimes = lines.slice(1).map(line => {
-          const values = line.split(',').map(v => v.trim())
+          const values = parseCSVLine(line)
           const obj = {}
-          headers.forEach((header, i) => { obj[header] = values[i] || '' })
+          headers.forEach((header, i) => {
+            if (header) obj[header] = values[i] !== undefined ? values[i] : ''
+          })
           return obj
         })
       } else {

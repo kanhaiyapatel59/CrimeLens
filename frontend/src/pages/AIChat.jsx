@@ -1,31 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
-  Box,
-  Paper,
-  Typography,
-  TextField,
-  IconButton,
-  Avatar,
-  CircularProgress,
-  Chip,
-  Divider,
-  Button,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-  Menu,
-  MenuItem,
-  Fade,
-  Dialog,
-  DialogTitle,
-  DialogContent,
+  Box, Paper, Typography, TextField, IconButton, Avatar, CircularProgress, Grid,
+  Chip, Divider, Button, Drawer, List, ListItem, ListItemButton, ListItemIcon,
+  ListItemText, Tooltip, Menu, MenuItem, Fade, Dialog, DialogTitle, DialogContent,
   DialogActions,
-  LinearProgress,
-  Badge,
 } from '@mui/material'
 import {
   Send as SendIcon,
@@ -51,41 +29,45 @@ import {
   InsertDriveFile as FileIcon,
   PictureAsPdf as PdfIcon,
   Description as DocIcon,
+  AutoAwesome as SparklesIcon,
 } from '@mui/icons-material'
 import { useMutation } from '@tanstack/react-query'
 import { aiAPI } from '../api/ai'
-import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useDropzone } from 'react-dropzone'
 
-// ✅ File type icons
-const getFileIcon = (fileName) => {
-  const ext = fileName.split('.').pop()?.toLowerCase()
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return <ImageIcon />
-  if (['pdf'].includes(ext)) return <PdfIcon />
-  if (['doc', 'docx'].includes(ext)) return <DocIcon />
-  return <FileIcon />
-}
-
-// ✅ Format file size
-const formatFileSize = (bytes) => {
-  if (bytes < 1024) return bytes + ' B'
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-}
-
-// ✅ Suggested prompts
 const SUGGESTED_PROMPTS = [
-  { icon: <TrendingUpIcon />, label: 'Analyze crime patterns in Bengaluru' },
-  { icon: <LocationIcon />, label: 'Predict crime hotspots for next week' },
-  { icon: <PeopleIcon />, label: 'Analyze suspect network connections' },
-  { icon: <DescriptionIcon />, label: 'Generate monthly crime report' },
+  { icon: <TrendingUpIcon sx={{ color: '#10a37f' }} />, title: 'Analyze Crime Trends', subtitle: 'State-wide district forecasts & risk scores' },
+  { icon: <LocationIcon sx={{ color: '#ff9800' }} />, title: 'Predict Hotspots', subtitle: '7-day diurnal high-risk areas' },
+  { icon: <PeopleIcon sx={{ color: '#e91e63' }} />, title: 'Repeat Suspects', subtitle: 'Cross-jurisdiction offender profiling' },
+  { icon: <DescriptionIcon sx={{ color: '#9c27b0' }} />, title: 'Executive Report', subtitle: 'SCRB briefing & dispatch directives' },
 ]
 
+// ✅ Smart Chat Title Generator
+const generateSmartTitle = (chatMessages) => {
+  const userMessages = chatMessages.filter(m => m.type === 'user')
+  if (userMessages.length === 0) return 'New Chat'
+
+  const GREETINGS = ['hi', 'hii', 'hiii', 'hello', 'hey', 'namaste', 'good morning', 'good afternoon']
+
+  // Find first message that is NOT a simple greeting
+  const meaningfulMsg = userMessages.find(m => {
+    const text = (m.content || '').trim().toLowerCase()
+    return !GREETINGS.includes(text)
+  })
+
+  if (meaningfulMsg) {
+    const text = meaningfulMsg.content.trim()
+    return text.length > 28 ? text.substring(0, 28) + '...' : text
+  }
+
+  const firstText = userMessages[0].content.trim()
+  return firstText.length > 28 ? firstText.substring(0, 28) + '...' : firstText
+}
+
 const AIChat = () => {
-  // ✅ Load chats from localStorage
   const loadChatsFromStorage = () => {
     try {
       const saved = localStorage.getItem('aiChatHistory')
@@ -113,16 +95,11 @@ const AIChat = () => {
   })
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [selectedChatId, setSelectedChatId] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [attachedFiles, setAttachedFiles] = useState([])
-  const [uploading, setUploading] = useState(false)
   const [fileDialogOpen, setFileDialogOpen] = useState(false)
   const messagesEndRef = useRef(null)
-  const inputRef = useRef(null)
 
-  // ✅ File Dropzone
   const onDrop = useCallback((acceptedFiles) => {
     const newFiles = acceptedFiles.map(file => ({
       id: Date.now() + Math.random(),
@@ -131,48 +108,34 @@ const AIChat = () => {
       size: file.size,
       type: file.type,
       url: URL.createObjectURL(file),
-      progress: 0,
-      uploaded: false,
     }))
     setAttachedFiles(prev => [...prev, ...newFiles])
     setFileDialogOpen(false)
     toast.success(`${acceptedFiles.length} file(s) attached`)
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'],
+      'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
       'application/pdf': ['.pdf'],
-      'application/msword': ['.doc'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
       'text/plain': ['.txt'],
       'text/csv': ['.csv'],
-      'application/vnd.ms-excel': ['.xls'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
     },
     maxSize: 10485760,
-    multiple: true,
   })
 
-  // ✅ Remove attached file
-  const removeFile = (fileId) => {
-    setAttachedFiles(prev => prev.filter(f => f.id !== fileId))
-  }
-
-  // ✅ Save chat history
   useEffect(() => {
     localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory))
   }, [chatHistory])
 
-  // ✅ Save current chat
+  // ✅ Dynamically update Chat Title based on meaningful user question
   useEffect(() => {
     const hasUserMessages = messages.some(m => m.type === 'user')
     if (messages.length > 0 && hasUserMessages) {
       const chatId = currentChatId || Date.now()
-      const firstUserMsg = messages.find(m => m.type === 'user')
-      const title = firstUserMsg?.content?.substring(0, 30) || 'New Chat'
-      
+      const title = generateSmartTitle(messages)
+
       const chatData = {
         id: chatId,
         messages: messages,
@@ -181,11 +144,13 @@ const AIChat = () => {
         preview: messages[messages.length - 1]?.content?.substring(0, 50) || '',
       }
       localStorage.setItem('aiCurrentChat', JSON.stringify(chatData))
-      
+
       setChatHistory(prev => {
-        const existing = prev.find(c => c.id === chatId)
-        if (existing) {
-          return prev.map(c => c.id === chatId ? chatData : c)
+        const existingIndex = prev.findIndex(c => c.id === chatId)
+        if (existingIndex !== -1) {
+          const updated = [...prev]
+          updated[existingIndex] = chatData
+          return updated
         }
         return [chatData, ...prev]
       })
@@ -196,17 +161,12 @@ const AIChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
-
-  // ✅ AI Chat Mutation
   const chatMutation = useMutation({
     mutationFn: (data) => aiAPI.chat(data),
     onSuccess: (response) => {
-      const aiResponse = response.data?.data?.response || 
-        "I'm not sure how to respond to that. Could you rephrase your question? 🤔"
-      
+      const aiResponse = response.data?.data?.response || response.data?.response || 
+        "Hi! 👋 How can I assist you with your crime investigation or case analytics today?"
+
       setMessages(prev => [
         ...prev,
         {
@@ -224,59 +184,34 @@ const AIChat = () => {
     },
   })
 
-  // ✅ Handle logo click - Opens sidebar AND creates new chat
-  const handleLogoClick = () => {
-    // Clear chat (create new chat)
-    setMessages([])
-    setCurrentChatId(null)
-    setAttachedFiles([])
-    localStorage.removeItem('aiCurrentChat')
-    
-    // Open sidebar
-    setSidebarOpen(true)
-    
-    toast.success('New chat started')
-  }
-
-  const handleSend = async () => {
-    if ((!input.trim() && attachedFiles.length === 0) || loading) return
-
-    let messageContent = input.trim()
-    const fileList = attachedFiles.map(f => f.file)
+  const handleSend = async (customPrompt = null) => {
+    const messageToSend = customPrompt || input.trim()
+    if ((!messageToSend && attachedFiles.length === 0) || loading) return
 
     const userMessage = {
       id: Date.now(),
       type: 'user',
-      content: messageContent || '📎 Please analyze the attached files.',
+      content: messageToSend || '📎 Please analyze attached files.',
       timestamp: new Date().toISOString(),
-      attachments: attachedFiles.map(f => ({
-        name: f.name,
-        size: f.size,
-        type: f.type,
-      })),
+      attachments: attachedFiles.map(f => ({ name: f.name, size: f.size, type: f.type })),
     }
 
     setMessages(prev => [...prev, userMessage])
-    const currentInput = input
-    const currentFiles = [...fileList]
-    setInput('')
+    if (!customPrompt) setInput('')
     setAttachedFiles([])
     setLoading(true)
 
     if (!currentChatId) {
-      const newChatId = Date.now()
-      setCurrentChatId(newChatId)
+      setCurrentChatId(Date.now())
     }
 
     try {
       await chatMutation.mutateAsync({
-        message: currentInput || 'Please analyze the attached files.',
-        context: messages.slice(-3).map(m => `${m.type}: ${m.content}`).join('\n'),
-        history: messages.slice(-5).map(m => ({
+        message: messageToSend || 'Please analyze attached files.',
+        history: messages.slice(-6).map(m => ({
           role: m.type === 'user' ? 'user' : 'assistant',
           content: m.content,
         })),
-        files: currentFiles,
       })
     } catch (error) {
       console.error('Chat error:', error)
@@ -298,17 +233,10 @@ const AIChat = () => {
     toast.success('New chat started')
   }
 
-  const copyMessage = (content) => {
-    navigator.clipboard.writeText(content)
-    toast.success('Copied to clipboard!')
-  }
-
-  const handleDeleteChat = (chatId) => {
+  const handleDeleteChat = (chatId, e) => {
+    e.stopPropagation()
     setChatHistory(prev => prev.filter(chat => chat.id !== chatId))
-    if (currentChatId === chatId) {
-      clearChat()
-    }
-    setAnchorEl(null)
+    if (currentChatId === chatId) clearChat()
     toast.success('Chat deleted')
   }
 
@@ -318,404 +246,295 @@ const AIChat = () => {
       setMessages(existingChat.messages)
       setCurrentChatId(chat.id)
       localStorage.setItem('aiCurrentChat', JSON.stringify(existingChat))
-      toast.info(`Loaded: ${chat.title}`)
-    } else {
-      clearChat()
-      toast.info('Started new chat')
     }
-  }
-
-  const handleMenuOpen = (event, chatId) => {
-    setAnchorEl(event.currentTarget)
-    setSelectedChatId(chatId)
-  }
-
-  const handleMenuClose = () => setAnchorEl(null)
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
-
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp)
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  }
-
-  const getChatTitle = (chat) => {
-    if (chat.title && chat.title !== 'New Chat') {
-      return chat.title
-    }
-    const firstUserMsg = chat.messages?.find(m => m.type === 'user')
-    return firstUserMsg?.content?.substring(0, 25) || 'New Chat'
   }
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', bgcolor: '#f7f8fc', overflow: 'hidden' }}>
-      {/* ✅ Sidebar - ChatGPT Style */}
+    <Box sx={{ height: '100vh', display: 'flex', bgcolor: '#212121', color: '#ececec', overflow: 'hidden', fontFamily: 'Inter, sans-serif' }}>
+      {/* Sidebar - ChatGPT Style */}
       <Drawer
         variant="permanent"
         open={sidebarOpen}
         sx={{
           width: sidebarOpen ? 260 : 0,
           flexShrink: 0,
-          transition: 'width 0.3s ease',
           '& .MuiDrawer-paper': {
             width: sidebarOpen ? 260 : 0,
             boxSizing: 'border-box',
-            bgcolor: '#1a1a2e',
-            color: '#ffffff',
-            position: 'relative',
+            bgcolor: '#171717',
+            color: '#ececec',
             height: '100vh',
-            transition: 'width 0.3s ease',
-            overflowX: 'hidden',
-            border: 'none',
+            borderRight: '1px solid #2f2f2f',
             display: 'flex',
             flexDirection: 'column',
           },
         }}
       >
-        <Box sx={{ 
-          p: sidebarOpen ? 2 : 0, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          height: '100vh',
-          alignItems: sidebarOpen ? 'stretch' : 'center',
-          justifyContent: sidebarOpen ? 'flex-start' : 'center',
-        }}>
-          {/* ✅ Logo - Click opens sidebar + new chat */}
-          {!sidebarOpen ? (
-            // ✅ Small logo when sidebar is closed - Click to open new chat
-            <Tooltip title="New Chat" placement="right">
-              <Box
-                onClick={handleLogoClick}
-                sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #10a37f, #1a7f64)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(16, 163, 127, 0.4)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'scale(1.1)',
-                    boxShadow: '0 4px 20px rgba(16, 163, 127, 0.6)',
-                  },
-                }}
-              >
-                <AIIcon sx={{ color: '#fff', fontSize: 28 }} />
-              </Box>
-            </Tooltip>
-          ) : (
-            // ✅ Full logo when sidebar is open
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                mb: 3,
-                width: '100%',
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <Box
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #10a37f, #1a7f64)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    boxShadow: '0 2px 8px rgba(16, 163, 127, 0.3)',
-                  }}
-                >
-                  <AIIcon sx={{ color: '#fff', fontSize: 20 }} />
-                </Box>
-                <Typography variant="h6" fontWeight={700} sx={{ color: '#fff', letterSpacing: '-0.5px' }}>
-                  CrimeLens
-                </Typography>
-              </Box>
-              <IconButton onClick={toggleSidebar} size="small" sx={{ color: 'rgba(255,255,255,0.5)' }}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </Box>
-          )}
-
-          {/* ✅ New Chat Button - Only when open */}
-          {sidebarOpen && (
-            <Button
-              variant="contained"
-              fullWidth
-              startIcon={<AddIcon />}
-              onClick={clearChat}
-              sx={{
-                bgcolor: '#10a37f',
-                color: '#fff',
-                '&:hover': { bgcolor: '#0d8c6e' },
-                borderRadius: 2,
-                py: 1.5,
-                textTransform: 'none',
-                fontWeight: 600,
-                mb: 3,
-              }}
-            >
-              New Chat
-            </Button>
-          )}
-
-          {/* ✅ Chat History - Only when open */}
-          {sidebarOpen && (
-            <>
-              <Typography variant="caption" sx={{ px: 1, mb: 1, color: 'rgba(255,255,255,0.4)', fontWeight: 500 }}>
-                Recent Chats ({chatHistory.length})
+        <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* Logo & Header */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Avatar sx={{ bgcolor: '#10a37f', width: 32, height: 32 }}>
+                <AIIcon fontSize="small" sx={{ color: '#fff' }} />
+              </Avatar>
+              <Typography variant="h6" fontWeight={700} sx={{ color: '#fff', fontSize: '1.1rem' }}>
+                CrimeLens AI
               </Typography>
+            </Box>
+            <IconButton onClick={() => setSidebarOpen(false)} size="small" sx={{ color: '#8e8e8e' }}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Box>
 
-              <List sx={{ flex: 1, overflow: 'auto', px: 0 }}>
-                {chatHistory.length === 0 ? (
-                  <Box sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.3)' }}>No chats yet</Typography>
-                  </Box>
-                ) : (
-                  chatHistory.map((chat) => {
-                    const displayTitle = getChatTitle(chat)
-                    return (
-                      <ListItem key={chat.id} disablePadding sx={{ mb: 0.5, borderRadius: 1, bgcolor: currentChatId === chat.id ? 'rgba(16, 163, 127, 0.15)' : 'transparent', '&:hover': { bgcolor: 'rgba(255,255,255,0.05)' } }}>
-                        <ListItemButton onClick={() => handleOpenChat(chat)} sx={{ borderRadius: 1 }}>
-                          <ListItemIcon sx={{ minWidth: 32 }}>
-                            <HistoryIcon sx={{ fontSize: 16, color: 'rgba(255,255,255,0.4)' }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={<Typography variant="body2" noWrap sx={{ color: currentChatId === chat.id ? '#10a37f' : 'rgba(255,255,255,0.8)' }}>{displayTitle}</Typography>}
-                            secondary={<Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.3)' }} noWrap>{chat.preview || 'Empty chat'}</Typography>}
-                          />
-                        </ListItemButton>
-                        <IconButton size="small" onClick={(e) => handleMenuOpen(e, chat.id)} sx={{ color: 'rgba(255,255,255,0.3)' }}>
-                          <MoreVertIcon sx={{ fontSize: 16 }} />
-                        </IconButton>
-                      </ListItem>
-                    )
-                  })
-                )}
-              </List>
+          {/* New Chat Button */}
+          <Button
+            variant="outlined"
+            fullWidth
+            startIcon={<AddIcon />}
+            onClick={clearChat}
+            sx={{
+              borderColor: '#3e3e3e',
+              color: '#fff',
+              '&:hover': { bgcolor: '#212121', borderColor: '#666' },
+              borderRadius: 2,
+              py: 1.2,
+              textTransform: 'none',
+              fontWeight: 600,
+              mb: 2,
+              justifyContent: 'flex-start',
+              px: 2,
+            }}
+          >
+            New chat
+          </Button>
 
-              <Divider sx={{ borderColor: 'rgba(255,255,255,0.05)' }} />
-              <Box sx={{ pt: 2, textAlign: 'center' }}>
-                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.2)' }}>CrimeLens AI v2.0</Typography>
-              </Box>
-            </>
-          )}
+          {/* Chat History */}
+          <Typography variant="caption" sx={{ px: 1, mb: 1, color: '#8e8e8e', fontWeight: 600, fontSize: '0.7rem' }}>
+            Recent Conversations ({chatHistory.length})
+          </Typography>
+
+          <List sx={{ flex: 1, overflowY: 'auto', px: 0 }}>
+            {chatHistory.length === 0 ? (
+              <Typography variant="caption" color="textSecondary" sx={{ px: 1 }}>No chat history yet</Typography>
+            ) : (
+              chatHistory.map((chat) => (
+                <ListItem
+                  key={chat.id}
+                  disablePadding
+                  sx={{ mb: 0.5 }}
+                  secondaryAction={
+                    <IconButton size="small" onClick={(e) => handleDeleteChat(chat.id, e)} sx={{ color: '#666', '&:hover': { color: '#f44336' } }}>
+                      <DeleteIcon sx={{ fontSize: 16 }} />
+                    </IconButton>
+                  }
+                >
+                  <ListItemButton
+                    onClick={() => handleOpenChat(chat)}
+                    sx={{
+                      borderRadius: 2,
+                      bgcolor: currentChatId === chat.id ? '#2f2f2f' : 'transparent',
+                      '&:hover': { bgcolor: '#212121' },
+                      py: 1,
+                      px: 1.5,
+                    }}
+                  >
+                    <ListItemText
+                      primary={<Typography variant="body2" noWrap sx={{ color: currentChatId === chat.id ? '#10a37f' : '#ececec', fontWeight: 500, fontSize: '0.85rem' }}>{chat.title}</Typography>}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))
+            )}
+          </List>
+
+          <Divider sx={{ borderColor: '#2f2f2f', my: 1 }} />
+          <Typography variant="caption" sx={{ color: '#666', textAlign: 'center' }}>
+            CrimeLens Llama 3.3 70B • KSP AI
+          </Typography>
         </Box>
       </Drawer>
 
-      {/* ✅ Main Chat Area - Adjusts margin based on sidebar state */}
-      <Box sx={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        bgcolor: '#f7f8fc', 
-        height: '100vh', 
-        position: 'relative',
-        ml: sidebarOpen ? '260px' : '0px',
-        transition: 'margin-left 0.3s ease',
-        width: sidebarOpen ? 'calc(100% - 260px)' : '100%',
-      }}>
-        {/* Header */}
-        <Box sx={{ p: 2, px: 4, borderBottom: '1px solid #e8ecf1', display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: '#ffffff', flexShrink: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      {/* Main ChatGPT Chat Canvas */}
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#212121', height: '100vh', position: 'relative' }}>
+        {/* Top Header */}
+        <Box sx={{ p: 2, px: 3, borderBottom: '1px solid #2f2f2f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: '#212121' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             {!sidebarOpen && (
-              <IconButton onClick={toggleSidebar} size="small">
+              <IconButton onClick={() => setSidebarOpen(true)} size="small" sx={{ color: '#fff' }}>
                 <MenuIcon />
               </IconButton>
             )}
-            <Typography variant="h6" fontWeight={600} sx={{ color: '#1a1a2e' }}>CrimeLens AI</Typography>
-            <Chip label="Beta" size="small" sx={{ bgcolor: '#10a37f', color: '#fff', fontWeight: 600, fontSize: '0.6rem', height: 20 }} />
+            <Typography variant="h6" fontWeight={700} sx={{ color: '#fff', fontSize: '1rem' }}>
+              CrimeLens Assistant
+            </Typography>
+            <Chip label="GPT-4o Intelligence" size="small" sx={{ bgcolor: '#10a37f', color: '#fff', fontWeight: 600, fontSize: '0.65rem', height: 20 }} />
           </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Tooltip title="New Chat"><IconButton onClick={clearChat} size="small"><RefreshIcon fontSize="small" /></IconButton></Tooltip>
-          </Box>
+          <Tooltip title="New Chat">
+            <IconButton onClick={clearChat} sx={{ color: '#aaa' }}><RefreshIcon fontSize="small" /></IconButton>
+          </Tooltip>
         </Box>
 
-        {/* Messages */}
-        <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 2, md: 4 }, display: 'flex', flexDirection: 'column', bgcolor: '#f7f8fc', '&::-webkit-scrollbar': { width: 6 }, '&::-webkit-scrollbar-track': { background: 'transparent' }, '&::-webkit-scrollbar-thumb': { background: '#d0d0d0', borderRadius: 3 } }}>
-          
-          {messages.length === 0 && !loading && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, gap: 2 }}>
-              <Box sx={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg, #10a37f, #1a7f64)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <AIIcon sx={{ color: '#fff', fontSize: 32 }} />
-              </Box>
-              <Typography variant="h5" fontWeight={600} sx={{ color: '#1a1a2e' }}>How can I help you today?</Typography>
-              <Typography variant="body2" color="textSecondary" sx={{ textAlign: 'center', maxWidth: 400 }}>
-                Ask me about crime patterns, predictions, network analysis, or upload files for analysis.
+        {/* Message Container */}
+        <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 2, md: 4 }, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {messages.length === 0 && !loading ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, textAlign: 'center', my: 'auto' }}>
+              <Avatar sx={{ width: 56, height: 56, bgcolor: '#10a37f', mb: 2 }}>
+                <SparklesIcon sx={{ fontSize: 32, color: '#fff' }} />
+              </Avatar>
+              <Typography variant="h4" fontWeight={700} sx={{ color: '#fff', mb: 1 }}>
+                How can I help you today?
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, justifyContent: 'center', mt: 2 }}>
-                {SUGGESTED_PROMPTS.map((prompt, idx) => (
-                  <Chip
-                    key={idx}
-                    icon={prompt.icon}
-                    label={prompt.label}
-                    onClick={() => { setInput(prompt.label); setTimeout(handleSend, 200) }}
-                    sx={{ cursor: 'pointer', bgcolor: '#ffffff', border: '1px solid #e8ecf1', py: 1.5, height: 'auto', '&:hover': { bgcolor: '#f0f2f5', borderColor: '#10a37f' }, '& .MuiChip-label': { py: 0.5 } }}
-                  />
+              <Typography variant="body2" sx={{ color: '#8e8e8e', mb: 4, maxWidth: 500 }}>
+                Ask CrimeLens AI about FIR records, 7-day predictive risk forecasts, cross-jurisdiction repeat offenders, or Modus Operandi (MO) signatures.
+              </Typography>
+
+              <Grid container spacing={2} sx={{ maxWidth: 800 }}>
+                {SUGGESTED_PROMPTS.map((card, idx) => (
+                  <Grid item xs={12} sm={6} key={idx}>
+                    <Paper
+                      onClick={() => handleSend(card.title)}
+                      elevation={0}
+                      sx={{
+                        p: 2,
+                        bgcolor: '#2f2f2f',
+                        border: '1px solid #3e3e3e',
+                        borderRadius: 3,
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'all 0.2s ease',
+                        '&:hover': { bgcolor: '#383838', borderColor: '#10a37f' },
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        {card.icon}
+                        <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#fff' }}>{card.title}</Typography>
+                      </Box>
+                      <Typography variant="caption" sx={{ color: '#b4b4b4' }}>{card.subtitle}</Typography>
+                    </Paper>
+                  </Grid>
                 ))}
-              </Box>
+              </Grid>
             </Box>
+          ) : (
+            messages.map((message) => (
+              <Box key={message.id} sx={{ display: 'flex', gap: 2, maxWidth: '850px', width: '100%', mx: 'auto', flexDirection: message.type === 'user' ? 'row-reverse' : 'row' }}>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: message.type === 'user' ? '#383838' : '#10a37f', flexShrink: 0 }}>
+                  {message.type === 'user' ? <PersonIcon fontSize="small" /> : <AIIcon fontSize="small" />}
+                </Avatar>
+                <Box sx={{ flex: 1 }}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      bgcolor: message.type === 'user' ? '#2f2f2f' : 'transparent',
+                      color: '#ececec',
+                      border: message.type === 'user' ? '1px solid #3e3e3e' : 'none',
+                    }}
+                  >
+                    {message.type === 'bot' ? (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          p: ({ children }) => <Typography variant="body1" sx={{ lineHeight: 1.7, mb: 1, fontSize: '0.95rem' }}>{children}</Typography>,
+                          strong: ({ children }) => <strong style={{ color: '#10a37f' }}>{children}</strong>,
+                          ul: ({ children }) => <Box component="ul" sx={{ pl: 2.5, mb: 1 }}>{children}</Box>,
+                          li: ({ children }) => <Typography component="li" variant="body1" sx={{ lineHeight: 1.7, fontSize: '0.95rem' }}>{children}</Typography>,
+                        }}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    ) : (
+                      <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.95rem' }}>
+                        {message.content}
+                      </Typography>
+                    )}
+                  </Paper>
+                </Box>
+              </Box>
+            ))
           )}
 
-          <AnimatePresence>
-            {messages.map((message) => (
-              <Fade key={message.id} in timeout={300}>
-                <Box sx={{ display: 'flex', justifyContent: message.type === 'user' ? 'flex-end' : 'flex-start', mb: 3 }}>
-                  <Box sx={{ display: 'flex', gap: 2, maxWidth: { xs: '90%', sm: '80%', md: '70%' }, flexDirection: message.type === 'user' ? 'row-reverse' : 'row', alignItems: 'flex-start' }}>
-                    <Avatar sx={{ width: 36, height: 36, bgcolor: message.type === 'user' ? '#1a1a2e' : '#10a37f', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                      {message.type === 'user' ? <PersonIcon sx={{ fontSize: 18 }} /> : <AIIcon sx={{ fontSize: 18 }} />}
-                    </Avatar>
-                    <Box sx={{ maxWidth: '100%' }}>
-                      <Paper elevation={0} sx={{ p: 2.5, borderRadius: message.type === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', bgcolor: message.type === 'user' ? '#1a1a2e' : '#ffffff', color: message.type === 'user' ? '#ffffff' : '#1a1a1a', border: message.type === 'bot' ? '1px solid #e8ecf1' : 'none', boxShadow: message.type === 'user' ? '0 2px 8px rgba(26,35,126,0.2)' : '0 2px 8px rgba(0,0,0,0.04)' }}>
-                        {message.type === 'user' && message.attachments?.length > 0 && (
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
-                            {message.attachments.map((file, idx) => (
-                              <Chip key={idx} icon={file.type?.startsWith('image/') ? <ImageIcon /> : <FilePresentIcon />} label={file.name} size="small" sx={{ bgcolor: 'rgba(255,255,255,0.15)', color: '#fff', '& .MuiChip-icon': { color: '#fff' } }} />
-                            ))}
-                          </Box>
-                        )}
-                        {message.type === 'bot' ? (
-                          <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
-                            p: ({ children }) => <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 0.5 }}>{children}</Typography>,
-                            strong: ({ children }) => <strong style={{ color: '#10a37f' }}>{children}</strong>,
-                            ul: ({ children }) => <Box component="ul" sx={{ pl: 2, m: 0.5 }}>{children}</Box>,
-                            li: ({ children }) => <Typography component="li" variant="body2" sx={{ lineHeight: 1.8 }}>{children}</Typography>,
-                          }}>{message.content}</ReactMarkdown>
-                        ) : (
-                          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: 1.8, fontSize: '0.95rem' }}>{message.content}</Typography>
-                        )}
-                        {message.type === 'bot' && (
-                          <Tooltip title="Copy">
-                            <IconButton size="small" onClick={() => copyMessage(message.content)} sx={{ position: 'absolute', bottom: 4, right: 4, opacity: 0.3, '&:hover': { opacity: 1 }, color: '#666' }}>
-                              <CopyIcon sx={{ fontSize: 14 }} />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </Paper>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5, px: 0.5 }}>
-                        <Typography variant="caption" color="textSecondary">{formatTime(message.timestamp)}</Typography>
-                        {message.type === 'user' && <CheckCircleIcon sx={{ fontSize: 12, color: '#10a37f' }} />}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </Fade>
-            ))}
-          </AnimatePresence>
-
           {loading && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 3 }}>
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                <Avatar sx={{ width: 36, height: 36, bgcolor: '#10a37f' }}><AIIcon sx={{ fontSize: 18 }} /></Avatar>
-                <Paper sx={{ p: 2.5, borderRadius: '16px 16px 16px 4px', bgcolor: '#ffffff', border: '1px solid #e8ecf1' }}>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ duration: 0.8, repeat: Infinity }}><Box sx={{ width: 8, height: 8, bgcolor: '#10a37f', borderRadius: '50%' }} /></motion.div>
-                    <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}><Box sx={{ width: 8, height: 8, bgcolor: '#10a37f', borderRadius: '50%' }} /></motion.div>
-                    <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}><Box sx={{ width: 8, height: 8, bgcolor: '#10a37f', borderRadius: '50%' }} /></motion.div>
-                  </Box>
-                </Paper>
+            <Box sx={{ display: 'flex', gap: 2, maxWidth: '850px', width: '100%', mx: 'auto' }}>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: '#10a37f' }}><AIIcon fontSize="small" /></Avatar>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pt: 1 }}>
+                <CircularProgress size={18} sx={{ color: '#10a37f' }} />
+                <Typography variant="caption" sx={{ color: '#8e8e8e', fontWeight: 600 }}>Thinking...</Typography>
               </Box>
             </Box>
           )}
           <div ref={messagesEndRef} />
         </Box>
 
-        {/* Attached Files Preview */}
-        {attachedFiles.length > 0 && (
-          <Box sx={{ px: 4, py: 1, bgcolor: '#ffffff', borderTop: '1px solid #e8ecf1', display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
-            {attachedFiles.map((file) => (
-              <Chip key={file.id} icon={file.type?.startsWith('image/') ? <ImageIcon /> : getFileIcon(file.name)} label={`${file.name} (${formatFileSize(file.size)})`} onDelete={() => removeFile(file.id)} sx={{ bgcolor: '#f0f2f5' }} size="small" />
-            ))}
-            <Typography variant="caption" color="textSecondary">{attachedFiles.length} file(s) ready</Typography>
-          </Box>
-        )}
-
-        {/* Input with File Upload */}
-        <Box sx={{ p: 2.5, px: 4, borderTop: '1px solid #e8ecf1', bgcolor: '#ffffff', display: 'flex', gap: 1, alignItems: 'flex-end', flexShrink: 0 }}>
-          <Tooltip title="Attach file or image">
-            <IconButton onClick={() => setFileDialogOpen(true)} sx={{ color: '#666' }}>
+        {/* ChatGPT Style Capsule Input Bar */}
+        <Box sx={{ p: 2, px: { xs: 2, md: 4 }, bgcolor: '#212121', display: 'flex', justifyContent: 'center' }}>
+          <Paper
+            elevation={4}
+            sx={{
+              width: '100%',
+              maxWidth: '850px',
+              bgcolor: '#2f2f2f',
+              border: '1px solid #3e3e3e',
+              borderRadius: 4,
+              p: 1,
+              px: 2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <IconButton onClick={() => setFileDialogOpen(true)} sx={{ color: '#b4b4b4' }}>
               <AttachFileIcon />
             </IconButton>
-          </Tooltip>
-
-          <TextField
-            fullWidth
-            ref={inputRef}
-            placeholder="Message CrimeLens AI... (Attach files for analysis)"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            multiline
-            maxRows={4}
-            disabled={loading}
-            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#f7f8fc', '&:hover fieldset': { borderColor: '#10a37f' }, '& fieldset': { borderColor: 'transparent' }, '&.Mui-focused fieldset': { borderColor: '#10a37f' } } }}
-          />
-          <IconButton
-            onClick={handleSend}
-            disabled={(!input.trim() && attachedFiles.length === 0) || loading}
-            sx={{ bgcolor: '#10a37f', color: '#fff', borderRadius: 2, width: 52, height: 52, flexShrink: 0, '&:hover': { bgcolor: '#0d8c6e' }, '&:disabled': { bgcolor: '#e0e0e0', color: '#9e9e9e' } }}
-          >
-            {loading ? <CircularProgress size={24} color="inherit" /> : <SendIcon />}
-          </IconButton>
+            <TextField
+              fullWidth
+              multiline
+              maxRows={4}
+              placeholder="Message CrimeLens AI..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              sx={{
+                '& .MuiInputBase-input': { color: '#fff', fontSize: '0.95rem' },
+                '& .MuiOutlinedInput-root': { '& fieldset': { border: 'none' } },
+              }}
+            />
+            <IconButton
+              onClick={() => handleSend()}
+              disabled={(!input.trim() && attachedFiles.length === 0) || loading}
+              sx={{
+                bgcolor: input.trim() ? '#10a37f' : '#3e3e3e',
+                color: '#fff',
+                '&:hover': { bgcolor: '#0d8c6e' },
+                '&.Mui-disabled': { bgcolor: '#3e3e3e', color: '#666' },
+              }}
+            >
+              <SendIcon fontSize="small" />
+            </IconButton>
+          </Paper>
         </Box>
       </Box>
 
-      {/* File Upload Dialog */}
+      {/* File Upload Modal */}
       <Dialog open={fileDialogOpen} onClose={() => setFileDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <DialogTitle sx={{ bgcolor: '#212121', color: '#fff', display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h6">Attach Files</Typography>
-          <IconButton onClick={() => setFileDialogOpen(false)}><CloseIcon /></IconButton>
+          <IconButton onClick={() => setFileDialogOpen(false)} sx={{ color: '#fff' }}><CloseIcon /></IconButton>
         </DialogTitle>
-        <DialogContent>
-          <Box {...getRootProps()} sx={{ border: '2px dashed #ccc', borderRadius: 2, p: 4, textAlign: 'center', cursor: 'pointer', bgcolor: isDragActive ? '#f0f2f5' : 'transparent', '&:hover': { bgcolor: '#f5f7fa' }, minHeight: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+        <DialogContent sx={{ bgcolor: '#212121' }}>
+          <Box {...getRootProps()} sx={{ border: '2px dashed #444', borderRadius: 3, p: 4, textAlign: 'center', cursor: 'pointer', bgcolor: '#2f2f2f' }}>
             <input {...getInputProps()} />
-            {isDragActive ? (
-              <>
-                <ImageIcon sx={{ fontSize: 60, color: '#10a37f' }} />
-                <Typography variant="h6" color="primary">Drop files here...</Typography>
-              </>
-            ) : (
-              <>
-                <AttachFileIcon sx={{ fontSize: 60, color: '#999' }} />
-                <Typography variant="h6">Drag & drop files here</Typography>
-                <Typography variant="body2" color="textSecondary">or click to select files</Typography>
-                <Typography variant="caption" color="textSecondary">Supported: Images, PDF, DOC, DOCX, TXT, CSV, XLS, XLSX (Max 10MB each)</Typography>
-              </>
-            )}
+            <AttachFileIcon sx={{ fontSize: 48, color: '#10a37f', mb: 1 }} />
+            <Typography variant="h6" sx={{ color: '#fff' }}>Drag & drop files here</Typography>
+            <Typography variant="caption" sx={{ color: '#aaa' }}>Supported: Images, PDF, TXT, CSV (Max 10MB)</Typography>
           </Box>
-          {attachedFiles.length > 0 && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Attached Files ({attachedFiles.length})</Typography>
-              {attachedFiles.map((file) => (
-                <Box key={file.id} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 0.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {file.type?.startsWith('image/') ? <ImageIcon sx={{ color: '#10a37f' }} /> : <FilePresentIcon />}
-                    <Typography variant="body2">{file.name}</Typography>
-                    <Typography variant="caption" color="textSecondary">({formatFileSize(file.size)})</Typography>
-                  </Box>
-                  <IconButton size="small" onClick={() => removeFile(file.id)}><CloseIcon fontSize="small" /></IconButton>
-                </Box>
-              ))}
-            </Box>
-          )}
         </DialogContent>
-        <DialogActions sx={{ p: 2, gap: 1 }}>
-          <Button onClick={() => setFileDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={() => setFileDialogOpen(false)} sx={{ bgcolor: '#10a37f', '&:hover': { bgcolor: '#0d8c6e' } }}>Done ({attachedFiles.length} files)</Button>
+        <DialogActions sx={{ bgcolor: '#212121', p: 2 }}>
+          <Button onClick={() => setFileDialogOpen(false)} sx={{ color: '#aaa' }}>Cancel</Button>
+          <Button variant="contained" onClick={() => setFileDialogOpen(false)} sx={{ bgcolor: '#10a37f' }}>Done</Button>
         </DialogActions>
       </Dialog>
-
-      {/* Delete Menu */}
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <MenuItem onClick={() => handleDeleteChat(selectedChatId)} sx={{ color: 'error.main' }}>
-          <DeleteIcon sx={{ mr: 1, fontSize: 20 }} /> Delete Chat
-        </MenuItem>
-      </Menu>
     </Box>
   )
 }
