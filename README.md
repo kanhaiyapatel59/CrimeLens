@@ -7,12 +7,12 @@
 
 *Transforming Crime Data into Actionable Intelligence through Artificial Intelligence, Data Analytics, and Interactive Visualization.*
 
-![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react)
-![NodeJS](https://img.shields.io/badge/Backend-Node.js-339933?logo=node.js)
-![Express](https://img.shields.io/badge/Framework-Express-000000?logo=express)
-![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb)
-![JWT](https://img.shields.io/badge/Auth-JWT-orange)
-![License](https://img.shields.io/badge/License-Hackathon-blue)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-CrimeLens-00E5FF?style=for-the-badge&logoColor=black)](https://crimelens-frontend-kqiohtrf.onslate.in)
+[![Developer Portfolio](https://img.shields.io/badge/Developer_Portfolio-Kanhaiya_Patel-7C3AED?style=for-the-badge)](https://portfolio-kanhaiya-patel.vercel.app/)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react)](https://react.dev/)
+[![NodeJS](https://img.shields.io/badge/Backend-Node.js-339933?logo=node.js)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Framework-Express-000000?logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb)](https://mongodb.com/)
 
 </div>
 
