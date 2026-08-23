@@ -37,65 +37,34 @@ const httpServer = createServer(app);
 
 
 // ============================================
-// CORS - ULTIMATE FIX (Place this FIRST)
+// CORS Configuration
 // ============================================
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(',')
-  : [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'http://localhost:5000',
-      'http://127.0.0.1:5173',
-      'http://127.0.0.1:3000'
-    ];
+const corsOptions = {
+  origin: true, // Dynamically reflect request origin
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  optionsSuccessStatus: 200
+};
 
-// Manual CORS headers for all requests
+// Handle preflight OPTIONS requests for all endpoints
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
+
+// Extra safety header fallback middleware for errors
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  const isAllowed =
-    !origin ||
-    allowedOrigins.includes('*') ||
-    allowedOrigins.includes(origin) ||
-    process.env.NODE_ENV === 'development' ||
-    (origin && origin.endsWith('.vercel.app'));
-
-  if (isAllowed) {
-    res.header('Access-Control-Allow-Origin', origin || '*');
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   }
-  
-  // Handle preflight requests immediately
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  
   next();
 });
-
-// CORS middleware (official)
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (
-        !origin ||
-        allowedOrigins.includes('*') ||
-        allowedOrigins.includes(origin) ||
-        process.env.NODE_ENV === 'development' ||
-        (origin && origin.endsWith('.vercel.app'))
-      ) {
-        return callback(null, true);
-      }
-      console.log('Blocked CORS from:', origin);
-      callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    optionsSuccessStatus: 200
-  })
-);
 
 // ============================================
 // Security & Performance Middleware
@@ -128,12 +97,12 @@ app.use(
 );
 
 // Rate limiting
-// NOTE: Dashboard pages make multiple concurrent requests; keep this permissive in dev.
 const limiter = rateLimit({
   windowMs: process.env.RATE_LIMIT_WINDOW_MS
     ? Number(process.env.RATE_LIMIT_WINDOW_MS)
     : 15 * 60 * 1000,
-  max: process.env.RATE_LIMIT_MAX ? Number(process.env.RATE_LIMIT_MAX) : 1000,
+  max: process.env.RATE_LIMIT_MAX ? Number(process.env.RATE_LIMIT_MAX) : 2000,
+  skip: (req) => req.method === 'OPTIONS',
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false
