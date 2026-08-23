@@ -7,8 +7,7 @@ import {
 import {
   Visibility, VisibilityOff, Shield as ShieldIcon, Email as EmailIcon,
   Lock as LockIcon, ArrowForward as ArrowForwardIcon, GpsFixed as GpsIcon,
-  Analytics as AnalyticsIcon, NetworkCheck as NetworkIcon, AutoAwesome as AIIcon,
-  Key as KeyIcon
+  Analytics as AnalyticsIcon, NetworkCheck as NetworkIcon, AutoAwesome as AIIcon
 } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../redux/slices/authSlice'
@@ -33,11 +32,6 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value,
     })
-  }
-
-  const handleQuickFill = (email, password) => {
-    setFormData({ email, password })
-    toast.success(`Loaded credentials for ${email}`)
   }
 
   const handleSubmit = async (e) => {
@@ -148,45 +142,6 @@ const Login = () => {
                     Enter your official email address & password to sign in.
                   </Typography>
                 </Box>
-
-                {/* Demo Quick Fill Buttons */}
-                <Paper elevation={0} sx={{ p: 2, mb: 3, borderRadius: 2, bgcolor: '#f0f4f9', border: '1px dashed #1a237e' }}>
-                  <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <KeyIcon sx={{ fontSize: 16 }} /> DEMO ACCOUNT QUICK FILL
-                  </Typography>
-                  <Stack direction="row" spacing={1}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => handleQuickFill('admin@crimelens.com', 'Admin@123')}
-                      sx={{
-                        borderColor: '#1a237e',
-                        color: '#1a237e',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        textTransform: 'none',
-                        '&:hover': { bgcolor: 'rgba(26, 35, 126, 0.08)' }
-                      }}
-                    >
-                      Admin Account
-                    </Button>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => handleQuickFill('scrb@crimelens.com', 'SCRB@123')}
-                      sx={{
-                        borderColor: '#e91e63',
-                        color: '#e91e63',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        textTransform: 'none',
-                        '&:hover': { bgcolor: 'rgba(233, 30, 99, 0.08)' }
-                      }}
-                    >
-                      SCRB Officer
-                    </Button>
-                  </Stack>
-                </Paper>
 
                 {error && (
                   <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
