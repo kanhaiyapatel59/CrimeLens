@@ -48,7 +48,7 @@ const corsOptions = {
 };
 
 // Handle preflight OPTIONS requests for all endpoints
-app.options('*', cors(corsOptions));
+app.options(/(.*)/, cors(corsOptions));
 app.use(cors(corsOptions));
 
 // Extra safety header fallback middleware for errors
@@ -222,19 +222,13 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // Connect to MongoDB
-    await connectDatabase();
-    logger.info('✅ Database connected successfully');
-
     // Start server (handle EADDRINUSE gracefully)
     httpServer.on('error', (err) => {
       if (err && err.code === 'EADDRINUSE') {
         logger.error(`❌ Port ${PORT} is already in use (EADDRINUSE). Is another dev server running?`);
         logger.error(err);
-        // Exit with non-zero so nodemon doesn't get stuck
         process.exit(1);
       }
-
       logger.error('HTTP server error:', err);
     });
 
@@ -244,6 +238,12 @@ const startServer = async () => {
       logger.info(`🔗 URL: http://localhost:${PORT}`);
       logger.info(`🛠️  Health Check: http://localhost:${PORT}/health`);
     });
+
+    // Connect to MongoDB asynchronously
+    connectDatabase()
+      .then(() => logger.info('✅ Database connected successfully'))
+      .catch((err) => logger.error('⚠️ Database connection notice:', err.message));
+
   } catch (error) {
     logger.error('❌ Failed to start server:', error);
     process.exit(1);
