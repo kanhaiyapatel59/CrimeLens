@@ -2,15 +2,14 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import {
   Box, Container, Paper, Typography, TextField, Button, IconButton,
-  InputAdornment, Alert, Divider, Grid, FormControl, InputLabel, Select,
-  MenuItem, Stepper, Step, StepLabel, CircularProgress, Chip,
+  InputAdornment, Alert, Divider, Grid, FormControl, Select,
+  MenuItem, Stepper, Step, StepLabel, CircularProgress, Chip
 } from '@mui/material'
 import {
-  Visibility, VisibilityOff, Security as SecurityIcon, Shield as ShieldIcon,
-  ArrowBack as ArrowBackIcon, CheckCircle as CheckIcon, Lock as LockIcon,
-  Email as EmailIcon, Person as PersonIcon, Phone as PhoneIcon,
-  Badge as BadgeIcon, Business as BusinessIcon, CloudUpload as UploadFileIcon,
-  ArrowForward as ArrowForwardIcon,
+  Visibility, VisibilityOff, Shield as ShieldIcon, ArrowBack as ArrowBackIcon,
+  CheckCircle as CheckIcon, Lock as LockIcon, Email as EmailIcon, Person as PersonIcon,
+  Phone as PhoneIcon, Badge as BadgeIcon, Business as BusinessIcon, CloudUpload as UploadFileIcon,
+  ArrowForward as ArrowForwardIcon
 } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerUser } from '../redux/slices/authSlice'
@@ -62,14 +61,9 @@ const Register = () => {
     if (step === 1) {
       if (!formData.policeId.trim()) {
         newErrors.policeId = 'Police ID / Badge Number is required'
-      } else if (!/^[A-Za-z0-9]{5,15}$/.test(formData.policeId)) {
-        newErrors.policeId = 'Must be 5-15 alphanumeric characters'
       }
       if (!formData.department.trim()) {
         newErrors.department = 'Department / Police Station name is required'
-      }
-      if (!formData.policeIdDocument) {
-        newErrors.policeIdDocument = 'Police ID verification document is required'
       }
     }
 
@@ -140,7 +134,7 @@ const Register = () => {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#030712', color: '#f9fafb', fontFamily: 'Inter, sans-serif' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f8f9fa', color: '#1a237e', fontFamily: 'Inter, sans-serif' }}>
       <Navbar />
 
       <Container maxWidth="md" sx={{ py: 6 }}>
@@ -148,23 +142,23 @@ const Register = () => {
           elevation={0}
           sx={{
             p: { xs: 3, sm: 6 },
-            borderRadius: 6,
-            bgcolor: '#0f172a',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+            borderRadius: 4,
+            bgcolor: '#ffffff',
+            border: '1px solid #e0e0e0',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.08)',
           }}
         >
           {/* Header */}
-          <Box sx={{ textAlign: 'center', mb: 5 }}>
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Chip
-              icon={<ShieldIcon sx={{ color: '#38bdf8 !important' }} />}
+              icon={<ShieldIcon sx={{ color: '#1a237e !important' }} />}
               label="LAW ENFORCEMENT ONBOARDING"
-              sx={{ bgcolor: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', fontWeight: 800, fontSize: '0.7rem', px: 1.5, py: 1.8, mb: 2 }}
+              sx={{ bgcolor: 'rgba(26, 35, 126, 0.08)', color: '#1a237e', fontWeight: 800, fontSize: '0.7rem', px: 1.5, py: 1.8, mb: 2 }}
             />
-            <Typography variant="h3" fontWeight={900} sx={{ color: '#f8fafc', mb: 1, letterSpacing: '-0.02em' }}>
+            <Typography variant="h3" fontWeight={800} sx={{ color: '#1a237e', mb: 1 }}>
               Register Station Account
             </Typography>
-            <Typography variant="body2" sx={{ color: '#94a3b8' }}>
+            <Typography variant="body2" color="textSecondary">
               Complete the 3-step verification process to request CrimeLens portal credentials.
             </Typography>
           </Box>
@@ -176,13 +170,13 @@ const Register = () => {
                 <StepLabel
                   StepIconProps={{
                     sx: {
-                      '&.Mui-active': { color: '#38bdf8' },
-                      '&.Mui-completed': { color: '#10b981' },
-                      color: 'rgba(255,255,255,0.2)',
+                      '&.Mui-active': { color: '#1a237e' },
+                      '&.Mui-completed': { color: '#4caf50' },
+                      color: '#cbd5e1',
                     },
                   }}
                 >
-                  <Typography variant="caption" fontWeight={600} sx={{ color: activeStep === index ? '#38bdf8' : '#94a3b8' }}>
+                  <Typography variant="caption" fontWeight={700} sx={{ color: activeStep === index ? '#1a237e' : '#64748b' }}>
                     {label}
                   </Typography>
                 </StepLabel>
@@ -191,7 +185,7 @@ const Register = () => {
           </Stepper>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 4, borderRadius: 3, bgcolor: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+            <Alert severity="error" sx={{ mb: 4, borderRadius: 2 }}>
               {typeof error === 'string' ? error : error.message || 'Registration failed. Please check your inputs.'}
             </Alert>
           )}
@@ -199,10 +193,10 @@ const Register = () => {
           <form onSubmit={handleSubmit}>
             {/* Step 1: Personal Details */}
             {activeStep === 0 && (
-              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>FIRST NAME</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>FIRST NAME</Typography>
                     <TextField
                       fullWidth
                       name="firstName"
@@ -211,13 +205,13 @@ const Register = () => {
                       onChange={handleChange}
                       error={!!errors.firstName}
                       helperText={errors.firstName}
-                      InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon sx={{ color: '#38bdf8' }} /></InputAdornment> }}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon sx={{ color: '#1a237e' }} /></InputAdornment> }}
                       sx={inputStyles}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>LAST NAME</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>LAST NAME</Typography>
                     <TextField
                       fullWidth
                       name="lastName"
@@ -226,13 +220,13 @@ const Register = () => {
                       onChange={handleChange}
                       error={!!errors.lastName}
                       helperText={errors.lastName}
-                      InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon sx={{ color: '#38bdf8' }} /></InputAdornment> }}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon sx={{ color: '#1a237e' }} /></InputAdornment> }}
                       sx={inputStyles}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>OFFICIAL EMAIL ADDRESS</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>OFFICIAL EMAIL ADDRESS</Typography>
                     <TextField
                       fullWidth
                       name="email"
@@ -241,13 +235,13 @@ const Register = () => {
                       onChange={handleChange}
                       error={!!errors.email}
                       helperText={errors.email}
-                      InputProps={{ startAdornment: <InputAdornment position="start"><EmailIcon sx={{ color: '#38bdf8' }} /></InputAdornment> }}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><EmailIcon sx={{ color: '#1a237e' }} /></InputAdornment> }}
                       sx={inputStyles}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>CONTACT PHONE NUMBER</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>CONTACT PHONE NUMBER</Typography>
                     <TextField
                       fullWidth
                       name="phone"
@@ -256,7 +250,7 @@ const Register = () => {
                       onChange={handleChange}
                       error={!!errors.phone}
                       helperText={errors.phone}
-                      InputProps={{ startAdornment: <InputAdornment position="start"><PhoneIcon sx={{ color: '#38bdf8' }} /></InputAdornment> }}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><PhoneIcon sx={{ color: '#1a237e' }} /></InputAdornment> }}
                       sx={inputStyles}
                     />
                   </Grid>
@@ -266,10 +260,10 @@ const Register = () => {
 
             {/* Step 2: Police Credentials & Verification */}
             {activeStep === 1 && (
-              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>POLICE BADGE ID / BADGE NO.</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>POLICE BADGE ID / BADGE NO.</Typography>
                     <TextField
                       fullWidth
                       name="policeId"
@@ -278,13 +272,13 @@ const Register = () => {
                       onChange={handleChange}
                       error={!!errors.policeId}
                       helperText={errors.policeId}
-                      InputProps={{ startAdornment: <InputAdornment position="start"><BadgeIcon sx={{ color: '#38bdf8' }} /></InputAdornment> }}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><BadgeIcon sx={{ color: '#1a237e' }} /></InputAdornment> }}
                       sx={inputStyles}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>POLICE STATION / DEPARTMENT</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>POLICE STATION / DEPARTMENT</Typography>
                     <TextField
                       fullWidth
                       name="department"
@@ -293,13 +287,13 @@ const Register = () => {
                       onChange={handleChange}
                       error={!!errors.department}
                       helperText={errors.department}
-                      InputProps={{ startAdornment: <InputAdornment position="start"><BusinessIcon sx={{ color: '#38bdf8' }} /></InputAdornment> }}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><BusinessIcon sx={{ color: '#1a237e' }} /></InputAdornment> }}
                       sx={inputStyles}
                     />
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>ASSIGNED DESIGNATION ROLE</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>ASSIGNED DESIGNATION ROLE</Typography>
                     <FormControl fullWidth sx={inputStyles}>
                       <Select name="role" value={formData.role} onChange={handleChange}>
                         <MenuItem value="station_officer">Station Officer (Standard Access)</MenuItem>
@@ -310,29 +304,26 @@ const Register = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>OFFICIAL POLICE ID DOCUMENT (PDF / IMAGE)</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>OFFICIAL POLICE ID DOCUMENT (PDF / IMAGE)</Typography>
                     <Paper
                       sx={{
                         p: 3,
                         textAlign: 'center',
-                        border: errors.policeIdDocument ? '2px dashed #ef4444' : '2px dashed rgba(56, 189, 248, 0.4)',
-                        borderRadius: 3,
-                        bgcolor: 'rgba(15, 23, 42, 0.6)',
+                        border: errors.policeIdDocument ? '2px dashed #e91e63' : '2px dashed #1a237e',
+                        borderRadius: 2,
+                        bgcolor: '#fafafa',
                         cursor: 'pointer',
-                        '&:hover': { borderColor: '#38bdf8', bgcolor: 'rgba(56, 189, 248, 0.05)' },
+                        '&:hover': { bgcolor: 'rgba(26, 35, 126, 0.04)' },
                       }}
                       onClick={() => document.getElementById('id-doc-upload').click()}
                     >
                       <input id="id-doc-upload" type="file" accept=".pdf,.png,.jpg,.jpeg" style={{ display: 'none' }} onChange={handleFileUpload} />
-                      <UploadFileIcon sx={{ fontSize: 40, color: '#38bdf8', mb: 1 }} />
-                      <Typography variant="body2" fontWeight={600}>
-                        {formData.policeIdDocument ? `Selected: ${formData.policeIdDocument.name}` : 'Click to Upload Official Badge ID Verification'}
+                      <UploadFileIcon sx={{ fontSize: 36, color: '#1a237e', mb: 1 }} />
+                      <Typography variant="body2" fontWeight={600} sx={{ color: '#1a237e' }}>
+                        {formData.policeIdDocument ? `Selected: ${formData.policeIdDocument.name}` : 'Click to Upload Badge ID Verification File'}
                       </Typography>
                       <Typography variant="caption" color="textSecondary">Supported formats: PDF, PNG, JPG (Max 5MB)</Typography>
                     </Paper>
-                    {errors.policeIdDocument && (
-                      <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>{errors.policeIdDocument}</Typography>
-                    )}
                   </Grid>
                 </Grid>
               </motion.div>
@@ -340,10 +331,10 @@ const Register = () => {
 
             {/* Step 3: Security Password & Access Credentials */}
             {activeStep === 2 && (
-              <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>CREATE STRONG PASSWORD</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>CREATE STRONG PASSWORD</Typography>
                     <TextField
                       fullWidth
                       name="password"
@@ -354,10 +345,10 @@ const Register = () => {
                       error={!!errors.password}
                       helperText={errors.password}
                       InputProps={{
-                        startAdornment: <InputAdornment position="start"><LockIcon sx={{ color: '#38bdf8' }} /></InputAdornment>,
+                        startAdornment: <InputAdornment position="start"><LockIcon sx={{ color: '#1a237e' }} /></InputAdornment>,
                         endAdornment: (
                           <InputAdornment position="end">
-                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: '#94a3b8' }}>
+                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                               {showPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
                           </InputAdornment>
@@ -368,7 +359,7 @@ const Register = () => {
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" fontWeight={700} sx={{ color: '#cbd5e1', display: 'block', mb: 1 }}>CONFIRM PASSWORD</Typography>
+                    <Typography variant="caption" fontWeight={700} sx={{ color: '#1a237e', display: 'block', mb: 0.8 }}>CONFIRM PASSWORD</Typography>
                     <TextField
                       fullWidth
                       name="confirmPassword"
@@ -379,10 +370,10 @@ const Register = () => {
                       error={!!errors.confirmPassword}
                       helperText={errors.confirmPassword}
                       InputProps={{
-                        startAdornment: <InputAdornment position="start"><LockIcon sx={{ color: '#38bdf8' }} /></InputAdornment>,
+                        startAdornment: <InputAdornment position="start"><LockIcon sx={{ color: '#1a237e' }} /></InputAdornment>,
                         endAdornment: (
                           <InputAdornment position="end">
-                            <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: '#94a3b8' }}>
+                            <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
                               {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
                           </InputAdornment>
@@ -401,7 +392,7 @@ const Register = () => {
                 disabled={activeStep === 0}
                 onClick={handleBack}
                 startIcon={<ArrowBackIcon />}
-                sx={{ color: '#94a3b8', textTransform: 'none', fontWeight: 600 }}
+                sx={{ color: '#64748b', textTransform: 'none', fontWeight: 600 }}
               >
                 Back
               </Button>
@@ -412,14 +403,14 @@ const Register = () => {
                   onClick={handleNext}
                   endIcon={<ArrowForwardIcon />}
                   sx={{
-                    bgcolor: '#38bdf8',
-                    color: '#030712',
-                    fontWeight: 800,
+                    bgcolor: '#1a237e',
+                    color: '#ffffff',
+                    fontWeight: 700,
                     px: 4,
-                    py: 1.5,
-                    borderRadius: 3,
+                    py: 1.4,
+                    borderRadius: 2,
                     textTransform: 'none',
-                    '&:hover': { bgcolor: '#0284c7' },
+                    '&:hover': { bgcolor: '#283593' },
                   }}
                 >
                   Continue Next Step
@@ -431,14 +422,19 @@ const Register = () => {
                   disabled={isLoading}
                   endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <CheckIcon />}
                   sx={{
-                    bgcolor: '#10b981',
-                    color: '#030712',
-                    fontWeight: 800,
+                    bgcolor: '#4caf50',
+                    color: '#ffffff',
+                    fontWeight: 700,
                     px: 4,
-                    py: 1.5,
-                    borderRadius: 3,
+                    py: 1.4,
+                    borderRadius: 2,
                     textTransform: 'none',
-                    '&:hover': { bgcolor: '#059669' },
+                    '&:hover': { bgcolor: '#388e3c' },
+                    '&.Mui-disabled': {
+                      bgcolor: '#4caf50',
+                      color: '#ffffff',
+                      opacity: 0.85,
+                    },
                   }}
                 >
                   {isLoading ? 'Registering...' : 'Complete Station Registration'}
@@ -446,12 +442,12 @@ const Register = () => {
               )}
             </Box>
 
-            <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)', my: 4 }} />
+            <Divider sx={{ my: 4 }} />
 
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: '#94a3b8' }}>
+              <Typography variant="body2" color="textSecondary">
                 Already registered as an officer?{' '}
-                <Link to="/login" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 700 }}>
+                <Link to="/login" style={{ color: '#1a237e', textDecoration: 'none', fontWeight: 700 }}>
                   Sign In to Officer Portal →
                 </Link>
               </Typography>
@@ -465,14 +461,12 @@ const Register = () => {
 
 const inputStyles = {
   '& .MuiOutlinedInput-root': {
-    bgcolor: 'rgba(15, 23, 42, 0.8)',
-    borderRadius: 3,
-    color: '#f8fafc',
-    '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.15)' },
-    '&:hover fieldset': { borderColor: '#38bdf8' },
-    '&.Mui-focused fieldset': { borderColor: '#38bdf8' },
+    borderRadius: 2,
+    bgcolor: '#fafafa',
+    '& fieldset': { borderColor: '#e0e0e0' },
+    '&:hover fieldset': { borderColor: '#1a237e' },
+    '&.Mui-focused fieldset': { borderColor: '#1a237e' },
   },
-  '& .MuiSelect-select': { color: '#f8fafc' },
 }
 
 export default Register
