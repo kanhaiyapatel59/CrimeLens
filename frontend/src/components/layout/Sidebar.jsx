@@ -330,12 +330,13 @@ const Sidebar = ({ open, onClose, isMobile }) => {
                 px: isExpanded ? 1.5 : 1,
                 justifyContent: isExpanded ? 'flex-start' : 'center',
                 minHeight: 40,
-                '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' },
+                color: '#ff5252',
+                '&:hover': { backgroundColor: 'rgba(255, 82, 82, 0.12)' },
               }}
             >
               <ListItemIcon 
                 sx={{ 
-                  color: 'rgba(255,255,255,0.5)', 
+                  color: '#ff5252', 
                   minWidth: isExpanded ? 36 : 0,
                   justifyContent: 'center',
                 }}
@@ -347,7 +348,8 @@ const Sidebar = ({ open, onClose, isMobile }) => {
                   primary="Logout"
                   primaryTypographyProps={{ 
                     fontSize: '0.8rem', 
-                    color: 'rgba(255,255,255,0.7)',
+                    color: '#ff5252',
+                    fontWeight: 600,
                     noWrap: true,
                   }}
                 />

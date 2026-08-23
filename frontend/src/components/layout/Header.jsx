@@ -19,30 +19,18 @@ import {
   Notifications as NotificationsIcon,
   Brightness4 as DarkModeIcon,
   Brightness7 as LightModeIcon,
-  Logout as LogoutIcon,
   Security as SecurityIcon,
 } from '@mui/icons-material'
-import { useDispatch, useSelector } from 'react-redux'
-import { logoutUser } from '../../redux/slices/authSlice'
+import { useSelector } from 'react-redux'
 import { useThemeContext } from '../../context/ThemeContext'
 import ScrbReportDialog from '../common/ScrbReportDialog'
 
 const Header = ({ onMenuClick }) => {
   const theme = useTheme()
-  const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
   const { mode, toggleTheme } = useThemeContext()
-  const [anchorEl, setAnchorEl] = useState(null)
   const [notifAnchorEl, setNotifAnchorEl] = useState(null)
   const [openScrbReport, setOpenScrbReport] = useState(false)
-
-  const handleProfileMenu = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleProfileClose = () => {
-    setAnchorEl(null)
-  }
 
   const handleNotifications = (event) => {
     setNotifAnchorEl(event.currentTarget)
@@ -50,11 +38,6 @@ const Header = ({ onMenuClick }) => {
 
   const handleNotifClose = () => {
     setNotifAnchorEl(null)
-  }
-
-  const handleLogout = () => {
-    handleProfileClose()
-    dispatch(logoutUser())
   }
 
   return (
@@ -142,7 +125,7 @@ const Header = ({ onMenuClick }) => {
             )}
           </IconButton>
 
-          {/* User Avatar - Click shows ONLY Logout */}
+          {/* User Avatar Badge */}
           <Chip
             avatar={
               <Avatar sx={{ bgcolor: '#1a237e', color: '#fff' }}>
@@ -150,40 +133,12 @@ const Header = ({ onMenuClick }) => {
               </Avatar>
             }
             label={`${user?.firstName} ${user?.lastName}`}
-            onClick={handleProfileMenu}
             sx={{ 
               fontWeight: 500, 
               display: { xs: 'none', sm: 'flex' },
               ml: 0.5,
             }}
           />
-
-          {/* ✅ User Menu - ONLY LOGOUT (No Profile/Settings) */}
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleProfileClose}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            PaperProps={{
-              sx: {
-                minWidth: 150,
-                borderRadius: 2,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-              }
-            }}
-          >
-            <MenuItem 
-              onClick={handleLogout} 
-              sx={{ 
-                color: 'error.main',
-                fontWeight: 500,
-                '&:hover': { bgcolor: 'rgba(244, 67, 54, 0.04)' },
-              }}
-            >
-              <LogoutIcon sx={{ mr: 1, fontSize: 20 }} /> Logout
-            </MenuItem>
-          </Menu>
 
           {/* Notifications Menu */}
           <Menu
