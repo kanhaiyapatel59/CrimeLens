@@ -6,6 +6,12 @@
 const logger = require('../utils/logger');
 
 const errorHandler = (err, req, res, next) => {
+  // Ensure CORS headers are attached on error responses
+  if (req && req.headers && req.headers.origin) {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+  }
+
   // Log error
   logger.error('Error:', {
     message: err.message,

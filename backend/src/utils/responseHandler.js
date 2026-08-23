@@ -5,7 +5,15 @@
 const logger = require('./logger');
 
 class ResponseHandler {
+  static setCorsHeaders(res) {
+    if (res && res.req && res.req.headers && res.req.headers.origin) {
+      res.header('Access-Control-Allow-Origin', res.req.headers.origin);
+      res.header('Access-Control-Allow-Credentials', 'true');
+    }
+  }
+
   static success(res, data, message = 'Success', statusCode = 200) {
+    this.setCorsHeaders(res);
     const response = {
       success: true,
       message,
@@ -17,10 +25,11 @@ class ResponseHandler {
   }
 
   static error(res, error, message = 'Error', statusCode = 500) {
+    this.setCorsHeaders(res);
     const response = {
       success: false,
-      message,
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      message: message || (error && error.message) || 'Error',
+      error: error ? error.message : undefined,
       timestamp: new Date().toISOString()
     };
     
