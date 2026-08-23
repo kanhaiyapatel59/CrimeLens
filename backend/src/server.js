@@ -194,7 +194,16 @@ app.set('io', io);
 // Routes
 // ============================================
 
-// Health check endpoint
+// Root & Health check endpoints
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to CrimeLens Backend API',
+    status: 'online',
+    health: '/health',
+    seed: '/api/seed'
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
