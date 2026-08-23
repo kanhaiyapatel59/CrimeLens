@@ -8,17 +8,20 @@ async function fixPassword() {
     await mongoose.connect('mongodb://127.0.0.1:27017/crimelens');
     console.log('✅ Connected');
     
-    const hash = await bcrypt.hash('Admin@123', 10);
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@crimelens.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+
+    const hash = await bcrypt.hash(adminPassword, 10);
     console.log('New hash:', hash);
     
     const result = await User.updateOne(
-      { email: 'admin@crimelens.com' },
+      { email: adminEmail },
       { $set: { password: hash, loginAttempts: 0 } }
     );
     
     console.log('✅ Updated:', result);
-    console.log('📧 Email: admin@crimelens.com');
-    console.log('🔑 Password: Admin@123');
+    console.log(`📧 Email: ${adminEmail}`);
+    console.log(`🔑 Password: ${adminPassword}`);
     process.exit(0);
   } catch (e) {
     console.error('Error:', e);

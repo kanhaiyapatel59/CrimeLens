@@ -20,13 +20,16 @@ const seedUsers = async () => {
     // Get default district (Bengaluru Urban)
     const district = await District.findOne({ code: 'BLR' });
 
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@crimelens.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+
     // Admin user
     const adminData = {
       firstName: 'System',
       lastName: 'Administrator',
-      email: 'admin@crimelens.com',
+      email: adminEmail,
       phone: '9876543210',
-      password: 'Admin@123',
+      password: adminPassword,
       role: adminRole._id,
       district: district ? district._id : null,
       isActive: true,
@@ -61,7 +64,7 @@ const seedUsers = async () => {
 
     logger.info('✅ Users seeded successfully!');
     logger.info('📝 Default credentials:');
-    logger.info('   Admin: admin@crimelens.com / Admin@123');
+    logger.info(`   Admin: ${adminEmail} / ${adminPassword}`);
     logger.info('   SCRB: scrb@crimelens.com / SCRB@123');
   } catch (error) {
     logger.error('❌ Error seeding users:', error);

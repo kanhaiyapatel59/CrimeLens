@@ -30,19 +30,22 @@ async function createAdmin() {
     // Get role again
     const role = await Role.findOne({ name: 'admin' });
     
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@crimelens.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+
     // Check if admin exists
-    const existingAdmin = await User.findOne({ email: 'admin@crimelens.com' });
+    const existingAdmin = await User.findOne({ email: adminEmail });
     if (existingAdmin) {
       console.log('Admin user already exists');
       process.exit(0);
     }
 
     // Create admin
-    const hashedPassword = await bcrypt.hash('Admin@123', 10);
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
     const admin = new User({
       firstName: 'System',
       lastName: 'Administrator',
-      email: 'admin@crimelens.com',
+      email: adminEmail,
       phone: '9876543210',
       password: hashedPassword,
       role: role._id,
@@ -52,8 +55,8 @@ async function createAdmin() {
 
     await admin.save();
     console.log('✅ Admin user created successfully!');
-    console.log('Email: admin@crimelens.com');
-    console.log('Password: Admin@123');
+    console.log(`Email: ${adminEmail}`);
+    console.log(`Password: ${adminPassword}`);
 
     process.exit(0);
   } catch (error) {

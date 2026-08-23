@@ -7,19 +7,22 @@ async function resetPassword() {
     await mongoose.connect('mongodb://127.0.0.1:27017/crimelens');
     console.log('✅ Connected to MongoDB');
     
-    const user = await User.findOne({ email: 'admin@crimelens.com' });
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@crimelens.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
+
+    const user = await User.findOne({ email: adminEmail });
     
     if (!user) {
       console.log('❌ Admin user not found!');
       process.exit(1);
     }
     
-    user.password = 'Admin@123';
+    user.password = adminPassword;
     await user.save();
     
     console.log('✅ Password reset successfully!');
-    console.log('📧 Email: admin@crimelens.com');
-    console.log('🔑 Password: Admin@123');
+    console.log(`📧 Email: ${adminEmail}`);
+    console.log(`🔑 Password: ${adminPassword}`);
     
     process.exit(0);
   } catch (error) {

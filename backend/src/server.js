@@ -23,6 +23,7 @@ const aiRoutes = require('./routes/aiRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const adminRoutes = require('./routes/adminRoutes'); // ✅ Added Admin Routes reference
 const correlationRoutes = require('./routes/correlationRoutes');
+const seedRoutes = require('./routes/seedRoutes');
 
 // Utils & Middleware
 const logger = require('./utils/logger');
@@ -51,9 +52,14 @@ const allowedOrigins = process.env.CORS_ORIGIN
 // Manual CORS headers for all requests
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  
-  // Allow all origins in development, or check against allowed list
-  if (process.env.NODE_ENV === 'development' || !origin || allowedOrigins.includes(origin)) {
+  const isAllowed =
+    !origin ||
+    allowedOrigins.includes('*') ||
+    allowedOrigins.includes(origin) ||
+    process.env.NODE_ENV === 'development' ||
+    (origin && origin.endsWith('.vercel.app'));
+
+  if (isAllowed) {
     res.header('Access-Control-Allow-Origin', origin || '*');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
@@ -72,19 +78,17 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) {
+      if (
+        !origin ||
+        allowedOrigins.includes('*') ||
+        allowedOrigins.includes(origin) ||
+        process.env.NODE_ENV === 'development' ||
+        (origin && origin.endsWith('.vercel.app'))
+      ) {
         return callback(null, true);
       }
-      
-      if (
-        allowedOrigins.includes(origin) ||
-        process.env.NODE_ENV === 'development'
-      ) {
-        callback(null, true);
-      } else {
-        console.log('Blocked CORS from:', origin);
-        callback(new Error('Not allowed by CORS'));
-      }
+      console.log('Blocked CORS from:', origin);
+      callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -210,6 +214,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes); // ✅ Added Admin Routes registration
 app.use('/api/correlation', correlationRoutes);
+app.use('/api/seed', seedRoutes);
 
 // Districts lookup endpoint
 const District = require('./models/District');
