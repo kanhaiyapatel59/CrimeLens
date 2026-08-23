@@ -10,9 +10,8 @@ const connectDatabase = async (retryCount = 0) => {
 
   const options = {
     autoIndex: true,
-    serverSelectionTimeoutMS: 5000,
+    serverSelectionTimeoutMS: 10000,
     socketTimeoutMS: 45000,
-    family: 4,
   };
 
   try {

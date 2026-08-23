@@ -264,6 +264,12 @@ class AuthController {
    */
   static async getProfile(req, res) {
     try {
+      if (req.user) {
+        const userObject = { ...req.user };
+        delete userObject.password;
+        return ResponseHandler.success(res, userObject, 'Profile fetched');
+      }
+
       const user = await User.findById(req.userId).populate('role');
       
       if (!user) {
@@ -276,6 +282,11 @@ class AuthController {
       return ResponseHandler.success(res, userObject, 'Profile fetched');
     } catch (error) {
       logger.error('Get profile error:', error);
+      if (req.user) {
+        const userObject = { ...req.user };
+        delete userObject.password;
+        return ResponseHandler.success(res, userObject, 'Profile fetched');
+      }
       return ResponseHandler.error(res, error, 'Failed to fetch profile');
     }
   }
