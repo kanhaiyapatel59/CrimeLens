@@ -60,17 +60,15 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await authAPI.logout()
+    } catch (error) {
+      console.warn('Backend logout response notice:', error)
+    } finally {
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
       localStorage.removeItem('user')
       toast.success('Logged out successfully')
-      return null
-    } catch (error) {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      localStorage.removeItem('user')
-      return rejectWithValue(error.response?.data?.message)
     }
+    return null
   }
 )
 
@@ -144,7 +142,16 @@ const authSlice = createSlice({
         state.error = action.payload
       })
       // Logout
+      .addCase(logoutUser.pending, (state) => {
+        state.user = null
+        state.isAuthenticated = false
+      })
       .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null
+        state.isAuthenticated = false
+        state.error = null
+      })
+      .addCase(logoutUser.rejected, (state) => {
         state.user = null
         state.isAuthenticated = false
         state.error = null

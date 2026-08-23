@@ -76,9 +76,9 @@ const Sidebar = ({ open, onClose, isMobile }) => {
   // ✅ Determine if sidebar is expanded
   const isExpanded = !collapsed || hovered
 
-  const handleLogout = () => {
-    dispatch(logoutUser())
-    navigate('/login')
+  const handleLogout = async () => {
+    await dispatch(logoutUser())
+    navigate('/', { replace: true })
   }
 
   // ✅ Toggle sidebar collapse
