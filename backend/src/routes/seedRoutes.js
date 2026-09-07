@@ -12,32 +12,39 @@ const handleSeeding = async (req, res) => {
   try {
     logger.info('🚀 Direct API seed request received...');
 
-    await seedRoles();
-    await seedDistricts();
-    await seedCrimeTypes();
-    await seedUsers();
-    await CorrelationService.seedEconomicData();
-    const crimesCount = await seedCrimes();
-
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@crimelens.com';
     const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
 
+    // Respond immediately to prevent Render 30s HTTP proxy timeout
     res.status(200).json({
       success: true,
-      message: '🎉 Database seeded successfully with sample roles, districts, crime types, users, and crime incidents!',
-      seededCounts: {
-        crimes: crimesCount,
-      },
+      message: '🚀 Cloud database seeding started in background! Data is populating MongoDB Atlas shortly.',
       defaultCredentials: {
         admin: `${adminEmail} / ${adminPassword}`,
         scrb: 'scrb@crimelens.com / SCRB@123',
       },
     });
+
+    // Execute seeding process asynchronously in background
+    (async () => {
+      try {
+        await seedRoles();
+        await seedDistricts();
+        await seedCrimeTypes();
+        await seedUsers();
+        await CorrelationService.seedEconomicData();
+        const crimesCount = await seedCrimes();
+        logger.info(`🎉 Cloud database seeding completed successfully! Total crimes seeded: ${crimesCount}`);
+      } catch (err) {
+        logger.error('❌ Background cloud seeding error:', err.message);
+      }
+    })();
+
   } catch (error) {
-    logger.error('❌ Seeding failed:', error);
+    logger.error('❌ Seeding trigger failed:', error);
     res.status(500).json({
       success: false,
-      message: 'Seeding failed',
+      message: 'Seeding trigger failed',
       error: error.message,
     });
   }
