@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026421,INC2026421,Robbery,2026-06-04,00:50,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,62,closed,12.8469,77.6483,Bengaluru Urban,Electronic City PS,Anand Gowda,Anita Rao
+FIR2026422,INC2026422,Kidnapping,2026-04-22,19:05,Abduction attempt foiled by local community and quick police dispatch.,critical,83,pending,12.9687,77.6596,Bengaluru Urban,Indiranagar PS,Kavita Verma,Asha Singh
+FIR2026423,INC2026423,Burglary,2026-02-06,00:33,Break-in at residential house while owners were away for weekend.,high,53,resolved,15.3556,75.1144,Hubballi-Dharwad,Suburban PS,Mahesh Rao,Ganesh Deshmukh
+FIR2026424,INC2026424,Human Trafficking,2026-02-06,09:04,Inter-state illegal labor trafficking racket busted at transit station.,critical,86,closed,13.3569,77.0891,Tumakuru,Town PS,Kavita Verma,Suresh Nayakt
+FIR2026425,INC2026425,Robbery,2026-07-15,06:25,Armed snatching of gold chain and cash at knife-point near isolated alley.,medium,88,investigating,12.8826,74.8542,Dakshina Kannada,Kadri PS,Kavita Rao,Shobha Nayakt
+FIR2026426,INC2026426,Burglary,2026-07-10,08:29,Break-in at residential house while owners were away for weekend.,high,43,investigating,12.3433,76.6153,Mysuru,Vijayanagar PS,Suresh Nair,Asha Nair
+FIR2026427,INC2026427,Kidnapping,2026-03-16,04:34,Abduction attempt foiled by local community and quick police dispatch.,critical,93,in_progress,15.8377,74.4948,Belagavi,Camp PS,Sanjay Gowda,Ramesh Reddy
+FIR2026428,INC2026428,Theft,2026-06-30,07:05,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,low,50,reported,15.87,74.5223,Belagavi,Market PS,Suresh Kulkarni,Asha Menon
+FIR2026429,INC2026429,Cybercrime,2026-05-28,13:56,Unauthorized bank transfer via phishing link sent via WhatsApp.,low,49,investigating,12.3189,76.6114,Mysuru,Vijayanagar PS,Anand Pujari,Sunita Pujari
+FIR2026430,INC2026430,Assault,2026-06-19,15:07,Physical altercation resulting in minor injuries near commercial market.,low,47,resolved,13.3396,77.0824,Tumakuru,Town PS,Prakash Patel,Priya Kumar
+FIR2026431,INC2026431,Robbery,2026-01-07,17:29,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,70,investigating,15.1537,76.907,Ballari,Brucepet PS,Vijay Bhat,Anand Nayakt
+FIR2026432,INC2026432,Human Trafficking,2026-02-20,22:54,Inter-state illegal labor trafficking racket busted at transit station.,critical,98,resolved,12.2974,76.6309,Mysuru,Lakshmipuram PS,Vikram Joshi,Arun Joshi
+FIR2026433,INC2026433,Theft,2026-07-29,17:52,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,61,resolved,12.9741,77.6282,Bengaluru Urban,Indiranagar PS,Pooja Menon,Meena Sharma
+FIR2026434,INC2026434,Extortion,2026-08-02,13:25,Threatening calls demanding protection money from shopkeeper.,high,61,investigating,13.3342,74.7861,Udupi,Manipal PS,Priya Menon,Pooja Rao
+FIR2026435,INC2026435,Assault,2026-02-28,13:25,Physical altercation resulting in minor injuries near commercial market.,medium,70,reported,13.3457,74.7715,Udupi,Manipal PS,Priya Dhar,Kavita Chavan
+FIR2026436,INC2026436,Drug Trafficking,2026-07-18,14:13,Seizure of illicit narcotics package during routine highway check-post inspection.,critical,87,closed,13.3369,77.0848,Tumakuru,Town PS,Kavita Chavan,Asha Patel
+FIR2026437,INC2026437,Extortion,2026-04-30,19:59,Threatening calls demanding protection money from shopkeeper.,critical,77,closed,15.8393,74.4885,Belagavi,Camp PS,Anita Kulkarni,Suresh Kumar
+FIR2026438,INC2026438,Kidnapping,2026-03-24,04:48,Abduction attempt foiled by local community and quick police dispatch.,high,78,pending,12.9816,77.6133,Bengaluru Urban,Central PS,Deepak Deshmukh,Suresh Rao
+FIR2026439,INC2026439,Burglary,2026-01-21,12:45,Break-in at residential house while owners were away for weekend.,medium,72,investigating,13.9167,75.5739,Shivamogga,Doddapete PS,Ramesh Bhat,Suresh Joshi
+FIR2026440,INC2026440,Theft,2026-06-05,14:35,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,75,resolved,12.8425,74.8345,Dakshina Kannada,Pandeshwar PS,Asha Menon,Rajesh Patel

@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026521,INC2026521,Robbery,2026-03-25,11:29,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,84,resolved,15.8632,74.5171,Belagavi,Market PS,Arun Reddy,Deepak Nayakt
+FIR2026522,INC2026522,Assault,2026-06-24,17:48,Physical altercation resulting in minor injuries near commercial market.,medium,32,closed,12.8537,74.8363,Dakshina Kannada,Pandeshwar PS,Rajesh Sharma,Kavita Bhat
+FIR2026523,INC2026523,Arson,2026-03-23,03:08,Intentional fire set to roadside shop inventory late night.,critical,86,resolved,17.3321,76.8288,Kalaburagi,Brahampur PS,Anita Nayakt,Unknown Offender
+FIR2026524,INC2026524,Kidnapping,2026-03-19,19:44,Abduction attempt foiled by local community and quick police dispatch.,critical,95,closed,15.1586,76.9092,Ballari,Brucepet PS,Rajesh Patel,Unknown Offender
+FIR2026525,INC2026525,Theft,2026-06-28,04:14,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,high,73,pending,13.3575,77.1065,Tumakuru,Town PS,Shobha Kumar,Vijay Gowda
+FIR2026526,INC2026526,Homicide,2026-08-02,20:57,Fatal assault following heated personal dispute outside venue.,high,95,in_progress,13.3421,74.7483,Udupi,Town PS,Ramesh Reddy,Vijay Patel
+FIR2026527,INC2026527,Drug Trafficking,2026-02-10,18:42,Seizure of illicit narcotics package during routine highway check-post inspection.,medium,77,reported,13.3461,77.0955,Tumakuru,Town PS,Suresh Singh,Priya Verma
+FIR2026528,INC2026528,Assault,2026-05-06,16:00,Physical altercation resulting in minor injuries near commercial market.,medium,36,closed,12.3197,76.6371,Mysuru,Vijayanagar PS,Shobha Dhar,Pooja Gowda
+FIR2026529,INC2026529,Arson,2026-05-14,01:32,Intentional fire set to roadside shop inventory late night.,high,88,reported,12.878,74.8431,Dakshina Kannada,Kadri PS,Meena Shetty,Unknown Offender
+FIR2026530,INC2026530,Theft,2026-04-17,09:52,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,high,30,reported,12.313,76.6395,Mysuru,Devaraja PS,Vikram Nair,Prakash Reddy
+FIR2026531,INC2026531,Kidnapping,2026-06-11,20:59,Abduction attempt foiled by local community and quick police dispatch.,high,95,resolved,15.8492,74.4952,Belagavi,Market PS,Vikram Deshmukh,Meena Verma
+FIR2026532,INC2026532,Homicide,2026-08-15,09:16,Fatal assault following heated personal dispute outside venue.,high,91,resolved,12.9558,77.7469,Bengaluru Urban,Whitefield PS,Prakash Joshi,Priya Singh
+FIR2026533,INC2026533,Cybercrime,2026-04-08,10:01,Unauthorized bank transfer via phishing link sent via WhatsApp.,low,55,closed,12.8528,74.8471,Dakshina Kannada,Pandeshwar PS,Arun Rao,Unknown Offender
+FIR2026534,INC2026534,Assault,2026-02-27,19:46,Physical altercation resulting in minor injuries near commercial market.,high,48,reported,12.3243,76.6524,Mysuru,Devaraja PS,Arun Pujari,Arun Bhat
+FIR2026535,INC2026535,Cybercrime,2026-02-06,06:33,Unauthorized bank transfer via phishing link sent via WhatsApp.,low,33,reported,12.9426,77.6426,Bengaluru Urban,Koramangala PS,Prakash Kumar,Anand Kulkarni
+FIR2026536,INC2026536,Drug Trafficking,2026-01-09,10:50,Seizure of illicit narcotics package during routine highway check-post inspection.,critical,77,resolved,15.3633,75.1395,Hubballi-Dharwad,Suburban PS,Anita Shetty,Anita Sharma
+FIR2026537,INC2026537,Robbery,2026-04-28,13:00,Armed snatching of gold chain and cash at knife-point near isolated alley.,high,67,resolved,13.3497,77.0848,Tumakuru,Town PS,Kavita Kumar,Sunita Menon
+FIR2026538,INC2026538,Fraud,2026-06-09,18:56,Fake real-estate property investment scam involving forged documents.,high,61,closed,15.3824,75.1122,Hubballi-Dharwad,Suburban PS,Rajesh Kumar,Shobha Nayakt
+FIR2026539,INC2026539,Extortion,2026-07-07,15:54,Threatening calls demanding protection money from shopkeeper.,high,62,investigating,12.8545,77.6713,Bengaluru Urban,Electronic City PS,Kavita Deshmukh,Suresh Pujari
+FIR2026540,INC2026540,Assault,2026-03-09,07:58,Physical altercation resulting in minor injuries near commercial market.,low,56,investigating,12.3023,76.6651,Mysuru,Devaraja PS,Arun Patel,Priya Chavan

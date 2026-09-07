@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026481,INC2026481,Extortion,2026-04-18,13:06,Threatening calls demanding protection money from shopkeeper.,high,64,pending,12.8585,74.8259,Dakshina Kannada,Pandeshwar PS,Ramesh Kulkarni,Anand Patel
+FIR2026482,INC2026482,Extortion,2026-05-02,00:52,Threatening calls demanding protection money from shopkeeper.,high,88,reported,15.3561,75.1136,Hubballi-Dharwad,Suburban PS,Ganesh Kulkarni,Meena Kulkarni
+FIR2026483,INC2026483,Cybercrime,2026-07-29,04:19,Unauthorized bank transfer via phishing link sent via WhatsApp.,low,48,in_progress,12.9913,77.5756,Bengaluru Urban,Central PS,Vikram Shetty,Ramesh Sharma
+FIR2026484,INC2026484,Homicide,2026-01-22,09:34,Fatal assault following heated personal dispute outside venue.,high,96,resolved,12.9907,77.6413,Bengaluru Urban,Indiranagar PS,Sunita Bhat,Meena Gowda
+FIR2026485,INC2026485,Theft,2026-05-28,12:47,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,high,50,investigating,17.3327,76.853,Kalaburagi,Brahampur PS,Asha Bhat,Anand Kumar
+FIR2026486,INC2026486,Fraud,2026-03-28,06:05,Fake real-estate property investment scam involving forged documents.,low,44,pending,12.2813,76.6551,Mysuru,Lakshmipuram PS,Arun Reddy,Prakash Dhar
+FIR2026487,INC2026487,Fraud,2026-03-01,00:02,Fake real-estate property investment scam involving forged documents.,high,34,closed,12.9781,77.7586,Bengaluru Urban,Whitefield PS,Asha Joshi,Kavita Sharma
+FIR2026488,INC2026488,Theft,2026-03-14,09:49,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,58,pending,15.3556,75.1385,Hubballi-Dharwad,Vidyanagar PS,Anita Kumar,Anita Bhat
+FIR2026489,INC2026489,Extortion,2026-03-30,16:28,Threatening calls demanding protection money from shopkeeper.,high,74,resolved,15.8535,74.5137,Belagavi,Market PS,Anita Nayakt,Unknown Offender
+FIR2026490,INC2026490,Arson,2026-03-29,17:23,Intentional fire set to roadside shop inventory late night.,critical,85,pending,13.3443,77.0862,Tumakuru,Town PS,Mahesh Singh,Arun Menon
+FIR2026491,INC2026491,Arson,2026-08-24,19:08,Intentional fire set to roadside shop inventory late night.,critical,95,pending,12.9724,77.5835,Bengaluru Urban,Central PS,Shobha Dhar,Mahesh Verma
+FIR2026492,INC2026492,Fraud,2026-06-27,14:31,Fake real-estate property investment scam involving forged documents.,medium,74,in_progress,12.9523,77.6316,Bengaluru Urban,Koramangala PS,Sanjay Verma,Ramesh Sharma
+FIR2026493,INC2026493,Cybercrime,2026-02-13,08:50,Unauthorized bank transfer via phishing link sent via WhatsApp.,high,57,in_progress,12.9363,77.6154,Bengaluru Urban,Koramangala PS,Shobha Nayakt,Unknown Offender
+FIR2026494,INC2026494,Arson,2026-04-28,15:21,Intentional fire set to roadside shop inventory late night.,critical,93,closed,12.9223,77.6363,Bengaluru Urban,Koramangala PS,Deepak Kulkarni,Asha Sharma
+FIR2026495,INC2026495,Fraud,2026-01-11,15:57,Fake real-estate property investment scam involving forged documents.,low,61,closed,12.3092,76.6591,Mysuru,Lakshmipuram PS,Vijay Shetty,Mahesh Deshmukh
+FIR2026496,INC2026496,Drug Trafficking,2026-08-04,14:31,Seizure of illicit narcotics package during routine highway check-post inspection.,medium,84,reported,12.9744,77.6483,Bengaluru Urban,Indiranagar PS,Kavita Rao,Meena Rao
+FIR2026497,INC2026497,Burglary,2026-04-04,15:39,Break-in at residential house while owners were away for weekend.,medium,65,in_progress,12.9352,77.6404,Bengaluru Urban,Koramangala PS,Priya Gowda,Kavita Verma
+FIR2026498,INC2026498,Human Trafficking,2026-08-15,15:37,Inter-state illegal labor trafficking racket busted at transit station.,high,94,in_progress,12.8534,74.8331,Dakshina Kannada,Pandeshwar PS,Pooja Joshi,Meena Deshmukh
+FIR2026499,INC2026499,Homicide,2026-06-19,09:37,Fatal assault following heated personal dispute outside venue.,critical,85,closed,15.8461,74.5291,Belagavi,Market PS,Rajesh Rao,Sunita Patel
+FIR2026500,INC2026500,Robbery,2026-04-06,07:07,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,72,pending,12.2923,76.6554,Mysuru,Lakshmipuram PS,Pooja Dhar,Rajesh Nair

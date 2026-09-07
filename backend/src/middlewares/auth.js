@@ -38,21 +38,28 @@ class AuthMiddleware {
         return ResponseHandler.unauthorized(res, error.message);
       }
 
-      // Get user
+      // Get user from database
       const mongoose = require('mongoose');
       let user = null;
 
       if (mongoose.connection.readyState === 1) {
         try {
-          user = await User.findById(decoded.userId)
-            .populate('role')
-            .lean();
+          if (decoded.userId && mongoose.Types.ObjectId.isValid(decoded.userId)) {
+            user = await User.findById(decoded.userId)
+              .populate('role')
+              .lean();
+          }
+          if (!user && decoded.email) {
+            user = await User.findOne({ email: decoded.email.toLowerCase() })
+              .populate('role')
+              .lean();
+          }
         } catch (dbErr) {
           console.warn('⚠️ DB query notice in auth middleware:', dbErr.message);
         }
       }
 
-      // If user not in DB, use verified JWT token payload
+      // If user not in DB, use verified JWT token payload safely
       if (!user) {
         const fallbackRole = (typeof decoded.role === 'object' && decoded.role) 
           ? decoded.role 
@@ -60,8 +67,8 @@ class AuthMiddleware {
 
         user = {
           _id: decoded.userId || '65f000000000000000000001',
-          firstName: 'Officer',
-          lastName: 'User',
+          firstName: decoded.firstName || 'Admin',
+          lastName: decoded.lastName || 'Officer',
           email: decoded.email || 'admin@crimelens.com',
           role: fallbackRole,
           isActive: true

@@ -106,9 +106,16 @@ const Settings = () => {
       integrationEnabled: false,
       showOnlineStatus: true,
       shareAnalytics: false,
-      allowCookies: true,
     }
   })
+
+  // Sync settings with logged-in user profile from MongoDB / Redux
+  React.useEffect(() => {
+    if (user?.settings && Object.keys(user.settings).length > 0) {
+      setSettings(prev => ({ ...prev, ...user.settings }))
+      localStorage.setItem('userSettings', JSON.stringify(user.settings))
+    }
+  }, [user])
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({

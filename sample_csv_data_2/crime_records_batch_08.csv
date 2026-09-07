@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026541,INC2026541,Arson,2026-07-04,01:11,Intentional fire set to roadside shop inventory late night.,critical,86,reported,15.8585,74.4924,Belagavi,Camp PS,Arun Patel,Anand Patel
+FIR2026542,INC2026542,Extortion,2026-08-29,03:01,Threatening calls demanding protection money from shopkeeper.,critical,66,pending,13.3315,77.1011,Tumakuru,Town PS,Anita Bhat,Sanjay Bhat
+FIR2026543,INC2026543,Homicide,2026-02-15,16:40,Fatal assault following heated personal dispute outside venue.,high,94,investigating,13.9281,75.5849,Shivamogga,Doddapete PS,Mahesh Patel,Vikram Menon
+FIR2026544,INC2026544,Kidnapping,2026-01-01,18:00,Abduction attempt foiled by local community and quick police dispatch.,high,84,resolved,12.294,76.642,Mysuru,Devaraja PS,Anand Nair,Priya Reddy
+FIR2026545,INC2026545,Cybercrime,2026-03-28,12:56,Unauthorized bank transfer via phishing link sent via WhatsApp.,high,37,investigating,15.8646,74.4928,Belagavi,Camp PS,Arun Rao,Arun Joshi
+FIR2026546,INC2026546,Human Trafficking,2026-04-19,06:10,Inter-state illegal labor trafficking racket busted at transit station.,high,85,in_progress,12.8448,77.6557,Bengaluru Urban,Electronic City PS,Anand Menon,Priya Nayakt
+FIR2026547,INC2026547,Cybercrime,2026-04-12,14:00,Unauthorized bank transfer via phishing link sent via WhatsApp.,medium,40,closed,12.856,74.8498,Dakshina Kannada,Pandeshwar PS,Rajesh Pujari,Suresh Verma
+FIR2026548,INC2026548,Theft,2026-07-01,09:22,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,54,reported,13.944,75.5666,Shivamogga,Doddapete PS,Anita Hegde,Unknown Offender
+FIR2026549,INC2026549,Human Trafficking,2026-04-21,00:58,Inter-state illegal labor trafficking racket busted at transit station.,critical,85,pending,17.3163,76.821,Kalaburagi,Brahampur PS,Sanjay Joshi,Suresh Rao
+FIR2026550,INC2026550,Human Trafficking,2026-03-30,19:04,Inter-state illegal labor trafficking racket busted at transit station.,high,94,pending,17.3293,76.8385,Kalaburagi,Brahampur PS,Priya Nair,Kavita Nayakt
+FIR2026551,INC2026551,Homicide,2026-01-04,06:36,Fatal assault following heated personal dispute outside venue.,high,78,closed,12.927,77.6409,Bengaluru Urban,Koramangala PS,Ramesh Hegde,Ramesh Verma
+FIR2026552,INC2026552,Arson,2026-07-27,10:36,Intentional fire set to roadside shop inventory late night.,high,92,investigating,15.13,76.9205,Ballari,Brucepet PS,Kavita Shetty,Ganesh Hegde
+FIR2026553,INC2026553,Arson,2026-06-17,16:31,Intentional fire set to roadside shop inventory late night.,high,79,reported,15.8676,74.4988,Belagavi,Camp PS,Meena Reddy,Ganesh Joshi
+FIR2026554,INC2026554,Drug Trafficking,2026-06-05,22:42,Seizure of illicit narcotics package during routine highway check-post inspection.,critical,65,in_progress,13.329,74.7523,Udupi,Town PS,Sunita Chavan,Suresh Kumar
+FIR2026555,INC2026555,Burglary,2026-02-18,17:10,Break-in at residential house while owners were away for weekend.,high,33,resolved,15.3491,75.1266,Hubballi-Dharwad,Vidyanagar PS,Meena Bhat,Mahesh Pujari
+FIR2026556,INC2026556,Fraud,2026-06-05,08:54,Fake real-estate property investment scam involving forged documents.,medium,35,investigating,12.2879,76.6423,Mysuru,Devaraja PS,Priya Bhat,Unknown Offender
+FIR2026557,INC2026557,Arson,2026-05-10,14:06,Intentional fire set to roadside shop inventory late night.,high,95,resolved,12.2917,76.6361,Mysuru,Lakshmipuram PS,Vijay Deshmukh,Unknown Offender
+FIR2026558,INC2026558,Human Trafficking,2026-07-29,01:22,Inter-state illegal labor trafficking racket busted at transit station.,critical,88,in_progress,13.9447,75.5673,Shivamogga,Doddapete PS,Anita Gowda,Mahesh Nair
+FIR2026559,INC2026559,Burglary,2026-03-16,13:02,Break-in at residential house while owners were away for weekend.,low,32,investigating,12.2979,76.6293,Mysuru,Lakshmipuram PS,Meena Sharma,Unknown Offender
+FIR2026560,INC2026560,Robbery,2026-06-20,17:22,Armed snatching of gold chain and cash at knife-point near isolated alley.,high,86,pending,12.9627,77.7582,Bengaluru Urban,Whitefield PS,Meena Menon,Shobha Pujari

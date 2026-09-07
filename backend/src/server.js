@@ -24,6 +24,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const adminRoutes = require('./routes/adminRoutes'); // ✅ Added Admin Routes reference
 const correlationRoutes = require('./routes/correlationRoutes');
 const seedRoutes = require('./routes/seedRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 // Utils & Middleware
 const logger = require('./utils/logger');
@@ -193,6 +194,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes); // ✅ Added Admin Routes registration
 app.use('/api/correlation', correlationRoutes);
 app.use('/api/seed', seedRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Districts lookup endpoint
 const District = require('./models/District');

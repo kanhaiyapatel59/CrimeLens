@@ -129,7 +129,12 @@ const userSchema = new mongoose.Schema({
   },
   twoFactorSecret: String,
   
-  // Preferences
+  // Preferences & Profile Metadata
+  designation: { type: String, default: '' },
+  bio: { type: String, default: '' },
+  location: { type: String, default: '' },
+  profileImage: { type: String, default: '' },
+  settings: { type: mongoose.Schema.Types.Mixed, default: {} },
   preferences: {
     theme: {
       type: String,

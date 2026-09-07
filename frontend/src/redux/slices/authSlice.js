@@ -66,6 +66,8 @@ export const logoutUser = createAsyncThunk(
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
       localStorage.removeItem('user')
+      localStorage.removeItem('userSettings')
+      localStorage.removeItem('aiCurrentChat')
       toast.success('Logged out successfully')
     }
     return null

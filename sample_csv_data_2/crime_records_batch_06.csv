@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026501,INC2026501,Robbery,2026-01-12,06:16,Armed snatching of gold chain and cash at knife-point near isolated alley.,high,76,in_progress,15.1494,76.908,Ballari,Brucepet PS,Shobha Bhat,Unknown Offender
+FIR2026502,INC2026502,Robbery,2026-03-26,17:41,Armed snatching of gold chain and cash at knife-point near isolated alley.,medium,61,resolved,12.9677,77.744,Bengaluru Urban,Whitefield PS,Anand Hegde,Prakash Joshi
+FIR2026503,INC2026503,Burglary,2026-02-15,18:55,Break-in at residential house while owners were away for weekend.,low,42,reported,15.8711,74.4908,Belagavi,Camp PS,Arun Nair,Ramesh Bhat
+FIR2026504,INC2026504,Homicide,2026-06-16,18:54,Fatal assault following heated personal dispute outside venue.,high,85,in_progress,12.863,77.6637,Bengaluru Urban,Electronic City PS,Anita Reddy,Arun Joshi
+FIR2026505,INC2026505,Human Trafficking,2026-01-12,13:04,Inter-state illegal labor trafficking racket busted at transit station.,critical,79,pending,13.33,74.7397,Udupi,Town PS,Meena Chavan,Unknown Offender
+FIR2026506,INC2026506,Fraud,2026-05-18,15:35,Fake real-estate property investment scam involving forged documents.,low,53,pending,13.3355,74.7259,Udupi,Town PS,Mahesh Pujari,Rajesh Verma
+FIR2026507,INC2026507,Cybercrime,2026-07-20,04:10,Unauthorized bank transfer via phishing link sent via WhatsApp.,high,46,resolved,13.3409,74.7826,Udupi,Manipal PS,Mahesh Dhar,Kavita Kumar
+FIR2026508,INC2026508,Arson,2026-01-19,14:16,Intentional fire set to roadside shop inventory late night.,critical,80,pending,13.3604,77.1169,Tumakuru,Town PS,Asha Kulkarni,Unknown Offender
+FIR2026509,INC2026509,Arson,2026-06-04,10:25,Intentional fire set to roadside shop inventory late night.,high,77,pending,12.87,74.8533,Dakshina Kannada,Pandeshwar PS,Mahesh Nayakt,Suresh Reddy
+FIR2026510,INC2026510,Arson,2026-08-11,18:45,Intentional fire set to roadside shop inventory late night.,high,76,resolved,15.3674,75.1314,Hubballi-Dharwad,Vidyanagar PS,Deepak Reddy,Anand Nayakt
+FIR2026511,INC2026511,Arson,2026-06-11,06:07,Intentional fire set to roadside shop inventory late night.,critical,89,in_progress,13.3611,74.7838,Udupi,Manipal PS,Rajesh Kulkarni,Asha Hegde
+FIR2026512,INC2026512,Fraud,2026-02-05,17:11,Fake real-estate property investment scam involving forged documents.,low,54,resolved,17.3481,76.8258,Kalaburagi,Brahampur PS,Kavita Kumar,Kavita Patel
+FIR2026513,INC2026513,Burglary,2026-03-13,11:00,Break-in at residential house while owners were away for weekend.,high,35,in_progress,13.3524,74.7346,Udupi,Town PS,Meena Dhar,Pooja Nayakt
+FIR2026514,INC2026514,Drug Trafficking,2026-03-16,04:42,Seizure of illicit narcotics package during routine highway check-post inspection.,medium,62,closed,12.3161,76.6087,Mysuru,Vijayanagar PS,Anand Nair,Rajesh Shetty
+FIR2026515,INC2026515,Drug Trafficking,2026-08-25,23:34,Seizure of illicit narcotics package during routine highway check-post inspection.,medium,63,investigating,12.3193,76.6015,Mysuru,Vijayanagar PS,Shobha Chavan,Vijay Bhat
+FIR2026516,INC2026516,Human Trafficking,2026-06-05,05:10,Inter-state illegal labor trafficking racket busted at transit station.,high,80,resolved,12.98,77.6542,Bengaluru Urban,Indiranagar PS,Ganesh Gowda,Deepak Nayakt
+FIR2026517,INC2026517,Theft,2026-04-16,10:12,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,63,investigating,15.3454,75.1442,Hubballi-Dharwad,Vidyanagar PS,Prakash Menon,Pooja Reddy
+FIR2026518,INC2026518,Extortion,2026-02-11,14:48,Threatening calls demanding protection money from shopkeeper.,high,82,closed,15.866,74.5072,Belagavi,Market PS,Pooja Deshmukh,Kavita Hegde
+FIR2026519,INC2026519,Drug Trafficking,2026-04-20,10:43,Seizure of illicit narcotics package during routine highway check-post inspection.,high,78,in_progress,15.1334,76.9175,Ballari,Brucepet PS,Ramesh Hegde,Vijay Singh
+FIR2026520,INC2026520,Drug Trafficking,2026-04-23,01:53,Seizure of illicit narcotics package during routine highway check-post inspection.,medium,78,reported,12.9867,77.6321,Bengaluru Urban,Indiranagar PS,Prakash Patel,Kavita Patel
