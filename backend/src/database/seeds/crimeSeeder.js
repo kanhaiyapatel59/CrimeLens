@@ -1,92 +1,121 @@
 const CrimeIncident = require('../../models/CrimeIncident');
 const CrimeType = require('../../models/CrimeType');
 const District = require('../../models/District');
+const Victim = require('../../models/Victim');
+const Suspect = require('../../models/Suspect');
 const User = require('../../models/User');
 const logger = require('../../utils/logger');
 
+const masterRecords = [
+  { firNumber: 'FIR2026101', incidentId: 'INC2026101', crimeType: 'Robbery', date: '2026-01-15', time: '14:30', description: 'Armed robbery at MG Road jewelry store involving two masked perpetrators', severity: 'high', riskScore: 85, status: 'investigating', latitude: 12.9716, longitude: 77.5946, district: 'Bengaluru Urban', policeStation: 'MG Road PS', victimName: 'Ramesh Kumar', suspectName: 'Kabir Khan' },
+  { firNumber: 'FIR2026102', incidentId: 'INC2026102', crimeType: 'Cyber Crime', date: '2026-01-20', time: '23:15', description: 'Phishing scam targeting senior citizens resulting in unauthorized bank transfer', severity: 'critical', riskScore: 92, status: 'reported', latitude: 12.9352, longitude: 77.6101, district: 'Bengaluru Urban', policeStation: 'Indiranagar PS', victimName: 'Sunita Sharma', suspectName: 'Rahul Verma' },
+  { firNumber: 'FIR2026103', incidentId: 'INC2026103', crimeType: 'Theft', date: '2026-02-05', time: '03:45', description: 'Grand theft auto reported from Koramangala commercial parking lot overnight', severity: 'medium', riskScore: 55, status: 'in_progress', latitude: 12.9279, longitude: 77.6271, district: 'Bengaluru Urban', policeStation: 'Koramangala PS', victimName: 'Vikram Singh', suspectName: 'Imran Shaikh' },
+  { firNumber: 'FIR2026104', incidentId: 'INC2026104', crimeType: 'Burglary', date: '2026-02-18', time: '11:20', description: 'Residential break-in at Jayanagar during daytime hours; gold jewelry stolen', severity: 'medium', riskScore: 48, status: 'resolved', latitude: 12.9304, longitude: 77.5825, district: 'Bengaluru Urban', policeStation: 'Jayanagar PS', victimName: 'Priya Nair', suspectName: 'Unknown Offender' },
+  { firNumber: 'FIR2026105', incidentId: 'INC2026105', crimeType: 'Homicide', date: '2026-03-10', time: '19:00', description: 'Homicide investigation opened following incident near Devaraja Market area', severity: 'critical', riskScore: 95, status: 'investigating', latitude: 12.3052, longitude: 76.6551, district: 'Mysuru', policeStation: 'Devaraja PS', victimName: 'Suresh Rao', suspectName: 'David Dsouza' },
+  { firNumber: 'FIR2026106', incidentId: 'INC2026106', crimeType: 'Human Trafficking', date: '2026-03-25', time: '01:10', description: 'Inter-state trafficking racket intercepted at Central Railway Station hub', severity: 'high', riskScore: 78, status: 'in_progress', latitude: 12.2958, longitude: 76.6394, district: 'Mysuru', policeStation: 'Mandi PS', victimName: 'Ananya Hegde', suspectName: 'Amit Shah' },
+  { firNumber: 'FIR2026107', incidentId: 'INC2026107', crimeType: 'Money Laundering', date: '2026-04-12', time: '16:45', description: 'Shell company financial fraud involving suspicious transactions across accounts', severity: 'high', riskScore: 82, status: 'closed', latitude: 12.9141, longitude: 74.8560, district: 'Coastal Mangaluru', policeStation: 'Pandeshwar PS', victimName: 'Vijay Patil', suspectName: 'Santosh Kumar' },
+  { firNumber: 'FIR2026108', incidentId: 'INC2026108', crimeType: 'Narcotics', date: '2026-05-01', time: '08:30', description: 'Seizure of contraband substances at coastal checkpost transport inspect point', severity: 'medium', riskScore: 52, status: 'reported', latitude: 12.8700, longitude: 74.8800, district: 'Coastal Mangaluru', policeStation: 'Bunder PS', victimName: 'Deepa Mehta', suspectName: 'Rohit Shetty' },
+  { firNumber: 'FIR2026109', incidentId: 'INC2026109', crimeType: 'Extortion', date: '2026-05-18', time: '21:00', description: 'Protection money extortion attempt against local business owner in Hubballi', severity: 'high', riskScore: 80, status: 'investigating', latitude: 15.3647, longitude: 75.1240, district: 'Hubballi-Dharwad', policeStation: 'Subhash Nagar PS', victimName: 'Rajesh Gupta', suspectName: 'Dinesh Gowda' },
+  { firNumber: 'FIR2026110', incidentId: 'INC2026110', crimeType: 'Assault', date: '2026-06-04', time: '13:15', description: 'Physical altercation outside bus terminal resulting in minor injuries', severity: 'medium', riskScore: 60, status: 'resolved', latitude: 15.3500, longitude: 75.1300, district: 'Hubballi-Dharwad', policeStation: 'Old Hubballi PS', victimName: 'Meena Joshi', suspectName: 'Salman Khan' },
+  { firNumber: 'FIR2026111', incidentId: 'INC2026111', crimeType: 'Vehicle Theft', date: '2026-06-20', time: '17:50', description: 'Motorcycle stolen from public market complex parking bay in Belagavi', severity: 'low', riskScore: 28, status: 'closed', latitude: 15.8497, longitude: 74.4977, district: 'Belagavi', policeStation: 'Camp PS', victimName: 'Abdul Rahim', suspectName: 'Prakash Naik' },
+  { firNumber: 'FIR2026112', incidentId: 'INC2026112', crimeType: 'Arson', date: '2026-07-08', time: '02:30', description: 'Suspicious fire incident at industrial warehouse location under investigation', severity: 'high', riskScore: 88, status: 'investigating', latitude: 15.8600, longitude: 74.5100, district: 'Belagavi', policeStation: 'APMC PS', victimName: 'Kavita Reddy', suspectName: 'Vinay Kumar' },
+  { firNumber: 'FIR2026113', incidentId: 'INC2026113', crimeType: 'Kidnapping', date: '2026-07-22', time: '10:05', description: 'Attempted abduction foiled by swift police intervention at highway junction', severity: 'critical', riskScore: 94, status: 'in_progress', latitude: 12.9716, longitude: 77.5946, district: 'Bengaluru Urban', policeStation: 'MG Road PS', victimName: 'Mohan Das', suspectName: 'Mohammad Ali' },
+  { firNumber: 'FIR2026114', incidentId: 'INC2026114', crimeType: 'Forgery', date: '2026-08-11', time: '20:40', description: 'Property document forgery and illegal land registration racket uncovered', severity: 'medium', riskScore: 65, status: 'reported', latitude: 12.9352, longitude: 77.6101, district: 'Bengaluru Urban', policeStation: 'Indiranagar PS', victimName: 'Pooja Verma', suspectName: 'Deepak Sharma' },
+  { firNumber: 'FIR2026115', incidentId: 'INC2026115', crimeType: 'Domestic Violence', date: '2026-08-25', time: '15:20', description: 'Domestic dispute complaint registered following distress call to hotline', severity: 'low', riskScore: 35, status: 'resolved', latitude: 12.9279, longitude: 77.6271, district: 'Bengaluru Urban', policeStation: 'Koramangala PS', victimName: 'Sanjay Kulkarni', suspectName: 'Ganesh Pujari' }
+];
+
 const seedCrimes = async () => {
   try {
-    logger.info('🌱 Seeding crime incidents...');
+    logger.info('🧹 Wiping all existing sample crime incidents, victims, and suspects...');
+    await CrimeIncident.deleteMany({});
+    await Victim.deleteMany({});
+    await Suspect.deleteMany({});
 
     const types = await CrimeType.find({ isActive: true }).select('_id name').lean();
     const districts = await District.find({ isActive: true }).select('_id name').lean();
     const user = await User.findOne().select('_id').lean();
 
-    if (!types.length || !districts.length) {
-      throw new Error('No crime types or districts found for crime seeding.');
-    }
+    const typeMap = {};
+    types.forEach(t => { typeMap[t.name.toLowerCase()] = t._id; });
+    const defaultType = types[0]?._id;
 
-    const severities = ['low', 'medium', 'high', 'critical'];
-    const statuses = ['reported', 'investigating', 'in_progress', 'resolved', 'closed'];
-    const descriptions = [
-      'Suspect broke into residential property and stole valuables worth significant amount.',
-      'Victim was assaulted near the market area during evening hours by unknown persons.',
-      'Vehicle was stolen from parking lot overnight, CCTV footage being reviewed.',
-      'Fraudulent transaction detected in bank account, cybercrime unit notified.',
-      'Physical altercation between two groups resulted in injuries to multiple persons.',
-      'Narcotics found during routine vehicle check at the checkpoint.',
-      'Missing person reported by family, search operation initiated.',
-      'Arson suspected at commercial establishment, fire department involved.',
-      'Kidnapping attempt foiled by bystanders, suspect apprehended at scene.',
-      'Domestic violence complaint filed, victim taken to shelter home.',
-    ];
+    const districtMap = {};
+    districts.forEach(d => { districtMap[d.name.toLowerCase()] = d._id; });
+    const defaultDistrict = districts[0]?._id;
 
-    const baseCoords = [
-      [77.5946, 12.9716], [77.6101, 12.9352], [77.5667, 13.0012],
-      [77.6408, 12.9141], [77.5800, 12.9500], [77.6200, 12.9800],
-      [77.5500, 12.9300], [77.6000, 13.0100], [77.5750, 12.9600],
-      [77.6300, 12.9400],
-    ];
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    const crimes = [];
-    const now = new Date();
+    logger.info('🌱 Seeding 15 master crime records...');
+    const insertedCrimes = [];
 
-    for (let i = 0; i < 50; i++) {
-      const daysAgo = Math.floor(Math.random() * 90);
-      const date = new Date(now);
-      date.setDate(date.getDate() - daysAgo);
+    for (const item of masterRecords) {
+      const dateObj = new Date(item.date);
+      const matchedTypeId = typeMap[item.crimeType.toLowerCase()] || defaultType;
+      const matchedDistrictId = districtMap[item.district.toLowerCase()] || defaultDistrict;
 
-      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const type = types[Math.floor(Math.random() * types.length)];
-      const district = districts[Math.floor(Math.random() * districts.length)];
-      const coords = baseCoords[Math.floor(Math.random() * baseCoords.length)];
-      const lng = coords[0] + (Math.random() - 0.5) * 0.05;
-      const lat = coords[1] + (Math.random() - 0.5) * 0.05;
-
-      const hours = Math.floor(Math.random() * 24);
-      const mins = Math.floor(Math.random() * 60);
-      const time = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
-
-      crimes.push({
-        firNumber: `FIR-2024-${String(i + 1).padStart(4, '0')}`,
-        incidentId: `INC-2024-${String(i + 1).padStart(4, '0')}`,
-        crimeType: type._id,
-        date,
-        time,
-        dayOfWeek: dayNames[date.getDay()],
-        description: descriptions[Math.floor(Math.random() * descriptions.length)],
-        severity: severities[Math.floor(Math.random() * severities.length)],
-        status: statuses[Math.floor(Math.random() * statuses.length)],
+      // Create Crime Incident
+      const crime = new CrimeIncident({
+        firNumber: item.firNumber,
+        incidentId: item.incidentId,
+        crimeType: matchedTypeId,
+        date: dateObj,
+        time: item.time,
+        dayOfWeek: dayNames[dateObj.getDay()] || 'Monday',
+        description: item.description,
+        severity: item.severity,
+        riskScore: item.riskScore,
+        status: item.status,
         location: {
           type: 'Point',
-          coordinates: [parseFloat(lng.toFixed(4)), parseFloat(lat.toFixed(4))],
+          coordinates: [item.longitude, item.latitude],
           address: {
-            city: 'Bengaluru',
-            district: district._id,
-          },
+            city: item.district,
+            district: matchedDistrictId,
+            street: item.policeStation
+          }
         },
-        riskScore: Math.floor(Math.random() * 100),
         reportedBy: user?._id,
         reportingOfficer: user?._id,
-        reportingDate: date,
-        metaData: { source: 'manual' },
+        reportingDate: dateObj,
+        metaData: { source: 'police_import' }
       });
+
+      await crime.save();
+
+      // Create Victim
+      if (item.victimName) {
+        const parts = item.victimName.split(' ');
+        const victim = new Victim({
+          firstName: parts[0] || 'Unknown',
+          lastName: parts.slice(1).join(' ') || 'Victim',
+          contact: { phone: '9845012345' },
+          crimes: [{ crime: crime._id, role: 'primary' }]
+        });
+        await victim.save();
+        crime.victims = [victim._id];
+      }
+
+      // Create Suspect
+      if (item.suspectName && item.suspectName !== 'Unknown Offender') {
+        const parts = item.suspectName.split(' ');
+        const suspectLevel = ['low', 'medium', 'high', 'extreme'].includes(item.severity) ? item.severity : 'high';
+        const suspect = new Suspect({
+          firstName: parts[0] || 'Unknown',
+          lastName: parts.slice(1).join(' ') || 'Suspect',
+          status: 'under_investigation',
+          riskAssessment: { score: item.riskScore, level: suspectLevel },
+          currentCrimes: [{ crime: crime._id, role: 'primary', status: 'active' }]
+        });
+        await suspect.save();
+        crime.suspects = [suspect._id];
+      }
+
+      await crime.save();
+      insertedCrimes.push(crime);
     }
 
-    await CrimeIncident.deleteMany({ firNumber: /^FIR-2024-/ });
-    const inserted = await CrimeIncident.insertMany(crimes);
-    logger.info(`✅ Seeded ${inserted.length} crime records successfully`);
-    return inserted.length;
+    logger.info(`✅ Seeded exactly ${insertedCrimes.length} master crime records successfully`);
+    return insertedCrimes.length;
   } catch (error) {
     logger.error('❌ Error seeding crimes:', error);
     throw error;

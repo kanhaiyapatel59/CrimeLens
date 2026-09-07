@@ -1,9 +1,0 @@
-firNumber,incidentId,crimeType,date,time,description,severity,status,latitude,longitude,district,policeStation
-FIR2026B01,INCB001,Armed Robbery,2026-01-10,02:15,Commercial jewelry store night break-in at MG Road,high,reported,12.9716,77.5946,Bengaluru Urban,MG Road PS
-FIR2026B02,INCB002,Cyber Phishing,2026-01-11,11:30,OTP spoofing financial fraud of Rs 6 Lakhs in Koramangala,medium,investigating,12.9352,77.6245,Bengaluru Urban,Koramangala PS
-FIR2026B03,INCB003,Residential Burglary,2026-01-12,03:45,Rear door lock snapping in Indiranagar 100ft road,medium,reported,12.9784,77.6408,Bengaluru Urban,Indiranagar PS
-FIR2026B04,INCB004,Homicide,2026-01-13,23:10,Commercial gang clash near IT park Whitefield,critical,investigating,12.9698,77.7499,Bengaluru Urban,Whitefield PS
-FIR2026B05,INCB005,Drug Trafficking,2026-01-14,19:20,Synthetic narcotics seizure at Electronic City flyover,low,resolved,12.8399,77.6770,Bengaluru Urban,Electronic City PS
-FIR2026B06,INCB006,Chain Snatching,2026-01-15,18:05,Two-wheeler snatching of gold chain in Jayanagar 4th Block,medium,reported,12.9304,77.5825,Bengaluru Urban,Jayanagar PS
-FIR2026B07,INCB007,ATM Skimming,2026-01-16,14:40,Bluetooth skimmer device attached to Malleswaram ATM slot,high,under_review,13.0030,77.5685,Bengaluru Urban,Malleswaram PS
-FIR2026B08,INCB008,Vehicle Theft,2026-01-17,21:50,SUV stolen using key code bypass at Rajajinagar parking,medium,reported,12.9985,77.5543,Bengaluru Urban,Rajajinagar PS
