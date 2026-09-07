@@ -115,8 +115,41 @@ const seedCrimes = async () => {
       const matchedTypeId = typeMap[item.crimeType.toLowerCase()] || defaultType;
       const matchedDistrictId = districtMap[item.district.toLowerCase()] || defaultDistrict;
 
-      // Create Crime Incident
+      const dummyCrimeId = new mongoose.Types.ObjectId();
+      let victimId = null;
+      let suspectId = null;
+
+      // Create Victim first
+      if (item.victimName) {
+        const parts = item.victimName.split(' ');
+        const victim = new Victim({
+          firstName: parts[0] || 'Unknown',
+          lastName: parts.slice(1).join(' ') || 'Victim',
+          contact: { phone: '9845012345' },
+          crimes: [{ crime: dummyCrimeId, role: 'primary' }]
+        });
+        await victim.save();
+        victimId = victim._id;
+      }
+
+      // Create Suspect first
+      if (item.suspectName && item.suspectName !== 'Unknown Offender') {
+        const parts = item.suspectName.split(' ');
+        const suspectLevel = ['low', 'medium', 'high', 'extreme'].includes(item.severity) ? item.severity : 'high';
+        const suspect = new Suspect({
+          firstName: parts[0] || 'Unknown',
+          lastName: parts.slice(1).join(' ') || 'Suspect',
+          status: 'under_investigation',
+          riskAssessment: { score: item.riskScore, level: suspectLevel },
+          currentCrimes: [{ crime: dummyCrimeId, role: 'primary', status: 'active' }]
+        });
+        await suspect.save();
+        suspectId = suspect._id;
+      }
+
+      // Create Crime Incident atomically
       const crime = new CrimeIncident({
+        _id: dummyCrimeId,
         firNumber: item.firNumber,
         incidentId: item.incidentId,
         crimeType: matchedTypeId,
@@ -127,6 +160,8 @@ const seedCrimes = async () => {
         severity: item.severity,
         riskScore: item.riskScore,
         status: item.status,
+        victims: victimId ? [victimId] : [],
+        suspects: suspectId ? [suspectId] : [],
         location: {
           type: 'Point',
           coordinates: [item.longitude, item.latitude],
@@ -143,40 +178,10 @@ const seedCrimes = async () => {
       });
 
       await crime.save();
-
-      // Create Victim
-      if (item.victimName) {
-        const parts = item.victimName.split(' ');
-        const victim = new Victim({
-          firstName: parts[0] || 'Unknown',
-          lastName: parts.slice(1).join(' ') || 'Victim',
-          contact: { phone: '9845012345' },
-          crimes: [{ crime: crime._id, role: 'primary' }]
-        });
-        await victim.save();
-        crime.victims = [victim._id];
-      }
-
-      // Create Suspect
-      if (item.suspectName && item.suspectName !== 'Unknown Offender') {
-        const parts = item.suspectName.split(' ');
-        const suspectLevel = ['low', 'medium', 'high', 'extreme'].includes(item.severity) ? item.severity : 'high';
-        const suspect = new Suspect({
-          firstName: parts[0] || 'Unknown',
-          lastName: parts.slice(1).join(' ') || 'Suspect',
-          status: 'under_investigation',
-          riskAssessment: { score: item.riskScore, level: suspectLevel },
-          currentCrimes: [{ crime: crime._id, role: 'primary', status: 'active' }]
-        });
-        await suspect.save();
-        crime.suspects = [suspect._id];
-      }
-
-      await crime.save();
       insertedCrimes.push(crime);
     }
 
-    logger.info(`✅ Seeded exactly ${insertedCrimes.length} crime records successfully`);
+    logger.info(`✅ Successfully seeded ${insertedCrimes.length} crime incidents into database!`);
     return insertedCrimes.length;
   } catch (error) {
     logger.error('❌ Error seeding crimes:', error);
