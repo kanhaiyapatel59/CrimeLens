@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026221,INC2026221,Human Trafficking,2026-03-04,22:30,Inter-state human trafficking network bust at transit hub.,critical,95,closed,13.318,77.1198,Tumakuru,New Extension PS,Suresh Rao,Dinesh Gowda
+FIR2026222,INC2026222,Burglary,2026-05-29,08:30,Break-in at electronics shop through broken rear shutter.,medium,51,pending,13.2014,77.6406,Bengaluru Rural,Doddaballapura PS,Rajesh Gupta,Mahesh Reddy
+FIR2026223,INC2026223,Gambling,2026-01-11,02:45,Online betting racket bust operating from residential flat.,low,16,reported,17.32,76.8092,Kalaburagi,Station Bazar PS,Rajesh Gupta,Amit Shah
+FIR2026224,INC2026224,Domestic Violence,2026-06-02,00:00,Domestic dispute and physical harassment complaint filed.,low,47,investigating,13.0073,76.1384,Hassan,Pension Mohalla PS,Shilpa Bhat,Raju Bhai
+FIR2026225,INC2026225,Murder,2026-08-15,01:30,Homicide investigation launched after body discovered in vacant land.,critical,90,in_progress,12.9905,76.0975,Hassan,Hassan Town PS,Priya Nair,Vinay Kumar
+FIR2026226,INC2026226,Rape,2026-06-08,23:15,Sexual assault complaint registered at local women police cell.,critical,92,investigating,13.0241,76.0817,Hassan,Pension Mohalla PS,Reliance Smart Store,Prakash Naik
+FIR2026227,INC2026227,Forgery,2026-08-15,05:00,Counterfeit currency notes detected during bank deposit check.,medium,46,resolved,15.8333,74.529,Belagavi,Khade Bazar PS,Sanjay Kulkarni,Vinay Kumar
+FIR2026228,INC2026228,Assault,2026-03-04,00:15,Aggravated assault with sharp weapon causing severe injuries.,medium,60,in_progress,15.8719,74.538,Belagavi,APMC PS,Rajesh Gupta,Vinay Kumar
+FIR2026229,INC2026229,Traffic Violation,2026-05-25,17:30,Reckless high-speed driving causing collision with barrier.,low,13,in_progress,12.9889,76.1474,Hassan,Pension Mohalla PS,Rajesh Gupta,Rahul Verma
+FIR2026230,INC2026230,Burglary,2026-06-08,23:30,Night burglary at locked commercial office premises.,medium,64,closed,12.9858,76.143,Hassan,Extension PS,Vijay Patil,Dinesh Gowda
+FIR2026231,INC2026231,Cyber Crime,2026-06-18,16:15,Ransomware attack on municipal hospital data servers.,critical,91,reported,13.0274,76.1445,Hassan,Hassan Town PS,Girish Karnad,Prakash Naik
+FIR2026232,INC2026232,Burglary,2026-01-31,21:45,Night burglary at locked commercial office premises.,medium,57,pending,17.3177,76.8089,Kalaburagi,M B Nagar PS,Pooja Verma,Mohammad Ali
+FIR2026233,INC2026233,Human Trafficking,2026-06-02,17:00,Rescue of underage workers from illegal manufacturing unit.,critical,89,investigating,17.3258,76.8406,Kalaburagi,University PS,TechCorp Logistics Ltd,Prakash Naik
+FIR2026234,INC2026234,Domestic Violence,2026-06-08,21:15,Emergency helpline call regarding domestic abuse incident.,low,50,pending,13.3102,77.0851,Tumakuru,Tilak Park PS,Arun Prakash,Nagaraj M
+FIR2026235,INC2026235,Vehicle Theft,2026-01-11,21:30,Two-wheeler stolen from apartment parking basement overnight.,low,45,investigating,13.1721,77.4162,Bengaluru Rural,Doddaballapura PS,Kavya Deshmukh,Nagaraj M
+FIR2026236,INC2026236,Theft,2026-04-13,20:15,Theft of laptop and electronics from parked vehicle.,medium,62,resolved,13.3297,77.0946,Tumakuru,Tilak Park PS,TechCorp Logistics Ltd,Kabir Khan
+FIR2026237,INC2026237,Burglary,2026-08-15,05:45,Daytime housebreaking incident; gold ornaments and cash stolen.,medium,62,investigating,13.0259,76.0885,Hassan,Hassan Town PS,Suresh Rao,Ganesh Pujari
+FIR2026238,INC2026238,Traffic Violation,2026-04-17,19:45,Drunk driving inspection violation and hit to signal post.,low,15,pending,12.9189,74.8615,Dakshina Kannada,Urwa PS,Karnataka Transport Hub,Rohit Shetty
+FIR2026239,INC2026239,Extortion,2026-06-18,07:30,Coercive extortion calls made to real estate developer.,high,72,pending,13.3171,77.0963,Tumakuru,New Extension PS,Abdul Rahim,Raju Bhai
+FIR2026240,INC2026240,Theft,2026-01-21,07:45,Theft of laptop and electronics from parked vehicle.,medium,44,pending,12.2907,76.6449,Mysuru,Mandi PS,Abdul Rahim,Raju Bhai

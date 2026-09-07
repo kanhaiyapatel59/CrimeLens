@@ -11,7 +11,13 @@ class CorrelationService {
       
       const districts = await District.find({ isActive: true });
       logger.info(`📊 Found ${districts.length} districts`);
-      
+
+      const economicCount = await DistrictEconomicData.countDocuments();
+      if (economicCount < districts.length) {
+        logger.info('🌱 Auto-seeding missing district economic data...');
+        await CorrelationService.seedEconomicData();
+      }
+
       const matrix = [];
 
       for (const district of districts) {

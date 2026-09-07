@@ -28,12 +28,14 @@ export const useDashboard = (filters = {}) => {
     refetchInterval: 60000, // Refresh every minute
   })
 
+  const extractData = (res, defaultVal = {}) => res?.data?.data || res?.data || defaultVal
+
   return {
-    kpis: kpis?.data || {},
-    overview: overview?.data || {},
-    charts: charts?.data || {},
-    districts: districts?.data || [],
-    alerts: alerts?.data || [],
+    kpis: extractData(kpis, {}),
+    overview: extractData(overview, {}),
+    charts: extractData(charts, {}),
+    districts: extractData(districts, []),
+    alerts: extractData(alerts, []),
     isLoading: kpisLoading || overviewLoading || chartsLoading || districtsLoading || alertsLoading,
   }
 }

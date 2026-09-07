@@ -24,6 +24,57 @@ const masterRecords = [
   { firNumber: 'FIR2026115', incidentId: 'INC2026115', crimeType: 'Domestic Violence', date: '2026-08-25', time: '15:20', description: 'Domestic dispute complaint registered following distress call to hotline', severity: 'low', riskScore: 35, status: 'resolved', latitude: 12.9279, longitude: 77.6271, district: 'Bengaluru Urban', policeStation: 'Koramangala PS', victimName: 'Sanjay Kulkarni', suspectName: 'Ganesh Pujari' }
 ];
 
+const fs = require('fs');
+const path = require('path');
+
+const parseCsvRecords = () => {
+  const sampleDir = path.resolve(__dirname, '../../../../sample_csv_data');
+  if (!fs.existsSync(sampleDir)) return [];
+
+  const files = fs.readdirSync(sampleDir).filter(f => f.endsWith('.csv')).sort();
+  const allRecords = [];
+
+  for (const file of files) {
+    const content = fs.readFileSync(path.join(sampleDir, file), 'utf8');
+    const lines = content.split(/\r?\n/).filter(l => l.trim() !== '');
+    if (lines.length < 2) continue;
+
+    const headers = lines[0].split(',').map(h => h.trim());
+    
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(',').map(v => v.trim());
+      if (values.length < headers.length) continue;
+
+      const record = {};
+      headers.forEach((h, idx) => {
+        record[h] = values[idx];
+      });
+
+      if (record.firNumber && record.crimeType) {
+        allRecords.push({
+          firNumber: record.firNumber,
+          incidentId: record.incidentId,
+          crimeType: record.crimeType,
+          date: record.date,
+          time: record.time,
+          description: record.description,
+          severity: record.severity,
+          riskScore: parseInt(record.riskScore) || 50,
+          status: record.status,
+          latitude: parseFloat(record.latitude) || 12.9716,
+          longitude: parseFloat(record.longitude) || 77.5946,
+          district: record.district,
+          policeStation: record.policeStation,
+          victimName: record.victimName,
+          suspectName: record.suspectName
+        });
+      }
+    }
+  }
+
+  return allRecords;
+};
+
 const seedCrimes = async () => {
   try {
     logger.info('🧹 Wiping all existing sample crime incidents, victims, and suspects...');
@@ -45,10 +96,12 @@ const seedCrimes = async () => {
 
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    logger.info('🌱 Seeding 15 master crime records...');
+    const records = parseCsvRecords();
+    logger.info(`🌱 Seeding ${records.length} crime records from sample_csv_data...`);
+
     const insertedCrimes = [];
 
-    for (const item of masterRecords) {
+    for (const item of records) {
       const dateObj = new Date(item.date);
       const matchedTypeId = typeMap[item.crimeType.toLowerCase()] || defaultType;
       const matchedDistrictId = districtMap[item.district.toLowerCase()] || defaultDistrict;
@@ -114,7 +167,7 @@ const seedCrimes = async () => {
       insertedCrimes.push(crime);
     }
 
-    logger.info(`✅ Seeded exactly ${insertedCrimes.length} master crime records successfully`);
+    logger.info(`✅ Seeded exactly ${insertedCrimes.length} crime records successfully`);
     return insertedCrimes.length;
   } catch (error) {
     logger.error('❌ Error seeding crimes:', error);

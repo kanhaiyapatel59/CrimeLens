@@ -6,6 +6,9 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
+const getJwtSecret = () => process.env.JWT_SECRET || process.env.JWT_ACCESS_SECRET || 'crimelens_jwt_access_secret_key_2026_super_secure_99';
+const getRefreshSecret = () => process.env.JWT_REFRESH_SECRET || getJwtSecret();
+
 class TokenService {
   /**
    * Generate access token (short-lived)
@@ -14,7 +17,7 @@ class TokenService {
     console.log('🔑 [TokenService] Generating access token for:', payload.email);
     const token = jwt.sign(
       payload,
-      process.env.JWT_SECRET,
+      getJwtSecret(),
       {
         expiresIn: process.env.JWT_EXPIRE || '7d',
         issuer: 'crimelens',
@@ -33,7 +36,7 @@ class TokenService {
     console.log('🔑 [TokenService] Generating refresh token for:', payload.email);
     const token = jwt.sign(
       payload,
-      process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
+      getRefreshSecret(),
       {
         expiresIn: '7d',
         issuer: 'crimelens',
@@ -51,9 +54,9 @@ class TokenService {
   static verifyAccessToken(token) {
     try {
       console.log('🔑 [TokenService] Verifying token:', token.substring(0, 30) + '...');
-      console.log('🔑 [TokenService] Using JWT_SECRET:', process.env.JWT_SECRET ? 'Yes' : 'No');
+      console.log('🔑 [TokenService] Using JWT_SECRET:', getJwtSecret() ? 'Yes' : 'No');
       
-      const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+      const decoded = jwt.verify(token, getJwtSecret(), {
         issuer: 'crimelens',
         audience: 'crimelens-api'
       });
@@ -78,7 +81,7 @@ class TokenService {
   static verifyRefreshToken(token) {
     try {
       console.log('🔑 [TokenService] Verifying refresh token');
-      const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
+      const decoded = jwt.verify(token, getRefreshSecret(), {
         issuer: 'crimelens',
         audience: 'crimelens-api'
       });

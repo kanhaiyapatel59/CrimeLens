@@ -6,6 +6,7 @@ const { seedDistricts } = require('../database/seeds/districtSeeder');
 const { seedCrimeTypes } = require('../database/seeds/crimeTypeSeeder');
 const { seedUsers } = require('../database/seeds/userSeeder');
 const { seedCrimes } = require('../database/seeds/crimeSeeder');
+const CorrelationService = require('../services/correlationService');
 
 const handleSeeding = async (req, res) => {
   try {
@@ -15,6 +16,7 @@ const handleSeeding = async (req, res) => {
     await seedDistricts();
     await seedCrimeTypes();
     await seedUsers();
+    await CorrelationService.seedEconomicData();
     const crimesCount = await seedCrimes();
 
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@crimelens.com';

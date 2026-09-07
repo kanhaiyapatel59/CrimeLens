@@ -77,7 +77,7 @@ const Reports = () => {
     queryFn: () => crimeAPI.getAll({ limit: 20 }),
   })
 
-  const kpiData = kpis?.data || {}
+  const kpiData = kpis?.data?.data || kpis?.data || {}
 
   const reportTypes = [
     { id: 'crime_summary', name: 'Crime Summary', icon: AssessmentIcon, color: '#1a237e', desc: 'Overview of all crime records' },

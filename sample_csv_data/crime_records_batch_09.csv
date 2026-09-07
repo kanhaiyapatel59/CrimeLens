@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026361,INC2026361,Domestic Violence,2026-05-25,12:30,Domestic dispute and physical harassment complaint filed.,low,45,in_progress,17.3221,76.8155,Kalaburagi,Brahampur PS,Suresh Rao,Sharath Babu
+FIR2026362,INC2026362,Murder,2026-05-25,19:30,Homicide investigation launched after body discovered in vacant land.,critical,98,resolved,13.3454,77.1281,Tumakuru,New Extension PS,Vijay Patil,Rohit Shetty
+FIR2026363,INC2026363,Terrorism,2026-03-28,16:30,Suspicious explosive material seized during anti-terror sweep.,critical,93,reported,13.2743,77.716,Bengaluru Rural,Nelamangala PS,Vijay Patil,Unknown Syndicate
+FIR2026364,INC2026364,Rape,2026-02-14,10:45,Sexual assault complaint registered at local women police cell.,critical,93,pending,12.3092,76.6255,Mysuru,Mandi PS,Arun Prakash,Ganesh Pujari
+FIR2026365,INC2026365,Cyber Crime,2026-02-16,16:45,Ransomware attack on municipal hospital data servers.,critical,94,reported,13.3335,77.1204,Tumakuru,Tumakuru Town PS,Meena Joshi,Kabir Khan
+FIR2026366,INC2026366,Kidnapping,2026-01-03,23:15,Kidnapping for ransom foiled by quick police interception.,critical,88,resolved,17.3207,76.8045,Kalaburagi,Station Bazar PS,Sunita Sharma,Imran Shaikh
+FIR2026367,INC2026367,Gambling,2026-02-16,13:15,Illegal underground gambling den raided by police team.,low,35,pending,12.9775,77.6046,Bengaluru Urban,Koramangala PS,Mohan Das,Ganesh Pujari
+FIR2026368,INC2026368,Kidnapping,2026-07-12,21:15,Abduction complaint registered following school dismissal hours.,critical,89,investigating,13.0296,76.1075,Hassan,Hassan Town PS,Suresh Rao,Rohit Shetty
+FIR2026369,INC2026369,Robbery,2026-07-08,14:45,Snatching of cash bag outside ATM counter after withdrawal.,high,87,investigating,12.9297,77.595,Bengaluru Urban,Koramangala PS,Rajesh Gupta,Santosh Kumar
+FIR2026370,INC2026370,Burglary,2026-02-14,13:00,Daytime housebreaking incident; gold ornaments and cash stolen.,medium,51,reported,12.9121,77.5544,Bengaluru Urban,Electronic City PS,Girish Karnad,Rahul Verma
+FIR2026371,INC2026371,Narcotics,2026-07-22,14:15,Seizure of illegal synthetic drugs during highway checkpoint check.,high,66,investigating,12.9605,77.5876,Bengaluru Urban,Jayanagar PS,Reliance Smart Store,Unknown Syndicate
+FIR2026372,INC2026372,Vehicle Theft,2026-03-28,09:15,Two-wheeler stolen from apartment parking basement overnight.,low,33,in_progress,12.872,74.869,Dakshina Kannada,Bunder PS,Shilpa Bhat,Amit Shah
+FIR2026373,INC2026373,Forgery,2026-03-28,11:45,Counterfeit currency notes detected during bank deposit check.,medium,67,resolved,13.3245,77.098,Tumakuru,Tumakuru Town PS,Ananya Hegde,Raju Bhai
+FIR2026374,INC2026374,Gambling,2026-07-08,09:15,Online betting racket bust operating from residential flat.,low,16,closed,15.8448,74.505,Belagavi,APMC PS,Arun Prakash,David Dsouza
+FIR2026375,INC2026375,Kidnapping,2026-03-16,06:30,Kidnapping for ransom foiled by quick police interception.,critical,95,in_progress,15.8255,74.5235,Belagavi,Khade Bazar PS,Vijay Patil,Rahul Verma
+FIR2026376,INC2026376,Extortion,2026-06-22,19:00,Extortion threat letters and protection money demands sent to trader.,high,76,closed,13.0162,76.1191,Hassan,Pension Mohalla PS,Kavya Deshmukh,Santosh Kumar
+FIR2026377,INC2026377,Vehicle Theft,2026-07-02,06:15,Two-wheeler stolen from apartment parking basement overnight.,low,43,resolved,17.3549,76.8487,Kalaburagi,Station Bazar PS,Sri Lakshmi Jewelers,Santosh Kumar
+FIR2026378,INC2026378,Kidnapping,2026-05-25,09:45,Abduction complaint registered following school dismissal hours.,critical,96,pending,15.8416,74.4957,Belagavi,Khade Bazar PS,Arun Prakash,Sharath Babu
+FIR2026379,INC2026379,Domestic Violence,2026-02-18,10:15,Emergency helpline call regarding domestic abuse incident.,low,35,resolved,13.1569,77.7024,Bengaluru Rural,Nelamangala PS,Reliance Smart Store,David Dsouza
+FIR2026380,INC2026380,Robbery,2026-07-22,09:15,Armed robbery at jewelry showroom involving masked suspects.,high,85,investigating,17.3228,76.8583,Kalaburagi,University PS,Kavya Deshmukh,Raju Bhai

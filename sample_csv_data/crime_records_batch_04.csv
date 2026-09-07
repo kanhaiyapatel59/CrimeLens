@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026261,INC2026261,Gambling,2026-06-02,11:45,Online betting racket bust operating from residential flat.,low,25,pending,13.1657,77.4563,Bengaluru Rural,Nelamangala PS,Pooja Verma,Sharath Babu
+FIR2026262,INC2026262,Assault,2026-01-15,01:45,Physical assault incident during street brawl outside restaurant.,medium,60,in_progress,12.9962,76.1479,Hassan,Pension Mohalla PS,Mohan Das,Mahesh Reddy
+FIR2026263,INC2026263,Robbery,2026-06-02,01:15,Snatching of cash bag outside ATM counter after withdrawal.,high,86,closed,13.3454,77.1175,Tumakuru,Tilak Park PS,Karnataka Transport Hub,Rahul Verma
+FIR2026264,INC2026264,Money Laundering,2026-07-30,09:45,Illegal hawala network operations uncovered during tax raid.,high,73,reported,17.3584,76.8426,Kalaburagi,Brahampur PS,Deepa Mehta,Amit Shah
+FIR2026265,INC2026265,Assault,2026-07-10,13:00,Physical assault incident during street brawl outside restaurant.,medium,53,resolved,13.0136,77.6342,Bengaluru Urban,Whitefield PS,Suresh Rao,Sharath Babu
+FIR2026266,INC2026266,Assault,2026-04-23,15:45,Physical assault incident during street brawl outside restaurant.,medium,64,closed,17.3087,76.8133,Kalaburagi,University PS,Girish Karnad,Mahesh Reddy
+FIR2026267,INC2026267,Murder,2026-05-25,13:30,Fatal stabbing incident outside local bar establishment.,critical,94,reported,13.1924,77.5045,Bengaluru Rural,Hosakote PS,Shilpa Bhat,Unknown Syndicate
+FIR2026268,INC2026268,Gambling,2026-04-23,17:45,Online betting racket bust operating from residential flat.,low,25,closed,12.3181,76.6426,Mysuru,Nazarbad PS,Abdul Rahim,Santosh Kumar
+FIR2026269,INC2026269,Narcotics,2026-01-19,13:00,Contraband distribution racket intercepted near university zone.,high,80,pending,13.0257,76.1067,Hassan,Hassan Town PS,Canara Bank Local Branch,David Dsouza
+FIR2026270,INC2026270,Gambling,2026-03-20,16:30,Illegal underground gambling den raided by police team.,low,29,reported,12.9631,77.6094,Bengaluru Urban,Indiranagar PS,Reliance Smart Store,David Dsouza
+FIR2026271,INC2026271,Forgery,2026-07-10,15:30,Counterfeit currency notes detected during bank deposit check.,medium,64,pending,12.2999,76.6248,Mysuru,Devaraja PS,Abdul Rahim,Raju Bhai
+FIR2026272,INC2026272,Kidnapping,2026-01-15,17:00,Kidnapping for ransom foiled by quick police interception.,critical,91,pending,12.9048,74.8501,Dakshina Kannada,Urwa PS,Deepa Mehta,Imran Shaikh
+FIR2026273,INC2026273,Forgery,2026-08-23,14:15,Counterfeit currency notes detected during bank deposit check.,medium,45,reported,13.1987,77.4196,Bengaluru Rural,Devanahalli PS,Kavita Reddy,Vinay Kumar
+FIR2026274,INC2026274,Forgery,2026-01-19,16:45,Forged property land deed submitted for fake registration.,medium,50,investigating,12.2839,76.6723,Mysuru,Mandi PS,Girish Karnad,Rohit Shetty
+FIR2026275,INC2026275,Gambling,2026-07-22,14:30,Online betting racket bust operating from residential flat.,low,23,pending,12.2805,76.6683,Mysuru,Mandi PS,Meena Joshi,Raju Bhai
+FIR2026276,INC2026276,Human Trafficking,2026-02-12,11:30,Rescue of underage workers from illegal manufacturing unit.,critical,96,in_progress,13.2185,77.5057,Bengaluru Rural,Nelamangala PS,Mohan Das,Sharath Babu
+FIR2026277,INC2026277,Burglary,2026-01-19,18:30,Break-in at electronics shop through broken rear shutter.,medium,54,pending,15.8377,74.5387,Belagavi,Shahapur PS,Canara Bank Local Branch,Mohammad Ali
+FIR2026278,INC2026278,Extortion,2026-05-25,21:00,Coercive extortion calls made to real estate developer.,high,79,investigating,12.9728,77.5958,Bengaluru Urban,Whitefield PS,TechCorp Logistics Ltd,Santosh Kumar
+FIR2026279,INC2026279,Terrorism,2026-03-14,20:00,Suspicious explosive material seized during anti-terror sweep.,critical,96,resolved,17.302,76.8255,Kalaburagi,Brahampur PS,Suresh Rao,Imran Shaikh
+FIR2026280,INC2026280,Assault,2026-05-25,05:15,Physical assault incident during street brawl outside restaurant.,medium,67,in_progress,12.8925,74.8939,Dakshina Kannada,Urwa PS,Ananya Hegde,Dinesh Gowda

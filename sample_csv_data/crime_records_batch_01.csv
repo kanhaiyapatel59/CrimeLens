@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026201,INC2026201,Arson,2026-06-22,01:45,Suspicious fire set to commercial warehouse inventory.,high,92,resolved,12.8563,74.8505,Dakshina Kannada,Kadri PS,TechCorp Logistics Ltd,Nagaraj M
+FIR2026202,INC2026202,Arson,2026-07-08,01:15,Arson attack on parked vehicles in residential street.,high,79,investigating,15.872,74.5028,Belagavi,Camp PS,Sanjay Kulkarni,Vinay Kumar
+FIR2026203,INC2026203,Human Trafficking,2026-08-17,06:30,Inter-state human trafficking network bust at transit hub.,critical,94,pending,12.8637,74.881,Dakshina Kannada,Kadri PS,Ananya Hegde,Ganesh Pujari
+FIR2026204,INC2026204,Kidnapping,2026-01-07,21:30,Kidnapping for ransom foiled by quick police interception.,critical,91,reported,17.3483,76.8281,Kalaburagi,Brahampur PS,Vikram Singh,Santosh Kumar
+FIR2026205,INC2026205,Organized Crime,2026-02-26,20:45,Organized crime gang members arrested with illegal firearms.,critical,95,resolved,12.8614,74.8398,Dakshina Kannada,Bunder PS,Reliance Smart Store,Raju Bhai
+FIR2026206,INC2026206,Rape,2026-02-04,18:45,Aggravated sexual assault investigation initiated.,critical,93,investigating,17.3306,76.8064,Kalaburagi,University PS,Sunita Sharma,Unknown Offender
+FIR2026207,INC2026207,Murder,2026-01-29,19:00,Homicide investigation launched after body discovered in vacant land.,critical,96,closed,12.3298,76.6517,Mysuru,Nazarbad PS,Manjunath Swamy,Kabir Khan
+FIR2026208,INC2026208,Burglary,2026-05-19,03:30,Night burglary at locked commercial office premises.,medium,50,resolved,17.3002,76.8505,Kalaburagi,M B Nagar PS,Reliance Smart Store,Dinesh Gowda
+FIR2026209,INC2026209,Traffic Violation,2026-03-12,03:30,Reckless high-speed driving causing collision with barrier.,low,14,in_progress,12.3181,76.6524,Mysuru,Lashkar PS,Karnataka Transport Hub,Mahesh Reddy
+FIR2026210,INC2026210,Robbery,2026-03-04,00:00,Highway robbery incident targeting transport vehicle at midnight.,high,84,investigating,12.8546,74.8915,Dakshina Kannada,Urwa PS,Vikram Singh,Imran Shaikh
+FIR2026211,INC2026211,Gambling,2026-02-26,04:45,Illegal underground gambling den raided by police team.,low,23,closed,13.2809,77.5481,Bengaluru Rural,Doddaballapura PS,Vijay Patil,Raju Bhai
+FIR2026212,INC2026212,Money Laundering,2026-01-07,21:30,Illegal hawala network operations uncovered during tax raid.,high,86,resolved,17.3073,76.8157,Kalaburagi,University PS,Abdul Rahim,Kabir Khan
+FIR2026213,INC2026213,Organized Crime,2026-06-12,00:00,Syndicate extortion and land grabbing operation intercepted.,critical,88,reported,15.8743,74.5316,Belagavi,APMC PS,Vikram Singh,Mahesh Reddy
+FIR2026214,INC2026214,Narcotics,2026-01-07,06:15,Contraband distribution racket intercepted near university zone.,high,72,resolved,17.3484,76.8133,Kalaburagi,University PS,Priya Nair,Deepak Sharma
+FIR2026215,INC2026215,Arson,2026-01-29,14:00,Suspicious fire set to commercial warehouse inventory.,high,78,resolved,13.0164,76.136,Hassan,Extension PS,Priya Nair,Rohit Shetty
+FIR2026216,INC2026216,Money Laundering,2026-01-27,04:45,Shell company transactions flagged for suspicious fund diversion.,high,78,resolved,15.835,74.5354,Belagavi,Shahapur PS,Sanjay Kulkarni,Raju Bhai
+FIR2026217,INC2026217,Burglary,2026-06-12,17:00,Daytime housebreaking incident; gold ornaments and cash stolen.,medium,69,investigating,12.92,77.6131,Bengaluru Urban,Electronic City PS,Vijay Patil,Mohammad Ali
+FIR2026218,INC2026218,Cyber Crime,2026-02-04,00:45,Ransomware attack on municipal hospital data servers.,critical,97,resolved,12.2943,76.6618,Mysuru,Nazarbad PS,Reliance Smart Store,Raju Bhai
+FIR2026219,INC2026219,Gambling,2026-03-04,09:15,Illegal underground gambling den raided by police team.,low,33,pending,12.3071,76.6649,Mysuru,Mandi PS,Sunita Sharma,Rahul Verma
+FIR2026220,INC2026220,Organized Crime,2026-06-12,16:15,Syndicate extortion and land grabbing operation intercepted.,critical,93,reported,13.3511,77.0841,Tumakuru,New Extension PS,Vikram Singh,Rohit Shetty

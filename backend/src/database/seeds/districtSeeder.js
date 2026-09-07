@@ -221,15 +221,12 @@ const seedDistricts = async () => {
     logger.info('🌱 Seeding districts...');
 
     for (const districtData of districts) {
-      const existingDistrict = await District.findOne({ code: districtData.code });
-      
-      if (existingDistrict) {
-        await District.updateOne({ code: districtData.code }, districtData);
-        logger.info(`✅ Updated district: ${districtData.name}`);
-      } else {
-        await District.create(districtData);
-        logger.info(`✅ Created district: ${districtData.name}`);
-      }
+      await District.findOneAndUpdate(
+        { name: districtData.name },
+        districtData,
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      logger.info(`✅ Upserted district: ${districtData.name}`);
     }
 
     logger.info('✅ Districts seeded successfully!');

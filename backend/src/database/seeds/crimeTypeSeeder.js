@@ -234,15 +234,12 @@ const seedCrimeTypes = async () => {
     logger.info('🌱 Seeding crime types...');
 
     for (const crimeData of crimeTypes) {
-      const existingCrime = await CrimeType.findOne({ code: crimeData.code });
-      
-      if (existingCrime) {
-        await CrimeType.updateOne({ code: crimeData.code }, crimeData);
-        logger.info(`✅ Updated crime type: ${crimeData.name}`);
-      } else {
-        await CrimeType.create(crimeData);
-        logger.info(`✅ Created crime type: ${crimeData.name}`);
-      }
+      await CrimeType.findOneAndUpdate(
+        { name: crimeData.name },
+        crimeData,
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      logger.info(`✅ Upserted crime type: ${crimeData.name}`);
     }
 
     logger.info('✅ Crime types seeded successfully!');

@@ -86,9 +86,16 @@ const Dashboard = () => {
     setRefreshing(false)
   }
 
-  const kpiData = kpis?.data?.data || kpis?.data || {}
-  const chartData = crimeTypeChart?.data?.data || crimeTypeChart?.data || {}
-  const severityData = severityChart?.data?.data || severityChart?.data || {}
+  const extractData = (res) => {
+    if (!res) return {}
+    if (res.data?.data) return res.data.data
+    if (res.data) return res.data
+    return res
+  }
+
+  const kpiData = extractData(kpis)
+  const chartData = extractData(crimeTypeChart)
+  const severityData = extractData(severityChart)
   const recentCrimesList = recentCrimes?.data?.data?.crimes || recentCrimes?.data?.crimes || []
 
   // Get correlation data for the first district (or aggregate)
