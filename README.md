@@ -1,5 +1,5 @@
 # 🚔 CrimeLens
-### AI-Powered Crime Analytics & Investigation Platform
+### AI-Powered Crime Analytics & Intelligence Platform
 
 <div align="center">
 
@@ -7,394 +7,226 @@
 
 *Transforming Crime Data into Actionable Intelligence through Artificial Intelligence, Data Analytics, and Interactive Visualization.*
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-CrimeLens-00E5FF?style=for-the-badge&logoColor=black)](https://crimelens-frontend-kqiohtrf.onslate.in)
+[![Live Frontend](https://img.shields.io/badge/🌐_Live_Frontend-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://crime-lens-eta.vercel.app)
+[![Live Backend](https://img.shields.io/badge/⚡_Live_Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://crimelens-backends.onrender.com)
 [![Developer Portfolio](https://img.shields.io/badge/Developer_Portfolio-Kanhaiya_Patel-7C3AED?style=for-the-badge)](https://portfolio-kanhaiya-patel.vercel.app/)
-[![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react)](https://react.dev/)
-[![NodeJS](https://img.shields.io/badge/Backend-Node.js-339933?logo=node.js)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Framework-Express-000000?logo=express)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb)](https://mongodb.com/)
+
+[![React](https://img.shields.io/badge/Frontend-React_18-61DAFB?logo=react)](https://react.dev/)
+[![NodeJS](https://img.shields.io/badge/Backend-Node.js_24-339933?logo=node.js)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Framework-Express_4-000000?logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB_Atlas-47A248?logo=mongodb)](https://mongodb.com/)
 
 </div>
 
 ---
 
-# 📌 Overview
+## 🌐 Live URLs & Deployment Links
 
-CrimeLens is an AI-powered crime analytics platform developed for the **Karnataka State Police (KSP) Datathon 2026**.
-
-The platform helps law enforcement agencies analyze crime records, discover hidden relationships, identify crime hotspots, visualize trends, and generate actionable insights from large crime datasets.
-
-CrimeLens combines secure data management, interactive dashboards, network analysis, statistical analytics, and machine learning techniques to support faster and more informed decision-making.
-
----
-
-# 🎯 Problem Statement
-
-Traditional crime analysis often involves manually reviewing large volumes of records, making it difficult to:
-
-- Identify crime hotspots
-- Detect emerging crime trends
-- Analyze criminal relationships
-- Compare district-level crime patterns
-- Support evidence-based policing
-
-CrimeLens addresses these challenges by providing a unified platform for crime analytics and visualization.
+- **Frontend Application (Vercel)**: [https://crime-lens-eta.vercel.app](https://crime-lens-eta.vercel.app)
+- **Backend API Server (Render)**: [https://crimelens-backends.onrender.com](https://crimelens-backends.onrender.com)
+- **Backend Health Check**: [https://crimelens-backends.onrender.com/health](https://crimelens-backends.onrender.com/health)
+- **Cloud Database Seed Route**: [https://crimelens-backends.onrender.com/api/seed](https://crimelens-backends.onrender.com/api/seed)
 
 ---
 
-# 💡 Solution
+## 🔑 Demo Access Credentials
 
-CrimeLens transforms raw crime data into meaningful intelligence through:
-
-- AI-assisted analytics
-- Interactive dashboards
-- Heatmap visualization
-- Network relationship analysis
-- Crime trend monitoring
-- Statistical reporting
-- Secure role-based access
+| User Role | Email | Password | Access Level |
+| :--- | :--- | :--- | :--- |
+| **System Administrator** | `admin@crimelens.com` | `Admin@123` | Full System & Admin Privileges |
+| **SCRB State Officer** | `scrb@crimelens.com` | `SCRB@123` | State Records & Analytics |
 
 ---
 
-# ✨ Key Features
+## 📌 Overview
 
-## 📊 Crime Analytics Dashboard
+CrimeLens is an enterprise-grade AI-powered crime intelligence and analytics platform developed for the **Karnataka State Police (KSP) Datathon 2026**.
 
-- Crime statistics
-- District-wise comparison
-- Monthly crime trends
-- Category analysis
-- Yearly reports
+The platform empowers law enforcement officers, station house officers (SHOs), and intelligence analysts to monitor real-time crime incidents, predict high-risk spatial hotspots, profile repeat criminal syndicates, run socio-economic correlation matrices, and generate official briefings.
 
 ---
 
-## 🗺 Geographic Crime Visualization
+## ✨ Key Features
 
-- Crime Heatmaps
-- District analytics
-- Location-based filtering
-- Interactive visualization
+### 📊 Real-Time Crime Analytics & Dashboard
+- State-wide incident counters, high-risk case metrics, and case resolution rates.
+- District-wise comparison breakdown across Karnataka districts (Bengaluru Urban, Mysuru, Hubballi-Dharwad, Mangaluru, Belagavi, etc.).
+- Diurnal crime time-series graphs and category severity distribution.
 
----
+### 🤖 AI Assistant & Conversational Intelligence (`/ai-chat`)
+- Powered by Groq Llama 3.3 70B & CrimeLens Domain Intelligence Engine.
+- **Voice Dictation (Speech-to-Text)**: Officer voice input support.
+- **Text-to-Speech (Read Aloud)**: Audio playback of AI briefings.
+- **Interactive Prompts**: 7-day hotspot matrix, repeat offender profiling, and SCRB executive summaries.
+- Export chat transcripts as Markdown files.
 
-## 🕸 Criminal Network Analysis
+### 📄 Persistent Reports & Data Export (`/reports`)
+- Configure briefings by report type (Crime Summary, Network Analysis, AI Insights, District Comparison, Trend Analysis).
+- **Real File Exports**: Export live FIR incident datasets directly into **CSV spreadsheets** and **JSON payloads**.
+- Real-time MongoDB persistence for saved reports with view/print/delete controls.
 
-- Criminal relationship graphs
-- Victim-offender mapping
-- Investigation support
-- Link analysis
+### 🗺️ Interactive Geographic Heatmaps (`/map`)
+- Leaflet map clusters displaying incident locations, police stations, and risk scores.
+- Spatial filtering by severity, district, and date ranges.
 
----
+### 🕸️ Criminal Network Analysis (`/network`)
+- Graph visualization linking offenders, suspects, gang syndicates, victims, and shared modus operandi (MO).
 
-## 📈 Advanced Analytics
+### 📈 Socio-Economic Correlation Analysis
+- Pearson correlation matrix evaluating crime rates against economic factors (unemployment, literacy, poverty, urbanization).
 
-- Correlation Analysis
-- Statistical reports
-- Crime pattern discovery
-- Trend identification
-
----
-
-## 🔐 Secure Authentication
-
-- JWT Authentication
-- Role-Based Access Control
-- Secure APIs
-- Protected routes
-
----
-
-## 📁 Crime Management
-
-- Crime Incident Management
-- FIR Records
-- Criminal Database
-- Victim Database
-- Evidence Management
+### 🔐 Enterprise Auth, Profile & Settings Persistence (`/profile`, `/settings`)
+- JWT Access & Refresh token rotation with bcrypt password security.
+- MongoDB persistence for custom user profiles, designations, avatars, dark mode preferences, and system settings.
 
 ---
 
-# 🧠 AI & Analytics Components
-
-The platform incorporates analytical techniques including:
-
-- Crime Trend Analysis
-- Crime Correlation Analysis
-- Pattern Recognition
-- District Performance Analytics
-- Data Visualization
-- Network Relationship Analysis
-
----
-
-# 🏗 System Architecture
+## 🏗️ System Architecture
 
 ```
-                   +----------------------+
-                   |     React Frontend   |
-                   +----------+-----------+
-                              |
-                              |
-                    REST API Requests
-                              |
-                              |
-                 +------------v------------+
-                 |     Express Backend     |
-                 +------------+------------+
-                              |
-       +----------------------+----------------------+
-       |                                             |
-+------v------+                              +--------v--------+
-| Authentication|                            | Business Logic  |
-+-------------+                              +----------------+
-                                                     |
-                                                     |
-                                            +--------v--------+
-                                            |    MongoDB      |
-                                            +--------+--------+
-                                                     |
-                                                     |
-                                            +--------v--------+
-                                            | Analytics Engine|
-                                            +-----------------+
+                       +-----------------------------------+
+                       |      Vercel React 18 Frontend     |
+                       |  (Redux Toolkit, Tailwind, MUI)   |
+                       +-----------------+-----------------+
+                                         |
+                               REST API (JSON)
+                                         |
+                       +-----------------v-----------------+
+                       |     Render Express Node.js Server |
+                       |    (JWT Auth, RBAC, Controllers)   |
+                       +-----------------+-----------------+
+                                         |
+               +-------------------------+-------------------------+
+               |                                                   |
+    +----------v----------+                             +----------v----------+
+    |   MongoDB Atlas     |                             |  CrimeLens AI       |
+    |  Cloud Database     |                             |  Intelligence Engine|
+    +---------------------+                             +---------------------+
 ```
 
 ---
 
-# 🛠 Technology Stack
+## 🛠️ Technology Stack
 
-## Frontend
+### Frontend
+- **Framework**: React 18 (Vite)
+- **State Management**: Redux Toolkit & React Query
+- **Styling**: Tailwind CSS & Material-UI (MUI)
+- **Visualization**: Recharts, Leaflet, Framer Motion
+- **Markdown & Code**: React Markdown & Remark GFM
 
-- React.js
-- Redux Toolkit
-- Tailwind CSS
-- React Router
-- Axios
-- Recharts
-- Leaflet
-
----
-
-## Backend
-
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT
-- bcrypt
-- Multer
+### Backend
+- **Runtime**: Node.js 24 & Express.js
+- **Database**: MongoDB Atlas (Mongoose ORM)
+- **Authentication**: JWT (JSON Web Tokens) & Bcrypt
+- **Logging & Security**: Winston Logger, Helmet, CORS, Rate Limiting
 
 ---
 
-## Database
-
-- MongoDB Atlas
-
----
-
-## Analytics
-
-- Correlation Analysis
-- Network Analysis
-- Statistical Processing
-
----
-
-# 📂 Project Structure
+## 📂 Project Structure
 
 ```
 CrimeLens
-│
 ├── backend
 │   ├── src
-│   │   ├── config
-│   │   ├── controllers
-│   │   ├── middleware
-│   │   ├── models
-│   │   ├── routes
-│   │   ├── services
-│   │   ├── utils
-│   │   └── app.js
-│   │
-│   ├── server.js
-│   └── package.json
+│   │   ├── config/             # Database & environment configurations
+│   │   ├── controllers/        # Auth, Crime, Report, Dashboard, AI controllers
+│   │   ├── database/seeds/     # Database seeders (roles, districts, users, crimes)
+│   │   ├── middlewares/        # Authentication & error handling middleware
+│   │   ├── models/             # Mongoose models (User, CrimeIncident, Report, etc.)
+│   │   ├── routes/             # Express API routes
+│   │   ├── services/           # AIService, CorrelationService, NetworkService
+│   │   └── server.js           # Server entry point
+│   ├── package.json
+│   └── render.yaml             # Render deployment configuration
 │
 ├── frontend
 │   ├── src
-│   │   ├── api
-│   │   ├── assets
-│   │   ├── components
-│   │   ├── hooks
-│   │   ├── layouts
-│   │   ├── pages
-│   │   ├── redux
-│   │   ├── utils
-│   │   └── App.jsx
-│   │
-│   ├── package.json
+│   │   ├── api/                # Axios API service instances
+│   │   ├── components/         # Reusable UI components & layouts
+│   │   ├── pages/              # Dashboard, Crimes, Map, Network, Reports, AIChat, Profile, Settings
+│   │   ├── redux/              # Redux slices for auth & application state
+│   │   └── main.jsx            # App entry point
+│   ├── vercel.json             # Vercel SPA routing configuration
 │   └── vite.config.js
 │
+├── sample_csv_data/            # Original batch CSV sample data
+├── sample_csv_data_2/          # 10 batch CSV files (200 records ready for manual upload)
 └── README.md
 ```
 
 ---
 
-# ⚙ Installation
+## ⚙️ Local Development Setup
 
-## Clone Repository
+### 1. Clone Repository
 
 ```bash
 git clone git@github.com:kanhaiyapatel59/CrimeLens.git
-```
-
-```
 cd CrimeLens
 ```
 
----
+### 2. Backend Setup
 
-## Backend Setup
-
-```
+```bash
 cd backend
 npm install
 ```
 
-Create `.env`
-
-```
-PORT=5000
-MONGO_URI=YOUR_MONGODB_URI
-JWT_SECRET=YOUR_SECRET
+Create a `.env` file in `backend/`:
+```env
+PORT=5001
+MONGODB_URI=mongodb://localhost:27017/crimelens
+JWT_SECRET=super_secure_jwt_secret_key_2026
+JWT_ACCESS_SECRET=super_secure_jwt_access_secret_key_2026
+JWT_REFRESH_SECRET=super_secure_jwt_refresh_secret_key_2026
+ADMIN_EMAIL=admin@crimelens.com
+ADMIN_PASSWORD=Admin@123
 NODE_ENV=development
 ```
 
-Run Backend
-
-```
+Start Backend Server:
+```bash
 npm run dev
 ```
 
----
+### 3. Frontend Setup
 
-## Frontend Setup
-
-```
-cd frontend
+```bash
+cd ../frontend
 npm install
+```
+
+Create a `.env` file in `frontend/`:
+```env
+VITE_API_URL=http://localhost:5001
+```
+
+Start Frontend Dev Server:
+```bash
 npm run dev
 ```
 
 ---
 
-# 🔑 Authentication
-
-The application uses:
-
-- JWT Authentication
-- Password Hashing (bcrypt)
-- Protected Routes
-- Role-Based Authorization
-
----
-
-# 📊 Core Modules
-
-✅ Dashboard
-
-✅ Crime Management
-
-✅ Criminal Records
-
-✅ FIR Management
-
-✅ Victim Management
-
-✅ District Analytics
-
-✅ Correlation Analysis
-
-✅ Network Analysis
-
-✅ Heatmap Visualization
-
-✅ Reports
-
----
-
-# 📸 Screenshots
-
-> screenshots 
-
-Example:
-
-```
-screenshots/
-
-dashboard.png
-
-crime-map.png
-
-analytics.png
-
-network-analysis.png
-
-login.png
-```
-
----
-
-# 🚀 Future Enhancements
-
-- Predictive Crime Forecasting
-- AI Investigation Assistant
-- Natural Language Crime Query
-- Mobile Application
-- Real-Time Alert System
-- CCTV Integration
-
----
-
-# 👥 Team
+## 👥 Team
 
 | Name | Role |
-|------|------|
-| Kanhaiya Patel | Full Stack Developer |
-| Ranjit Shah Kanu | Backend |
-| Astha Gupta | Frontend |
-| Manish Basnet | AI / Analytics |
-| Mansur Ansari | Testing & Documentation |
+| :--- | :--- |
+| **Kanhaiya Patel** | Lead Full Stack & AI Developer |
+| **Ranjit Shah Kanu** | Backend Systems & Database Engineer |
+| **Astha Gupta** | Frontend UI/UX Engineer |
+| **Manish Basnet** | AI & Predictive Analytics Engineer |
+| **Mansur Ansari** | QA & Documentation Lead |
 
 ---
 
-# 🏆 Developed For
+## 🏆 Developed For
 
 **Karnataka State Police (KSP) Datathon 2026**
 
 ---
 
-# 🙏 Acknowledgements
+## 📄 License
 
-- Karnataka State Police
-- Hack2Skill
-- MongoDB
-- React Community
-- Node.js Community
-- Open Source Contributors
-
----
-
-# 📄 License
-
-This project has been developed exclusively as a submission for the **Karnataka State Police (KSP) Datathon 2026**.
-
----
-
-<div align="center">
-
-### ⭐ Thank you for reviewing CrimeLens ⭐
-
-Empowering Data-Driven Policing Through AI & Analytics
-
-</div>
+This project is developed for the **Karnataka State Police (KSP) Datathon 2026**.
