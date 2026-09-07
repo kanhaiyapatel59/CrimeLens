@@ -28,8 +28,16 @@ const fs = require('fs');
 const path = require('path');
 
 const parseCsvRecords = () => {
-  const sampleDir = path.resolve(__dirname, '../../../../sample_csv_data');
-  if (!fs.existsSync(sampleDir)) return [];
+  const possiblePaths = [
+    path.resolve(__dirname, '../../../../sample_csv_data'),
+    path.resolve(process.cwd(), '../sample_csv_data'),
+    path.resolve(process.cwd(), 'sample_csv_data'),
+    path.resolve(__dirname, '../../../../sample_csv_data_2'),
+    path.resolve(process.cwd(), '../sample_csv_data_2'),
+  ];
+
+  let sampleDir = possiblePaths.find(p => fs.existsSync(p));
+  if (!sampleDir) return [];
 
   const files = fs.readdirSync(sampleDir).filter(f => f.endsWith('.csv')).sort();
   const allRecords = [];
@@ -96,8 +104,9 @@ const seedCrimes = async () => {
 
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    const records = parseCsvRecords();
-    logger.info(`🌱 Seeding ${records.length} crime records from sample_csv_data...`);
+    const parsedRecords = parseCsvRecords();
+    const records = parsedRecords.length > 0 ? parsedRecords : masterRecords;
+    logger.info(`🌱 Seeding ${records.length} crime records...`);
 
     const insertedCrimes = [];
 
