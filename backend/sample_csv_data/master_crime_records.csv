@@ -1,0 +1,16 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026101,INC2026101,Robbery,2026-01-15,14:30,Armed robbery at MG Road jewelry store involving two masked perpetrators,high,85,investigating,12.9716,77.5946,Bengaluru Urban,MG Road PS,Ramesh Kumar,Kabir Khan
+FIR2026102,INC2026102,Cyber Crime,2026-01-20,23:15,Phishing scam targeting senior citizens resulting in unauthorized bank transfer,critical,92,reported,12.9352,77.6101,Bengaluru Urban,Indiranagar PS,Sunita Sharma,Rahul Verma
+FIR2026103,INC2026103,Theft,2026-02-05,03:45,Grand theft auto reported from Koramangala commercial parking lot overnight,medium,55,in_progress,12.9279,77.6271,Bengaluru Urban,Koramangala PS,Vikram Singh,Imran Shaikh
+FIR2026104,INC2026104,Burglary,2026-02-18,11:20,Residential break-in at Jayanagar during daytime hours; gold jewelry stolen,medium,48,resolved,12.9304,77.5825,Bengaluru Urban,Jayanagar PS,Priya Nair,Unknown Offender
+FIR2026105,INC2026105,Homicide,2026-03-10,19:00,Homicide investigation opened following incident near Devaraja Market area,critical,95,investigating,12.3052,76.6551,Mysuru,Devaraja PS,Suresh Rao,David Dsouza
+FIR2026106,INC2026106,Human Trafficking,2026-03-25,01:10,Inter-state trafficking racket intercepted at Central Railway Station hub,high,78,in_progress,12.2958,76.6394,Mysuru,Mandi PS,Ananya Hegde,Amit Shah
+FIR2026107,INC2026107,Money Laundering,2026-04-12,16:45,Shell company financial fraud involving suspicious transactions across accounts,high,82,closed,12.9141,74.8560,Coastal Mangaluru,Pandeshwar PS,Vijay Patil,Santosh Kumar
+FIR2026108,INC2026108,Narcotics,2026-05-01,08:30,Seizure of contraband substances at coastal checkpost transport inspect point,medium,52,reported,12.8700,74.8800,Coastal Mangaluru,Bunder PS,Deepa Mehta,Rohit Shetty
+FIR2026109,INC2026109,Extortion,2026-05-18,21:00,Protection money extortion attempt against local business owner in Hubballi,high,80,investigating,15.3647,75.1240,Hubballi-Dharwad,Subhash Nagar PS,Rajesh Gupta,Dinesh Gowda
+FIR2026110,INC2026110,Assault,2026-06-04,13:15,Physical altercation outside bus terminal resulting in minor injuries,medium,60,resolved,15.3500,75.1300,Hubballi-Dharwad,Old Hubballi PS,Meena Joshi,Salman Khan
+FIR2026111,INC2026111,Vehicle Theft,2026-06-20,17:50,Motorcycle stolen from public market complex parking bay in Belagavi,low,28,closed,15.8497,74.4977,Belagavi,Camp PS,Abdul Rahim,Prakash Naik
+FIR2026112,INC2026112,Arson,2026-07-08,02:30,Suspicious fire incident at industrial warehouse location under investigation,high,88,investigating,15.8600,74.5100,Belagavi,APMC PS,Kavita Reddy,Vinay Kumar
+FIR2026113,INC2026113,Kidnapping,2026-07-22,10:05,Attempted abduction foiled by swift police intervention at highway junction,critical,94,in_progress,12.9716,77.5946,Bengaluru Urban,MG Road PS,Mohan Das,Mohammad Ali
+FIR2026114,INC2026114,Forgery,2026-08-11,20:40,Property document forgery and illegal land registration racket uncovered,medium,65,reported,12.9352,77.6101,Bengaluru Urban,Indiranagar PS,Pooja Verma,Deepak Sharma
+FIR2026115,INC2026115,Domestic Violence,2026-08-25,15:20,Domestic dispute complaint registered following distress call to hotline,low,35,resolved,12.9279,77.6271,Bengaluru Urban,Koramangala PS,Sanjay Kulkarni,Ganesh Pujari

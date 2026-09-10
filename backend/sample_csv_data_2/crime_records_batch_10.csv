@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026581,INC2026581,Fraud,2026-01-28,04:31,Fake real-estate property investment scam involving forged documents.,high,75,resolved,12.297,76.6385,Mysuru,Lakshmipuram PS,Mahesh Shetty,Rajesh Gowda
+FIR2026582,INC2026582,Theft,2026-04-07,23:46,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,55,investigating,12.9851,77.7671,Bengaluru Urban,Whitefield PS,Meena Bhat,Anand Nair
+FIR2026583,INC2026583,Burglary,2026-04-20,19:16,Break-in at residential house while owners were away for weekend.,low,66,resolved,12.8596,74.8197,Dakshina Kannada,Pandeshwar PS,Sunita Rao,Mahesh Nair
+FIR2026584,INC2026584,Theft,2026-04-17,15:41,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,low,68,resolved,12.97,77.5808,Bengaluru Urban,Central PS,Priya Menon,Ganesh Hegde
+FIR2026585,INC2026585,Assault,2026-04-07,10:35,Physical altercation resulting in minor injuries near commercial market.,high,61,resolved,12.9795,77.58,Bengaluru Urban,Central PS,Ganesh Gowda,Anand Rao
+FIR2026586,INC2026586,Theft,2026-06-15,07:18,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,low,60,investigating,12.9602,77.7502,Bengaluru Urban,Whitefield PS,Anand Verma,Ganesh Reddy
+FIR2026587,INC2026587,Kidnapping,2026-02-12,12:45,Abduction attempt foiled by local community and quick police dispatch.,high,81,investigating,12.9707,77.7479,Bengaluru Urban,Whitefield PS,Asha Verma,Meena Singh
+FIR2026588,INC2026588,Theft,2026-05-18,08:59,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,high,41,in_progress,15.3407,75.1469,Hubballi-Dharwad,Vidyanagar PS,Sanjay Shetty,Unknown Offender
+FIR2026589,INC2026589,Human Trafficking,2026-01-29,07:21,Inter-state illegal labor trafficking racket busted at transit station.,critical,95,resolved,15.143,76.9075,Ballari,Brucepet PS,Deepak Shetty,Pooja Verma
+FIR2026590,INC2026590,Assault,2026-05-15,09:53,Physical altercation resulting in minor injuries near commercial market.,medium,59,pending,13.9356,75.555,Shivamogga,Doddapete PS,Ramesh Verma,Unknown Offender
+FIR2026591,INC2026591,Theft,2026-04-23,11:42,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,low,62,reported,13.3593,77.0832,Tumakuru,Town PS,Anita Sharma,Ganesh Nair
+FIR2026592,INC2026592,Assault,2026-05-23,23:07,Physical altercation resulting in minor injuries near commercial market.,high,48,resolved,12.8463,74.853,Dakshina Kannada,Pandeshwar PS,Vijay Nair,Sunita Joshi
+FIR2026593,INC2026593,Homicide,2026-08-11,11:32,Fatal assault following heated personal dispute outside venue.,critical,84,pending,12.9649,77.7458,Bengaluru Urban,Whitefield PS,Vikram Joshi,Unknown Offender
+FIR2026594,INC2026594,Robbery,2026-03-28,11:14,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,67,resolved,12.3279,76.6013,Mysuru,Vijayanagar PS,Ganesh Patel,Rajesh Kumar
+FIR2026595,INC2026595,Assault,2026-07-18,22:40,Physical altercation resulting in minor injuries near commercial market.,medium,48,in_progress,17.3395,76.8181,Kalaburagi,Brahampur PS,Arun Nayakt,Sanjay Nair
+FIR2026596,INC2026596,Drug Trafficking,2026-03-16,12:01,Seizure of illicit narcotics package during routine highway check-post inspection.,critical,77,resolved,12.9791,77.6124,Bengaluru Urban,Central PS,Shobha Patel,Arun Bhat
+FIR2026597,INC2026597,Extortion,2026-08-14,04:50,Threatening calls demanding protection money from shopkeeper.,medium,90,in_progress,12.8509,74.8517,Dakshina Kannada,Pandeshwar PS,Vikram Dhar,Mahesh Reddy
+FIR2026598,INC2026598,Homicide,2026-04-08,21:59,Fatal assault following heated personal dispute outside venue.,high,93,investigating,12.8573,77.6552,Bengaluru Urban,Electronic City PS,Anand Kulkarni,Suresh Gowda
+FIR2026599,INC2026599,Robbery,2026-08-03,18:01,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,86,in_progress,12.2984,76.6435,Mysuru,Lakshmipuram PS,Pooja Sharma,Shobha Gowda
+FIR2026600,INC2026600,Extortion,2026-01-18,01:09,Threatening calls demanding protection money from shopkeeper.,high,85,in_progress,13.3643,74.803,Udupi,Manipal PS,Asha Kumar,Kavita Hegde

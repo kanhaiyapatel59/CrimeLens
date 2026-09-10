@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026441,INC2026441,Kidnapping,2026-08-20,13:01,Abduction attempt foiled by local community and quick police dispatch.,high,88,investigating,15.8597,74.531,Belagavi,Market PS,Pooja Gowda,Unknown Offender
+FIR2026442,INC2026442,Drug Trafficking,2026-06-21,15:11,Seizure of illicit narcotics package during routine highway check-post inspection.,critical,75,resolved,12.9466,77.6245,Bengaluru Urban,Koramangala PS,Ramesh Kumar,Unknown Offender
+FIR2026443,INC2026443,Robbery,2026-04-26,04:47,Armed snatching of gold chain and cash at knife-point near isolated alley.,high,67,reported,15.3471,75.1569,Hubballi-Dharwad,Vidyanagar PS,Mahesh Verma,Priya Shetty
+FIR2026444,INC2026444,Fraud,2026-08-23,21:47,Fake real-estate property investment scam involving forged documents.,high,68,in_progress,12.2836,76.6614,Mysuru,Lakshmipuram PS,Priya Menon,Arun Kulkarni
+FIR2026445,INC2026445,Arson,2026-04-06,17:46,Intentional fire set to roadside shop inventory late night.,critical,92,investigating,12.3179,76.6441,Mysuru,Devaraja PS,Asha Deshmukh,Suresh Joshi
+FIR2026446,INC2026446,Cybercrime,2026-04-07,12:20,Unauthorized bank transfer via phishing link sent via WhatsApp.,high,56,reported,17.3196,76.8396,Kalaburagi,Brahampur PS,Anand Singh,Vikram Shetty
+FIR2026447,INC2026447,Extortion,2026-04-21,14:49,Threatening calls demanding protection money from shopkeeper.,critical,65,investigating,12.3413,76.6091,Mysuru,Vijayanagar PS,Prakash Kumar,Shobha Sharma
+FIR2026448,INC2026448,Robbery,2026-01-05,16:28,Armed snatching of gold chain and cash at knife-point near isolated alley.,medium,80,investigating,12.953,77.6264,Bengaluru Urban,Koramangala PS,Asha Verma,Rajesh Kulkarni
+FIR2026449,INC2026449,Cybercrime,2026-05-06,13:23,Unauthorized bank transfer via phishing link sent via WhatsApp.,high,72,resolved,15.8637,74.506,Belagavi,Camp PS,Sanjay Menon,Rajesh Kumar
+FIR2026450,INC2026450,Fraud,2026-01-10,08:19,Fake real-estate property investment scam involving forged documents.,medium,30,investigating,15.8714,74.5142,Belagavi,Camp PS,Pooja Joshi,Meena Kulkarni
+FIR2026451,INC2026451,Assault,2026-04-06,22:16,Physical altercation resulting in minor injuries near commercial market.,medium,43,reported,12.343,76.6326,Mysuru,Vijayanagar PS,Kavita Singh,Sunita Rao
+FIR2026452,INC2026452,Robbery,2026-04-22,02:15,Armed snatching of gold chain and cash at knife-point near isolated alley.,medium,90,in_progress,12.99,77.6432,Bengaluru Urban,Indiranagar PS,Kavita Kulkarni,Unknown Offender
+FIR2026453,INC2026453,Theft,2026-05-20,14:58,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,74,resolved,12.9573,77.7408,Bengaluru Urban,Whitefield PS,Kavita Chavan,Vijay Singh
+FIR2026454,INC2026454,Cybercrime,2026-08-13,12:40,Unauthorized bank transfer via phishing link sent via WhatsApp.,medium,62,investigating,12.926,77.633,Bengaluru Urban,Koramangala PS,Shobha Singh,Mahesh Joshi
+FIR2026455,INC2026455,Fraud,2026-06-02,19:15,Fake real-estate property investment scam involving forged documents.,high,34,reported,15.8705,74.5185,Belagavi,Market PS,Pooja Joshi,Deepak Menon
+FIR2026456,INC2026456,Extortion,2026-06-16,06:11,Threatening calls demanding protection money from shopkeeper.,critical,83,pending,15.3792,75.109,Hubballi-Dharwad,Suburban PS,Suresh Singh,Vijay Gowda
+FIR2026457,INC2026457,Burglary,2026-07-08,17:27,Break-in at residential house while owners were away for weekend.,high,64,closed,12.9885,77.7442,Bengaluru Urban,Whitefield PS,Anita Sharma,Vijay Singh
+FIR2026458,INC2026458,Human Trafficking,2026-03-28,16:09,Inter-state illegal labor trafficking racket busted at transit station.,high,79,reported,15.3575,75.1295,Hubballi-Dharwad,Suburban PS,Ganesh Patel,Ramesh Deshmukh
+FIR2026459,INC2026459,Theft,2026-01-25,01:14,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,medium,60,investigating,15.8381,74.5001,Belagavi,Camp PS,Pooja Singh,Prakash Hegde
+FIR2026460,INC2026460,Cybercrime,2026-07-13,20:15,Unauthorized bank transfer via phishing link sent via WhatsApp.,low,30,pending,17.3368,76.8493,Kalaburagi,Brahampur PS,Shobha Nayakt,Unknown Offender

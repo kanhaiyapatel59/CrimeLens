@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026561,INC2026561,Arson,2026-07-27,09:26,Intentional fire set to roadside shop inventory late night.,critical,85,in_progress,15.3648,75.1041,Hubballi-Dharwad,Suburban PS,Kavita Kumar,Vikram Menon
+FIR2026562,INC2026562,Homicide,2026-01-29,19:05,Fatal assault following heated personal dispute outside venue.,critical,87,in_progress,12.9652,77.6125,Bengaluru Urban,Central PS,Deepak Deshmukh,Suresh Singh
+FIR2026563,INC2026563,Extortion,2026-04-26,04:07,Threatening calls demanding protection money from shopkeeper.,critical,74,investigating,12.3066,76.669,Mysuru,Devaraja PS,Ganesh Joshi,Vikram Deshmukh
+FIR2026564,INC2026564,Assault,2026-06-01,06:56,Physical altercation resulting in minor injuries near commercial market.,low,47,pending,15.3441,75.1502,Hubballi-Dharwad,Vidyanagar PS,Mahesh Gowda,Asha Nayakt
+FIR2026565,INC2026565,Robbery,2026-05-25,20:08,Armed snatching of gold chain and cash at knife-point near isolated alley.,high,70,closed,12.2892,76.6254,Mysuru,Lakshmipuram PS,Anand Menon,Suresh Dhar
+FIR2026566,INC2026566,Burglary,2026-01-15,07:56,Break-in at residential house while owners were away for weekend.,medium,53,reported,13.3624,74.7707,Udupi,Manipal PS,Ganesh Verma,Anita Verma
+FIR2026567,INC2026567,Burglary,2026-08-23,01:26,Break-in at residential house while owners were away for weekend.,medium,65,closed,13.3371,74.7973,Udupi,Manipal PS,Rajesh Joshi,Arun Sharma
+FIR2026568,INC2026568,Human Trafficking,2026-05-15,21:38,Inter-state illegal labor trafficking racket busted at transit station.,high,75,closed,15.1311,76.9264,Ballari,Brucepet PS,Mahesh Singh,Anita Shetty
+FIR2026569,INC2026569,Human Trafficking,2026-05-29,19:10,Inter-state illegal labor trafficking racket busted at transit station.,high,86,closed,12.8594,77.6647,Bengaluru Urban,Electronic City PS,Mahesh Sharma,Vijay Singh
+FIR2026570,INC2026570,Robbery,2026-02-21,06:29,Armed snatching of gold chain and cash at knife-point near isolated alley.,medium,89,investigating,12.995,77.6511,Bengaluru Urban,Indiranagar PS,Arun Hegde,Sanjay Joshi
+FIR2026571,INC2026571,Burglary,2026-07-11,00:37,Break-in at residential house while owners were away for weekend.,high,33,pending,12.9378,77.6088,Bengaluru Urban,Koramangala PS,Asha Gowda,Priya Sharma
+FIR2026572,INC2026572,Theft,2026-01-24,07:44,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,high,74,pending,12.2978,76.6653,Mysuru,Devaraja PS,Deepak Sharma,Unknown Offender
+FIR2026573,INC2026573,Extortion,2026-05-25,17:47,Threatening calls demanding protection money from shopkeeper.,high,88,resolved,13.923,75.5686,Shivamogga,Doddapete PS,Ramesh Kumar,Asha Verma
+FIR2026574,INC2026574,Arson,2026-06-13,12:06,Intentional fire set to roadside shop inventory late night.,high,84,in_progress,13.3553,74.7382,Udupi,Town PS,Pooja Deshmukh,Sanjay Hegde
+FIR2026575,INC2026575,Kidnapping,2026-07-24,22:50,Abduction attempt foiled by local community and quick police dispatch.,high,79,investigating,13.3349,77.1127,Tumakuru,Town PS,Ganesh Bhat,Mahesh Nair
+FIR2026576,INC2026576,Drug Trafficking,2026-02-13,12:25,Seizure of illicit narcotics package during routine highway check-post inspection.,high,76,reported,12.3302,76.623,Mysuru,Vijayanagar PS,Deepak Nayakt,Rajesh Kulkarni
+FIR2026577,INC2026577,Cybercrime,2026-04-13,22:32,Unauthorized bank transfer via phishing link sent via WhatsApp.,high,75,investigating,12.3414,76.6135,Mysuru,Vijayanagar PS,Kavita Menon,Ramesh Nair
+FIR2026578,INC2026578,Kidnapping,2026-04-24,04:15,Abduction attempt foiled by local community and quick police dispatch.,high,76,reported,15.8588,74.4829,Belagavi,Camp PS,Suresh Reddy,Priya Rao
+FIR2026579,INC2026579,Fraud,2026-07-21,03:01,Fake real-estate property investment scam involving forged documents.,medium,68,in_progress,12.8761,74.8553,Dakshina Kannada,Kadri PS,Prakash Kulkarni,Sunita Chavan
+FIR2026580,INC2026580,Burglary,2026-08-06,18:25,Break-in at residential house while owners were away for weekend.,medium,61,in_progress,12.9842,77.5968,Bengaluru Urban,Central PS,Sunita Singh,Anita Gowda

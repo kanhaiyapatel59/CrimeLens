@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026321,INC2026321,Kidnapping,2026-02-24,20:45,Abduction complaint registered following school dismissal hours.,critical,92,pending,13.301,77.1273,Tumakuru,Tumakuru Town PS,Kavita Reddy,Rohit Shetty
+FIR2026322,INC2026322,Burglary,2026-03-14,01:30,Break-in at electronics shop through broken rear shutter.,medium,55,pending,12.864,74.8845,Dakshina Kannada,Bunder PS,Sanjay Kulkarni,Sharath Babu
+FIR2026323,INC2026323,Human Trafficking,2026-08-01,22:45,Inter-state human trafficking network bust at transit hub.,critical,89,investigating,12.2822,76.632,Mysuru,Devaraja PS,Sunita Sharma,Prakash Naik
+FIR2026324,INC2026324,Assault,2026-07-06,15:30,Physical assault incident during street brawl outside restaurant.,medium,70,investigating,12.9943,76.1403,Hassan,Pension Mohalla PS,Sunita Sharma,Prakash Naik
+FIR2026325,INC2026325,Extortion,2026-08-01,13:45,Coercive extortion calls made to real estate developer.,high,82,in_progress,13.2961,77.5737,Bengaluru Rural,Hosakote PS,Kavya Deshmukh,Vinay Kumar
+FIR2026326,INC2026326,Traffic Violation,2026-04-19,23:45,Reckless high-speed driving causing collision with barrier.,low,23,closed,17.3597,76.8126,Kalaburagi,Station Bazar PS,Meena Joshi,Prakash Naik
+FIR2026327,INC2026327,Burglary,2026-07-18,21:30,Night burglary at locked commercial office premises.,medium,59,closed,13.2576,77.4583,Bengaluru Rural,Hosakote PS,Sanjay Kulkarni,Vinay Kumar
+FIR2026328,INC2026328,Domestic Violence,2026-08-01,11:45,Emergency helpline call regarding domestic abuse incident.,low,45,reported,12.909,77.6329,Bengaluru Urban,Electronic City PS,Kavita Reddy,Mahesh Reddy
+FIR2026329,INC2026329,Human Trafficking,2026-02-24,19:45,Inter-state human trafficking network bust at transit hub.,critical,87,reported,12.9283,77.6339,Bengaluru Urban,Indiranagar PS,Kavita Reddy,Mohammad Ali
+FIR2026330,INC2026330,Organized Crime,2026-02-08,04:45,Organized crime gang members arrested with illegal firearms.,critical,90,resolved,12.9916,77.6246,Bengaluru Urban,Whitefield PS,Arun Prakash,Vinay Kumar
+FIR2026331,INC2026331,Kidnapping,2026-07-06,07:00,Kidnapping for ransom foiled by quick police interception.,critical,90,resolved,12.8914,74.8939,Dakshina Kannada,Kadri PS,Priya Nair,Dinesh Gowda
+FIR2026332,INC2026332,Extortion,2026-01-29,19:30,Coercive extortion calls made to real estate developer.,high,76,reported,13.3081,77.0844,Tumakuru,Tumakuru Town PS,Ananya Hegde,Ganesh Pujari
+FIR2026333,INC2026333,Theft,2026-07-18,22:00,Theft of laptop and electronics from parked vehicle.,medium,57,in_progress,12.9213,74.8896,Dakshina Kannada,Kadri PS,Sri Lakshmi Jewelers,Amit Shah
+FIR2026334,INC2026334,Arson,2026-06-04,06:15,Suspicious fire set to commercial warehouse inventory.,high,90,resolved,15.8216,74.5132,Belagavi,Camp PS,Kavita Reddy,Ganesh Pujari
+FIR2026335,INC2026335,Rape,2026-05-15,02:00,Aggravated sexual assault investigation initiated.,critical,96,pending,12.3159,76.6515,Mysuru,Lashkar PS,Karnataka Transport Hub,Deepak Sharma
+FIR2026336,INC2026336,Organized Crime,2026-05-21,10:00,Organized crime gang members arrested with illegal firearms.,critical,92,pending,13.2276,77.4449,Bengaluru Rural,Doddaballapura PS,Karnataka Transport Hub,Raju Bhai
+FIR2026337,INC2026337,Organized Crime,2026-05-15,13:00,Syndicate extortion and land grabbing operation intercepted.,critical,93,investigating,12.2952,76.6297,Mysuru,Mandi PS,Sri Lakshmi Jewelers,Rohit Shetty
+FIR2026338,INC2026338,Arson,2026-05-15,08:15,Arson attack on parked vehicles in residential street.,high,80,pending,17.3182,76.8373,Kalaburagi,Station Bazar PS,Arun Prakash,Amit Shah
+FIR2026339,INC2026339,Organized Crime,2026-03-06,21:30,Syndicate extortion and land grabbing operation intercepted.,critical,98,reported,12.2841,76.6769,Mysuru,Mandi PS,Karnataka Transport Hub,Unknown Syndicate
+FIR2026340,INC2026340,Extortion,2026-03-06,19:00,Coercive extortion calls made to real estate developer.,high,87,in_progress,15.8585,74.4981,Belagavi,Shahapur PS,Deepa Mehta,Mohammad Ali

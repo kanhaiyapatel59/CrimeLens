@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026401,INC2026401,Cybercrime,2026-08-02,09:50,Unauthorized bank transfer via phishing link sent via WhatsApp.,high,63,investigating,12.9249,77.6255,Bengaluru Urban,Koramangala PS,Sanjay Dhar,Rajesh Kumar
+FIR2026402,INC2026402,Homicide,2026-08-04,07:51,Fatal assault following heated personal dispute outside venue.,critical,95,investigating,15.3315,75.1206,Hubballi-Dharwad,Vidyanagar PS,Priya Hegde,Arun Nair
+FIR2026403,INC2026403,Arson,2026-02-18,17:23,Intentional fire set to roadside shop inventory late night.,high,85,reported,12.985,77.7569,Bengaluru Urban,Whitefield PS,Kavita Nair,Priya Nair
+FIR2026404,INC2026404,Drug Trafficking,2026-07-17,00:43,Seizure of illicit narcotics package during routine highway check-post inspection.,medium,72,investigating,12.9698,77.5783,Bengaluru Urban,Central PS,Suresh Patel,Anita Kumar
+FIR2026405,INC2026405,Fraud,2026-06-09,10:39,Fake real-estate property investment scam involving forged documents.,medium,47,pending,15.1573,76.9083,Ballari,Brucepet PS,Ramesh Bhat,Rajesh Dhar
+FIR2026406,INC2026406,Extortion,2026-04-11,10:34,Threatening calls demanding protection money from shopkeeper.,high,78,investigating,12.3042,76.6421,Mysuru,Devaraja PS,Anand Verma,Arun Gowda
+FIR2026407,INC2026407,Arson,2026-06-27,09:51,Intentional fire set to roadside shop inventory late night.,high,98,investigating,15.3575,75.1496,Hubballi-Dharwad,Vidyanagar PS,Priya Joshi,Arun Patel
+FIR2026408,INC2026408,Assault,2026-05-23,01:26,Physical altercation resulting in minor injuries near commercial market.,medium,39,pending,12.8727,74.8404,Dakshina Kannada,Kadri PS,Ramesh Menon,Suresh Singh
+FIR2026409,INC2026409,Burglary,2026-02-09,06:54,Break-in at residential house while owners were away for weekend.,medium,32,closed,13.3482,74.7387,Udupi,Town PS,Shobha Chavan,Mahesh Gowda
+FIR2026410,INC2026410,Burglary,2026-08-22,03:38,Break-in at residential house while owners were away for weekend.,medium,53,reported,13.9451,75.5509,Shivamogga,Doddapete PS,Meena Kumar,Prakash Joshi
+FIR2026411,INC2026411,Fraud,2026-08-19,10:52,Fake real-estate property investment scam involving forged documents.,medium,34,resolved,17.3399,76.8149,Kalaburagi,Brahampur PS,Suresh Dhar,Vijay Nayakt
+FIR2026412,INC2026412,Kidnapping,2026-02-07,00:19,Abduction attempt foiled by local community and quick police dispatch.,critical,81,resolved,13.3567,74.7444,Udupi,Town PS,Priya Reddy,Kavita Pujari
+FIR2026413,INC2026413,Homicide,2026-02-13,05:25,Fatal assault following heated personal dispute outside venue.,high,99,resolved,13.3559,74.7536,Udupi,Town PS,Vijay Reddy,Pooja Patel
+FIR2026414,INC2026414,Theft,2026-05-23,13:02,Stolen mobile phone and laptop from parked vehicle during afternoon hours.,high,41,pending,13.3432,77.0905,Tumakuru,Town PS,Pooja Menon,Meena Nayakt
+FIR2026415,INC2026415,Robbery,2026-04-16,10:58,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,89,resolved,15.1448,76.9054,Ballari,Brucepet PS,Kavita Shetty,Pooja Nayakt
+FIR2026416,INC2026416,Assault,2026-03-17,04:12,Physical altercation resulting in minor injuries near commercial market.,medium,39,in_progress,13.3534,77.1049,Tumakuru,Town PS,Prakash Pujari,Kavita Sharma
+FIR2026417,INC2026417,Drug Trafficking,2026-02-08,00:14,Seizure of illicit narcotics package during routine highway check-post inspection.,high,76,investigating,12.8896,74.8458,Dakshina Kannada,Kadri PS,Vijay Bhat,Sunita Hegde
+FIR2026418,INC2026418,Assault,2026-04-30,20:58,Physical altercation resulting in minor injuries near commercial market.,medium,49,closed,12.2926,76.6601,Mysuru,Devaraja PS,Rajesh Chavan,Shobha Nayakt
+FIR2026419,INC2026419,Assault,2026-03-14,12:52,Physical altercation resulting in minor injuries near commercial market.,high,57,reported,12.9781,77.6443,Bengaluru Urban,Indiranagar PS,Shobha Rao,Kavita Pujari
+FIR2026420,INC2026420,Kidnapping,2026-02-11,09:43,Abduction attempt foiled by local community and quick police dispatch.,high,90,in_progress,12.3246,76.6168,Mysuru,Vijayanagar PS,Meena Reddy,Anita Patel

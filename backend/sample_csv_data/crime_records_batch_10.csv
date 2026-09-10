@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026381,INC2026381,Gambling,2026-07-30,17:45,Illegal underground gambling den raided by police team.,low,15,closed,12.9867,77.6196,Bengaluru Urban,MG Road PS,Meena Joshi,Kabir Khan
+FIR2026382,INC2026382,Traffic Violation,2026-06-14,03:00,Reckless high-speed driving causing collision with barrier.,low,17,investigating,13.011,76.0977,Hassan,Hassan Town PS,Kavita Reddy,Dinesh Gowda
+FIR2026383,INC2026383,Kidnapping,2026-06-24,12:45,Kidnapping for ransom foiled by quick police interception.,critical,91,in_progress,13.2526,77.6968,Bengaluru Rural,Hosakote PS,TechCorp Logistics Ltd,Rahul Verma
+FIR2026384,INC2026384,Theft,2026-06-14,12:45,Larceny of commercial goods from retail store warehouse.,medium,60,reported,13.0151,76.0858,Hassan,Extension PS,Pooja Verma,Prakash Naik
+FIR2026385,INC2026385,Organized Crime,2026-07-08,07:15,Organized crime gang members arrested with illegal firearms.,critical,89,reported,13.2886,77.6396,Bengaluru Rural,Devanahalli PS,Rajesh Gupta,Raju Bhai
+FIR2026386,INC2026386,Organized Crime,2026-07-04,10:00,Syndicate extortion and land grabbing operation intercepted.,critical,94,investigating,12.9903,77.6427,Bengaluru Urban,Indiranagar PS,Mohan Das,Imran Shaikh
+FIR2026387,INC2026387,Assault,2026-07-14,07:45,Aggravated assault with sharp weapon causing severe injuries.,medium,62,pending,12.287,76.6793,Mysuru,Lashkar PS,Reliance Smart Store,Imran Shaikh
+FIR2026388,INC2026388,Traffic Violation,2026-02-12,03:45,Reckless high-speed driving causing collision with barrier.,low,12,in_progress,12.8984,74.873,Dakshina Kannada,Pandeshwar PS,Girish Karnad,Mohammad Ali
+FIR2026389,INC2026389,Vehicle Theft,2026-05-05,08:45,Commercial delivery van reported missing from parking bay.,low,27,in_progress,12.9664,77.5988,Bengaluru Urban,Electronic City PS,Ananya Hegde,Unknown Syndicate
+FIR2026390,INC2026390,Kidnapping,2026-07-14,07:00,Kidnapping for ransom foiled by quick police interception.,critical,92,investigating,13.207,77.6744,Bengaluru Rural,Hosakote PS,Suresh Rao,Mohammad Ali
+FIR2026391,INC2026391,Vehicle Theft,2026-02-12,02:00,Commercial delivery van reported missing from parking bay.,low,34,in_progress,12.9109,74.8372,Dakshina Kannada,Pandeshwar PS,Vikram Singh,Amit Shah
+FIR2026392,INC2026392,Forgery,2026-03-06,17:45,Forged property land deed submitted for fake registration.,medium,45,reported,13.3212,77.0856,Tumakuru,New Extension PS,Girish Karnad,Prakash Naik
+FIR2026393,INC2026393,Kidnapping,2026-04-27,13:45,Kidnapping for ransom foiled by quick police interception.,critical,96,investigating,12.9686,77.572,Bengaluru Urban,Koramangala PS,Mohan Das,Amit Shah
+FIR2026394,INC2026394,Murder,2026-04-27,08:45,Fatal shooting incident reported following gang rivalry dispute.,critical,91,investigating,17.3261,76.8295,Kalaburagi,M B Nagar PS,Kavya Deshmukh,Imran Shaikh
+FIR2026395,INC2026395,Arson,2026-05-05,23:45,Suspicious fire set to commercial warehouse inventory.,high,85,reported,17.3081,76.8005,Kalaburagi,Brahampur PS,Mohan Das,Prakash Naik
+FIR2026396,INC2026396,Terrorism,2026-06-16,14:30,Clandestine radical group meeting disrupted by special squad.,critical,94,in_progress,12.996,76.1463,Hassan,Extension PS,Vijay Patil,Sharath Babu
+FIR2026397,INC2026397,Vehicle Theft,2026-02-12,10:30,Commercial delivery van reported missing from parking bay.,low,38,investigating,12.2963,76.6368,Mysuru,Nazarbad PS,Mohan Das,Vinay Kumar
+FIR2026398,INC2026398,Burglary,2026-03-28,21:00,Break-in at electronics shop through broken rear shutter.,medium,59,pending,15.8326,74.5279,Belagavi,APMC PS,Sri Lakshmi Jewelers,Imran Shaikh
+FIR2026399,INC2026399,Forgery,2026-06-24,20:30,Forged property land deed submitted for fake registration.,medium,53,pending,13.3092,77.1054,Tumakuru,Tumakuru Town PS,Mohan Das,Imran Shaikh
+FIR2026400,INC2026400,Domestic Violence,2026-03-28,12:45,Domestic dispute and physical harassment complaint filed.,low,50,in_progress,13.3421,77.1287,Tumakuru,New Extension PS,Girish Karnad,Imran Shaikh

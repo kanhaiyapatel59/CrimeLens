@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026281,INC2026281,Terrorism,2026-05-03,20:45,Clandestine radical group meeting disrupted by special squad.,critical,98,reported,15.8284,74.5368,Belagavi,Camp PS,Meena Joshi,Sharath Babu
+FIR2026282,INC2026282,Burglary,2026-03-16,17:15,Night burglary at locked commercial office premises.,medium,59,in_progress,13.2506,77.6601,Bengaluru Rural,Doddaballapura PS,Manjunath Swamy,Deepak Sharma
+FIR2026283,INC2026283,Organized Crime,2026-01-19,20:00,Organized crime gang members arrested with illegal firearms.,critical,94,resolved,12.327,76.6368,Mysuru,Nazarbad PS,Sri Lakshmi Jewelers,Vinay Kumar
+FIR2026284,INC2026284,Money Laundering,2026-01-19,07:30,Shell company transactions flagged for suspicious fund diversion.,high,81,closed,13.3541,77.1187,Tumakuru,Tilak Park PS,Sunita Sharma,Mohammad Ali
+FIR2026285,INC2026285,Extortion,2026-07-30,14:00,Extortion threat letters and protection money demands sent to trader.,high,89,reported,15.823,74.5,Belagavi,Camp PS,Suresh Rao,Unknown Syndicate
+FIR2026286,INC2026286,Money Laundering,2026-03-28,18:15,Shell company transactions flagged for suspicious fund diversion.,high,80,investigating,13.2683,77.6086,Bengaluru Rural,Doddaballapura PS,Rajesh Gupta,David Dsouza
+FIR2026287,INC2026287,Murder,2026-01-29,03:00,Fatal shooting incident reported following gang rivalry dispute.,critical,90,in_progress,17.3474,76.8167,Kalaburagi,Brahampur PS,Abdul Rahim,Kabir Khan
+FIR2026288,INC2026288,Human Trafficking,2026-07-24,04:45,Inter-state human trafficking network bust at transit hub.,critical,96,reported,17.3286,76.8545,Kalaburagi,Station Bazar PS,Arun Prakash,Unknown Syndicate
+FIR2026289,INC2026289,Burglary,2026-08-11,07:00,Break-in at electronics shop through broken rear shutter.,medium,70,pending,13.3313,77.1075,Tumakuru,New Extension PS,Ramesh Kumar,Rahul Verma
+FIR2026290,INC2026290,Gambling,2026-01-29,21:00,Online betting racket bust operating from residential flat.,low,29,reported,13.025,76.1025,Hassan,Extension PS,Suresh Rao,Imran Shaikh
+FIR2026291,INC2026291,Murder,2026-03-16,12:30,Homicide investigation launched after body discovered in vacant land.,critical,98,closed,17.3258,76.8555,Kalaburagi,M B Nagar PS,Priya Nair,Raju Bhai
+FIR2026292,INC2026292,Money Laundering,2026-01-19,07:45,Illegal hawala network operations uncovered during tax raid.,high,84,resolved,13.0008,76.0867,Hassan,Extension PS,Pooja Verma,Prakash Naik
+FIR2026293,INC2026293,Extortion,2026-01-19,21:45,Extortion threat letters and protection money demands sent to trader.,high,72,reported,12.8575,74.8368,Dakshina Kannada,Bunder PS,Reliance Smart Store,Vinay Kumar
+FIR2026294,INC2026294,Murder,2026-04-29,17:30,Fatal stabbing incident outside local bar establishment.,critical,91,resolved,12.9424,77.6365,Bengaluru Urban,Whitefield PS,Karnataka Transport Hub,Deepak Sharma
+FIR2026295,INC2026295,Cyber Crime,2026-07-10,11:00,OTP fraud targeting elderly citizen resulting in financial loss.,critical,93,investigating,17.3093,76.8338,Kalaburagi,M B Nagar PS,Priya Nair,Vinay Kumar
+FIR2026296,INC2026296,Rape,2026-04-29,08:15,Aggravated sexual assault investigation initiated.,critical,98,closed,12.8991,74.875,Dakshina Kannada,Pandeshwar PS,Ramesh Kumar,Nagaraj M
+FIR2026297,INC2026297,Extortion,2026-07-26,08:30,Coercive extortion calls made to real estate developer.,high,81,reported,12.9218,77.5686,Bengaluru Urban,Indiranagar PS,Canara Bank Local Branch,Mohammad Ali
+FIR2026298,INC2026298,Theft,2026-07-24,02:15,Pickpocketing complaint reported at crowded bus terminus.,medium,53,resolved,12.297,76.6422,Mysuru,Devaraja PS,Reliance Smart Store,Prakash Naik
+FIR2026299,INC2026299,Organized Crime,2026-08-21,04:15,Syndicate extortion and land grabbing operation intercepted.,critical,95,reported,13.1908,77.6317,Bengaluru Rural,Devanahalli PS,Kavya Deshmukh,Nagaraj M
+FIR2026300,INC2026300,Domestic Violence,2026-07-30,06:00,Emergency helpline call regarding domestic abuse incident.,low,38,reported,12.9942,76.1275,Hassan,Extension PS,Kavya Deshmukh,Mahesh Reddy

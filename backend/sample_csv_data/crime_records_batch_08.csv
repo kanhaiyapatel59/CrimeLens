@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026341,INC2026341,Organized Crime,2026-01-15,05:45,Organized crime gang members arrested with illegal firearms.,critical,92,in_progress,12.8898,74.8363,Dakshina Kannada,Bunder PS,Mohan Das,Mahesh Reddy
+FIR2026342,INC2026342,Domestic Violence,2026-02-10,18:30,Domestic dispute and physical harassment complaint filed.,low,26,in_progress,15.8497,74.5329,Belagavi,APMC PS,TechCorp Logistics Ltd,Sharath Babu
+FIR2026343,INC2026343,Assault,2026-05-03,13:15,Aggravated assault with sharp weapon causing severe injuries.,medium,61,resolved,12.9439,77.6021,Bengaluru Urban,MG Road PS,Shilpa Bhat,Raju Bhai
+FIR2026344,INC2026344,Money Laundering,2026-04-29,02:45,Illegal hawala network operations uncovered during tax raid.,high,87,in_progress,12.916,74.8736,Dakshina Kannada,Kadri PS,Girish Karnad,Unknown Offender
+FIR2026345,INC2026345,Murder,2026-04-23,11:30,Fatal stabbing incident outside local bar establishment.,critical,95,investigating,13.1799,77.5782,Bengaluru Rural,Nelamangala PS,Arun Prakash,Rahul Verma
+FIR2026346,INC2026346,Cyber Crime,2026-04-17,22:30,Ransomware attack on municipal hospital data servers.,critical,93,resolved,12.9179,77.6661,Bengaluru Urban,Indiranagar PS,Suresh Rao,Prakash Naik
+FIR2026347,INC2026347,Terrorism,2026-03-28,12:30,Clandestine radical group meeting disrupted by special squad.,critical,100,closed,12.8926,74.8796,Dakshina Kannada,Bunder PS,Meena Joshi,Sharath Babu
+FIR2026348,INC2026348,Robbery,2026-06-26,21:00,Highway robbery incident targeting transport vehicle at midnight.,high,84,pending,12.9198,74.874,Dakshina Kannada,Kadri PS,Girish Karnad,Sharath Babu
+FIR2026349,INC2026349,Extortion,2026-03-18,18:45,Extortion threat letters and protection money demands sent to trader.,high,86,pending,15.8633,74.5265,Belagavi,Camp PS,Mohan Das,David Dsouza
+FIR2026350,INC2026350,Narcotics,2026-05-03,22:00,Seizure of illegal synthetic drugs during highway checkpoint check.,high,65,resolved,12.9376,77.5697,Bengaluru Urban,Whitefield PS,Sri Lakshmi Jewelers,Santosh Kumar
+FIR2026351,INC2026351,Forgery,2026-01-19,23:00,Forged property land deed submitted for fake registration.,medium,61,investigating,13.3337,77.1399,Tumakuru,New Extension PS,Kavya Deshmukh,Mahesh Reddy
+FIR2026352,INC2026352,Kidnapping,2026-04-27,14:30,Abduction complaint registered following school dismissal hours.,critical,98,pending,12.9045,74.8863,Dakshina Kannada,Bunder PS,Rajesh Gupta,Nagaraj M
+FIR2026353,INC2026353,Gambling,2026-02-22,08:30,Illegal underground gambling den raided by police team.,low,24,in_progress,15.8623,74.5214,Belagavi,APMC PS,Kavya Deshmukh,Prakash Naik
+FIR2026354,INC2026354,Gambling,2026-01-15,09:00,Online betting racket bust operating from residential flat.,low,27,in_progress,12.9264,74.8863,Dakshina Kannada,Kadri PS,Meena Joshi,Rahul Verma
+FIR2026355,INC2026355,Assault,2026-04-27,14:30,Aggravated assault with sharp weapon causing severe injuries.,medium,56,investigating,13.2742,77.4949,Bengaluru Rural,Hosakote PS,Manjunath Swamy,Dinesh Gowda
+FIR2026356,INC2026356,Murder,2026-05-03,07:00,Fatal stabbing incident outside local bar establishment.,critical,98,investigating,13.2457,77.4184,Bengaluru Rural,Doddaballapura PS,Pooja Verma,Prakash Naik
+FIR2026357,INC2026357,Gambling,2026-04-17,00:15,Online betting racket bust operating from residential flat.,low,35,resolved,13.2216,77.4698,Bengaluru Rural,Doddaballapura PS,Meena Joshi,Prakash Naik
+FIR2026358,INC2026358,Assault,2026-02-22,20:15,Physical assault incident during street brawl outside restaurant.,medium,55,resolved,13.0059,77.5729,Bengaluru Urban,MG Road PS,Sunita Sharma,Mohammad Ali
+FIR2026359,INC2026359,Gambling,2026-06-26,01:00,Online betting racket bust operating from residential flat.,low,33,closed,12.2854,76.679,Mysuru,Vidyaranyapuram PS,Meena Joshi,Ganesh Pujari
+FIR2026360,INC2026360,Rape,2026-03-28,16:45,Aggravated sexual assault investigation initiated.,critical,93,reported,13.3198,77.1239,Tumakuru,Tumakuru Town PS,TechCorp Logistics Ltd,Dinesh Gowda

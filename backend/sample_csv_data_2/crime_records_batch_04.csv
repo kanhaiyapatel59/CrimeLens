@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026461,INC2026461,Robbery,2026-04-17,13:27,Armed snatching of gold chain and cash at knife-point near isolated alley.,medium,85,pending,12.3179,76.6526,Mysuru,Devaraja PS,Arun Reddy,Arun Nayakt
+FIR2026462,INC2026462,Fraud,2026-01-02,17:46,Fake real-estate property investment scam involving forged documents.,low,72,closed,15.3415,75.1558,Hubballi-Dharwad,Vidyanagar PS,Shobha Kulkarni,Prakash Hegde
+FIR2026463,INC2026463,Kidnapping,2026-08-13,02:01,Abduction attempt foiled by local community and quick police dispatch.,high,78,reported,15.8588,74.4836,Belagavi,Camp PS,Anand Bhat,Unknown Offender
+FIR2026464,INC2026464,Fraud,2026-07-02,14:06,Fake real-estate property investment scam involving forged documents.,high,49,closed,15.3596,75.1204,Hubballi-Dharwad,Vidyanagar PS,Anand Dhar,Vikram Kumar
+FIR2026465,INC2026465,Fraud,2026-04-22,15:15,Fake real-estate property investment scam involving forged documents.,high,32,resolved,12.8664,74.8581,Dakshina Kannada,Pandeshwar PS,Asha Nair,Vijay Kulkarni
+FIR2026466,INC2026466,Burglary,2026-04-11,07:45,Break-in at residential house while owners were away for weekend.,high,73,resolved,15.3633,75.1075,Hubballi-Dharwad,Suburban PS,Ganesh Gowda,Shobha Verma
+FIR2026467,INC2026467,Robbery,2026-03-05,16:38,Armed snatching of gold chain and cash at knife-point near isolated alley.,critical,61,closed,15.1248,76.9203,Ballari,Brucepet PS,Vijay Reddy,Unknown Offender
+FIR2026468,INC2026468,Kidnapping,2026-02-02,06:27,Abduction attempt foiled by local community and quick police dispatch.,high,94,pending,13.9324,75.5589,Shivamogga,Doddapete PS,Anita Gowda,Unknown Offender
+FIR2026469,INC2026469,Kidnapping,2026-01-25,23:42,Abduction attempt foiled by local community and quick police dispatch.,critical,97,resolved,12.3114,76.6494,Mysuru,Lakshmipuram PS,Pooja Bhat,Anita Patel
+FIR2026470,INC2026470,Arson,2026-04-10,03:47,Intentional fire set to roadside shop inventory late night.,high,80,resolved,13.3431,74.7951,Udupi,Manipal PS,Ganesh Singh,Anand Deshmukh
+FIR2026471,INC2026471,Burglary,2026-02-03,22:48,Break-in at residential house while owners were away for weekend.,medium,70,resolved,15.8582,74.4992,Belagavi,Market PS,Suresh Patel,Asha Kumar
+FIR2026472,INC2026472,Human Trafficking,2026-07-30,15:43,Inter-state illegal labor trafficking racket busted at transit station.,critical,85,pending,13.3381,74.8001,Udupi,Manipal PS,Ramesh Deshmukh,Anita Singh
+FIR2026473,INC2026473,Arson,2026-06-19,02:39,Intentional fire set to roadside shop inventory late night.,high,92,in_progress,12.2922,76.6622,Mysuru,Devaraja PS,Mahesh Nayakt,Anand Bhat
+FIR2026474,INC2026474,Drug Trafficking,2026-06-07,02:02,Seizure of illicit narcotics package during routine highway check-post inspection.,high,67,in_progress,12.9602,77.5793,Bengaluru Urban,Central PS,Suresh Sharma,Ramesh Nair
+FIR2026475,INC2026475,Assault,2026-07-03,23:33,Physical altercation resulting in minor injuries near commercial market.,low,49,investigating,13.3335,77.0923,Tumakuru,Town PS,Vijay Patel,Rajesh Hegde
+FIR2026476,INC2026476,Drug Trafficking,2026-07-04,07:07,Seizure of illicit narcotics package during routine highway check-post inspection.,medium,70,resolved,12.3369,76.6237,Mysuru,Vijayanagar PS,Anand Sharma,Unknown Offender
+FIR2026477,INC2026477,Robbery,2026-06-16,01:26,Armed snatching of gold chain and cash at knife-point near isolated alley.,medium,75,resolved,15.1385,76.9147,Ballari,Brucepet PS,Vijay Sharma,Unknown Offender
+FIR2026478,INC2026478,Fraud,2026-01-21,04:30,Fake real-estate property investment scam involving forged documents.,low,49,resolved,12.9403,77.6264,Bengaluru Urban,Koramangala PS,Ganesh Reddy,Unknown Offender
+FIR2026479,INC2026479,Robbery,2026-04-14,17:51,Armed snatching of gold chain and cash at knife-point near isolated alley.,high,82,reported,15.3755,75.1388,Hubballi-Dharwad,Suburban PS,Deepak Nayakt,Vijay Kulkarni
+FIR2026480,INC2026480,Fraud,2026-01-04,23:38,Fake real-estate property investment scam involving forged documents.,low,70,closed,15.1447,76.9265,Ballari,Brucepet PS,Kavita Kumar,Vikram Patel

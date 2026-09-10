@@ -14,11 +14,12 @@ const { seedRoles, deleteRoles } = require('./roleSeeder');
 const { seedDistricts, deleteDistricts } = require('./districtSeeder');
 const { seedCrimeTypes, deleteCrimeTypes } = require('./crimeTypeSeeder');
 const { seedUsers, deleteUsers } = require('./userSeeder');
+const { seedCrimes } = require('./crimeSeeder');
 
 const runSeeders = async () => {
   try {
     logger.info('🚀 Starting database seeding...');
-    logger.info('📊 Seeding order: Roles → Districts → Crime Types → Users');
+    logger.info('📊 Seeding order: Roles → Districts → Crime Types → Users → Crimes');
 
     // Connect to database
     await connectDatabase();
@@ -29,6 +30,7 @@ const runSeeders = async () => {
     await seedDistricts();
     await seedCrimeTypes();
     await seedUsers();
+    await seedCrimes();
 
     logger.info('🎉 Database seeding completed successfully!');
     logger.info('📝 Default Credentials:');

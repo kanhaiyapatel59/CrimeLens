@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026301,INC2026301,Assault,2026-02-24,00:30,Physical assault incident during street brawl outside restaurant.,medium,69,resolved,13.2748,77.7219,Bengaluru Rural,Nelamangala PS,Vikram Singh,Deepak Sharma
+FIR2026302,INC2026302,Burglary,2026-02-22,18:45,Break-in at electronics shop through broken rear shutter.,medium,47,resolved,15.8722,74.5247,Belagavi,Shahapur PS,Deepa Mehta,Prakash Naik
+FIR2026303,INC2026303,Human Trafficking,2026-02-22,16:15,Rescue of underage workers from illegal manufacturing unit.,critical,90,pending,13.2937,77.6259,Bengaluru Rural,Devanahalli PS,Suresh Rao,Rohit Shetty
+FIR2026304,INC2026304,Burglary,2026-03-18,06:15,Break-in at electronics shop through broken rear shutter.,medium,49,pending,12.2838,76.6771,Mysuru,Vidyaranyapuram PS,TechCorp Logistics Ltd,Sharath Babu
+FIR2026305,INC2026305,Domestic Violence,2026-02-26,18:30,Emergency helpline call regarding domestic abuse incident.,low,29,resolved,13.3041,77.1065,Tumakuru,New Extension PS,Meena Joshi,Dinesh Gowda
+FIR2026306,INC2026306,Organized Crime,2026-02-26,16:00,Organized crime gang members arrested with illegal firearms.,critical,92,resolved,12.9045,77.5979,Bengaluru Urban,Koramangala PS,Meena Joshi,Imran Shaikh
+FIR2026307,INC2026307,Theft,2026-04-11,18:00,Pickpocketing complaint reported at crowded bus terminus.,medium,65,closed,13.0126,76.1025,Hassan,Extension PS,Kavya Deshmukh,Mahesh Reddy
+FIR2026308,INC2026308,Murder,2026-06-02,03:30,Fatal stabbing incident outside local bar establishment.,critical,91,closed,12.9775,77.5551,Bengaluru Urban,Jayanagar PS,Sri Lakshmi Jewelers,Ganesh Pujari
+FIR2026309,INC2026309,Domestic Violence,2026-03-20,11:30,Emergency helpline call regarding domestic abuse incident.,low,38,in_progress,12.3139,76.6231,Mysuru,Vidyaranyapuram PS,TechCorp Logistics Ltd,Prakash Naik
+FIR2026310,INC2026310,Theft,2026-01-01,17:45,Pickpocketing complaint reported at crowded bus terminus.,medium,48,pending,12.9181,74.8975,Dakshina Kannada,Pandeshwar PS,Girish Karnad,David Dsouza
+FIR2026311,INC2026311,Vehicle Theft,2026-06-20,11:30,Commercial delivery van reported missing from parking bay.,low,24,closed,13.2563,77.4297,Bengaluru Rural,Doddaballapura PS,Manjunath Swamy,Mohammad Ali
+FIR2026312,INC2026312,Vehicle Theft,2026-01-15,02:45,Commercial delivery van reported missing from parking bay.,low,20,in_progress,12.2954,76.6771,Mysuru,Lashkar PS,Abdul Rahim,Sharath Babu
+FIR2026313,INC2026313,Money Laundering,2026-06-20,04:00,Illegal hawala network operations uncovered during tax raid.,high,73,closed,15.8663,74.5301,Belagavi,APMC PS,Arun Prakash,Rahul Verma
+FIR2026314,INC2026314,Vehicle Theft,2026-04-11,12:15,Two-wheeler stolen from apartment parking basement overnight.,low,25,pending,12.3186,76.6685,Mysuru,Lashkar PS,Ananya Hegde,Ganesh Pujari
+FIR2026315,INC2026315,Cyber Crime,2026-02-26,21:15,Ransomware attack on municipal hospital data servers.,critical,94,in_progress,13.0176,76.1349,Hassan,Extension PS,Deepa Mehta,Raju Bhai
+FIR2026316,INC2026316,Narcotics,2026-03-20,06:30,Contraband distribution racket intercepted near university zone.,high,79,in_progress,17.3467,76.8352,Kalaburagi,University PS,Pooja Verma,Amit Shah
+FIR2026317,INC2026317,Money Laundering,2026-01-11,01:45,Illegal hawala network operations uncovered during tax raid.,high,87,reported,12.3156,76.651,Mysuru,Vidyaranyapuram PS,Priya Nair,Salman Khan
+FIR2026318,INC2026318,Theft,2026-07-16,14:15,Pickpocketing complaint reported at crowded bus terminus.,medium,42,investigating,12.3208,76.6731,Mysuru,Vidyaranyapuram PS,Ramesh Kumar,Deepak Sharma
+FIR2026319,INC2026319,Cyber Crime,2026-01-11,11:15,Ransomware attack on municipal hospital data servers.,critical,86,in_progress,12.9912,76.1023,Hassan,Pension Mohalla PS,Priya Nair,Prakash Naik
+FIR2026320,INC2026320,Murder,2026-02-22,09:45,Fatal stabbing incident outside local bar establishment.,critical,92,pending,12.3035,76.6569,Mysuru,Devaraja PS,Vikram Singh,Kabir Khan

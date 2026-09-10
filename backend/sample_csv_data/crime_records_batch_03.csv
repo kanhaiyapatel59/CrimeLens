@@ -1,0 +1,21 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026241,INC2026241,Theft,2026-01-05,14:15,Larceny of commercial goods from retail store warehouse.,medium,48,resolved,12.9964,76.1118,Hassan,Hassan Town PS,Abdul Rahim,Mohammad Ali
+FIR2026242,INC2026242,Extortion,2026-06-28,02:45,Extortion threat letters and protection money demands sent to trader.,high,87,reported,13.03,76.1045,Hassan,Extension PS,TechCorp Logistics Ltd,Imran Shaikh
+FIR2026243,INC2026243,Cyber Crime,2026-04-09,06:00,OTP fraud targeting elderly citizen resulting in financial loss.,critical,87,investigating,12.9151,77.637,Bengaluru Urban,Indiranagar PS,Shilpa Bhat,Santosh Kumar
+FIR2026244,INC2026244,Domestic Violence,2026-08-07,05:00,Domestic dispute and physical harassment complaint filed.,low,34,reported,17.3347,76.865,Kalaburagi,M B Nagar PS,Shilpa Bhat,Mohammad Ali
+FIR2026245,INC2026245,Kidnapping,2026-04-17,18:15,Kidnapping for ransom foiled by quick police interception.,critical,92,pending,15.856,74.4873,Belagavi,Camp PS,Shilpa Bhat,Rahul Verma
+FIR2026246,INC2026246,Arson,2026-02-22,11:00,Arson attack on parked vehicles in residential street.,high,78,resolved,13.0211,76.0874,Hassan,Pension Mohalla PS,Kavita Reddy,Ganesh Pujari
+FIR2026247,INC2026247,Murder,2026-05-29,23:30,Fatal stabbing incident outside local bar establishment.,critical,98,resolved,13.0032,76.1378,Hassan,Hassan Town PS,Shilpa Bhat,Dinesh Gowda
+FIR2026248,INC2026248,Vehicle Theft,2026-01-15,08:45,Two-wheeler stolen from apartment parking basement overnight.,low,44,resolved,15.8542,74.5201,Belagavi,Camp PS,Abdul Rahim,Kabir Khan
+FIR2026249,INC2026249,Gambling,2026-01-05,15:15,Online betting racket bust operating from residential flat.,low,23,in_progress,12.8724,74.8717,Dakshina Kannada,Bunder PS,Rajesh Gupta,Raju Bhai
+FIR2026250,INC2026250,Robbery,2026-04-09,07:45,Highway robbery incident targeting transport vehicle at midnight.,high,82,pending,15.8486,74.5227,Belagavi,Camp PS,Sanjay Kulkarni,Kabir Khan
+FIR2026251,INC2026251,Theft,2026-08-19,12:15,Pickpocketing complaint reported at crowded bus terminus.,medium,61,closed,17.3221,76.8387,Kalaburagi,Brahampur PS,Kavita Reddy,Deepak Sharma
+FIR2026252,INC2026252,Rape,2026-04-29,22:45,Aggravated sexual assault investigation initiated.,critical,94,in_progress,12.8684,74.8805,Dakshina Kannada,Kadri PS,Abdul Rahim,Unknown Offender
+FIR2026253,INC2026253,Rape,2026-02-22,06:45,Aggravated sexual assault investigation initiated.,critical,99,closed,12.3098,76.6788,Mysuru,Mandi PS,Vijay Patil,Salman Khan
+FIR2026254,INC2026254,Narcotics,2026-08-19,09:00,Seizure of illegal synthetic drugs during highway checkpoint check.,high,73,reported,12.9279,74.8687,Dakshina Kannada,Bunder PS,Sri Lakshmi Jewelers,David Dsouza
+FIR2026255,INC2026255,Gambling,2026-08-01,18:30,Online betting racket bust operating from residential flat.,low,30,resolved,13.2011,77.7379,Bengaluru Rural,Devanahalli PS,Rajesh Gupta,Sharath Babu
+FIR2026256,INC2026256,Burglary,2026-01-05,15:00,Break-in at electronics shop through broken rear shutter.,medium,65,pending,13.158,77.4522,Bengaluru Rural,Nelamangala PS,Shilpa Bhat,Salman Khan
+FIR2026257,INC2026257,Theft,2026-08-07,17:45,Theft of laptop and electronics from parked vehicle.,medium,59,closed,15.8335,74.5114,Belagavi,Camp PS,Sanjay Kulkarni,Ganesh Pujari
+FIR2026258,INC2026258,Assault,2026-07-16,18:00,Physical assault incident during street brawl outside restaurant.,medium,56,pending,12.9906,76.1262,Hassan,Extension PS,Ananya Hegde,Rohit Shetty
+FIR2026259,INC2026259,Human Trafficking,2026-01-05,00:45,Rescue of underage workers from illegal manufacturing unit.,critical,96,closed,13.2205,77.4114,Bengaluru Rural,Doddaballapura PS,Meena Joshi,Salman Khan
+FIR2026260,INC2026260,Domestic Violence,2026-08-01,08:15,Emergency helpline call regarding domestic abuse incident.,low,28,closed,13.1837,77.4521,Bengaluru Rural,Doddaballapura PS,Rajesh Gupta,David Dsouza

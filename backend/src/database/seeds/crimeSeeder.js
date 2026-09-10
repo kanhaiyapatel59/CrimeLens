@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const CrimeIncident = require('../../models/CrimeIncident');
 const CrimeType = require('../../models/CrimeType');
 const District = require('../../models/District');
@@ -5,6 +6,8 @@ const Victim = require('../../models/Victim');
 const Suspect = require('../../models/Suspect');
 const User = require('../../models/User');
 const logger = require('../../utils/logger');
+const fs = require('fs');
+const path = require('path');
 
 const masterRecords = [
   { firNumber: 'FIR2026101', incidentId: 'INC2026101', crimeType: 'Robbery', date: '2026-01-15', time: '14:30', description: 'Armed robbery at MG Road jewelry store involving two masked perpetrators', severity: 'high', riskScore: 85, status: 'investigating', latitude: 12.9716, longitude: 77.5946, district: 'Bengaluru Urban', policeStation: 'MG Road PS', victimName: 'Ramesh Kumar', suspectName: 'Kabir Khan' },
@@ -24,63 +27,66 @@ const masterRecords = [
   { firNumber: 'FIR2026115', incidentId: 'INC2026115', crimeType: 'Domestic Violence', date: '2026-08-25', time: '15:20', description: 'Domestic dispute complaint registered following distress call to hotline', severity: 'low', riskScore: 35, status: 'resolved', latitude: 12.9279, longitude: 77.6271, district: 'Bengaluru Urban', policeStation: 'Koramangala PS', victimName: 'Sanjay Kulkarni', suspectName: 'Ganesh Pujari' }
 ];
 
-const fs = require('fs');
-const path = require('path');
-
 const parseCsvRecords = () => {
   const possiblePaths = [
+    path.resolve(__dirname, '../../../sample_csv_data'),
     path.resolve(__dirname, '../../../../sample_csv_data'),
-    path.resolve(process.cwd(), '../sample_csv_data'),
     path.resolve(process.cwd(), 'sample_csv_data'),
+    path.resolve(process.cwd(), '../sample_csv_data'),
+    path.resolve(__dirname, '../../../sample_csv_data_2'),
     path.resolve(__dirname, '../../../../sample_csv_data_2'),
+    path.resolve(process.cwd(), 'sample_csv_data_2'),
     path.resolve(process.cwd(), '../sample_csv_data_2'),
   ];
 
-  let sampleDir = possiblePaths.find(p => fs.existsSync(p));
-  if (!sampleDir) return [];
+  const existingDirs = [...new Set(possiblePaths)].filter(p => fs.existsSync(p));
+  if (existingDirs.length === 0) return [];
 
-  const files = fs.readdirSync(sampleDir).filter(f => f.endsWith('.csv')).sort();
-  const allRecords = [];
+  const recordMap = new Map();
 
-  for (const file of files) {
-    const content = fs.readFileSync(path.join(sampleDir, file), 'utf8');
-    const lines = content.split(/\r?\n/).filter(l => l.trim() !== '');
-    if (lines.length < 2) continue;
+  for (const sampleDir of existingDirs) {
+    const files = fs.readdirSync(sampleDir).filter(f => f.endsWith('.csv')).sort();
 
-    const headers = lines[0].split(',').map(h => h.trim());
-    
-    for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',').map(v => v.trim());
-      if (values.length < headers.length) continue;
+    for (const file of files) {
+      const content = fs.readFileSync(path.join(sampleDir, file), 'utf8');
+      const lines = content.split(/\r?\n/).filter(l => l.trim() !== '');
+      if (lines.length < 2) continue;
 
-      const record = {};
-      headers.forEach((h, idx) => {
-        record[h] = values[idx];
-      });
+      const headers = lines[0].split(',').map(h => h.trim());
 
-      if (record.firNumber && record.crimeType) {
-        allRecords.push({
-          firNumber: record.firNumber,
-          incidentId: record.incidentId,
-          crimeType: record.crimeType,
-          date: record.date,
-          time: record.time,
-          description: record.description,
-          severity: record.severity,
-          riskScore: parseInt(record.riskScore) || 50,
-          status: record.status,
-          latitude: parseFloat(record.latitude) || 12.9716,
-          longitude: parseFloat(record.longitude) || 77.5946,
-          district: record.district,
-          policeStation: record.policeStation,
-          victimName: record.victimName,
-          suspectName: record.suspectName
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length < headers.length) continue;
+
+        const record = {};
+        headers.forEach((h, idx) => {
+          record[h] = values[idx];
         });
+
+        if (record.firNumber && record.crimeType && !recordMap.has(record.firNumber)) {
+          recordMap.set(record.firNumber, {
+            firNumber: record.firNumber,
+            incidentId: record.incidentId,
+            crimeType: record.crimeType,
+            date: record.date,
+            time: record.time,
+            description: record.description,
+            severity: record.severity,
+            riskScore: parseInt(record.riskScore) || 50,
+            status: record.status,
+            latitude: parseFloat(record.latitude) || 12.9716,
+            longitude: parseFloat(record.longitude) || 77.5946,
+            district: record.district,
+            policeStation: record.policeStation,
+            victimName: record.victimName,
+            suspectName: record.suspectName
+          });
+        }
       }
     }
   }
 
-  return allRecords;
+  return Array.from(recordMap.values());
 };
 
 const seedCrimes = async () => {
