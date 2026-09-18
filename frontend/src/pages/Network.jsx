@@ -475,27 +475,65 @@ const Network = () => {
       </Paper>
 
       {/* Criminological Intelligence Dossier Drawer */}
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)} PaperProps={{ sx: { width: 440, p: 3 } }}>
+      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)} PaperProps={{ sx: { width: 460, p: 3, bgcolor: '#0b0c10', color: '#fff', borderLeft: '1px solid rgba(255,215,0,0.3)' } }}>
         {selectedNodeObject && (
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" component="span" fontWeight={700} sx={{ color: '#1a237e' }}>
-                Intelligence Dossier
-              </Typography>
-              <IconButton onClick={() => setDrawerOpen(false)}><CloseIcon /></IconButton>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Chip label="CONFIDENTIAL" color="error" size="small" sx={{ fontWeight: 800, fontSize: '0.65rem' }} />
+                <Typography variant="h6" component="span" fontWeight={800} sx={{ color: '#ffd700' }}>
+                  Intelligence Dossier
+                </Typography>
+              </Box>
+              <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: '#fff' }}><CloseIcon /></IconButton>
             </Box>
-            <Divider sx={{ mb: 2 }} />
+            <Divider sx={{ mb: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-            <Paper elevation={0} sx={{ p: 2, mb: 2, bgcolor: '#f5f7fa', borderRadius: 2, border: '1px solid #e0e0e0' }}>
-              <Typography variant="subtitle1" fontWeight={700} color="primary">{selectedNodeObject.data.label}</Typography>
-              <Chip label={selectedNodeObject.data.category || selectedNodeObject.data.type} size="small" color="secondary" sx={{ mt: 0.5 }} />
+            {/* Suspect / Node Card Header */}
+            <Paper elevation={0} sx={{ p: 2.5, mb: 2.5, bgcolor: 'rgba(255,255,255,0.05)', borderRadius: 3, border: '1px solid rgba(255,215,0,0.3)', backdropFilter: 'blur(10px)' }}>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <Avatar 
+                  sx={{ 
+                    width: 56, 
+                    height: 56, 
+                    bgcolor: '#ffd700', 
+                    color: '#070709', 
+                    fontWeight: 900, 
+                    fontSize: '1.4rem',
+                    border: '2px solid #ffd700',
+                    boxShadow: '0 0 15px rgba(255,215,0,0.4)'
+                  }}
+                >
+                  {selectedNodeObject.data.label[0]}
+                </Avatar>
+                <Box>
+                  <Typography variant="h6" fontWeight={800} sx={{ color: '#ffffff', lineHeight: 1.2 }}>
+                    {selectedNodeObject.data.label}
+                  </Typography>
+                  <Chip 
+                    label={selectedNodeObject.data.category || selectedNodeObject.data.type} 
+                    size="small" 
+                    sx={{ mt: 0.5, bgcolor: 'rgba(255,215,0,0.15)', color: '#ffd700', fontWeight: 700, fontSize: '0.65rem' }} 
+                  />
+                </Box>
+              </Box>
+
+              {selectedNodeObject.data.type === 'suspect' && (
+                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyBetween: 'space-between', alignItems: 'center' }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: '#9ca3af', display: 'block' }}>THREAT LEVEL INDEX</Typography>
+                    <Typography variant="body2" fontWeight={800} sx={{ color: '#f87171' }}>HIGH RISK (85 / 100)</Typography>
+                  </Box>
+                  <Chip label="ACTIVE WARRANT ISSUED" color="error" size="small" sx={{ fontWeight: 800, fontSize: '0.6rem' }} />
+                </Box>
+              )}
             </Paper>
 
             {/* Direct Connections Inspector List */}
-            <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#1a237e', mb: 1 }}>
-              🔗 Direct Network Connections ({directConnections.length})
+            <Typography variant="subtitle2" fontWeight={800} sx={{ color: '#ffd700', mb: 1, letterSpacing: 0.5 }}>
+              🔗 DIRECT NETWORK CONNECTIONS ({directConnections.length})
             </Typography>
-            <Paper variant="outlined" sx={{ p: 1.5, mb: 3, maxHeight: 220, overflowY: 'auto', bgcolor: '#fafafa', borderRadius: 2 }}>
+            <Paper variant="outlined" sx={{ p: 1.5, mb: 3, maxHeight: 220, overflowY: 'auto', bgcolor: 'rgba(0,0,0,0.4)', borderRadius: 2, borderColor: 'rgba(255,255,255,0.1)' }}>
               {directConnections.length === 0 ? (
                 <Typography variant="caption" color="textSecondary">No direct connections found.</Typography>
               ) : (
@@ -505,42 +543,42 @@ const Network = () => {
                     onClick={() => setSelectedNodeId(conn.id)}
                     sx={{
                       display: 'flex',
-                      justify: 'space-between',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
                       py: 1,
-                      px: 1,
-                      mb: 0.5,
-                      borderRadius: 1,
-                      bgcolor: '#fff',
-                      border: '1px solid #e0e0e0',
+                      px: 1.5,
+                      mb: 0.8,
+                      borderRadius: 1.5,
+                      bgcolor: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(255,255,255,0.08)',
                       cursor: 'pointer',
-                      '&:hover': { bgcolor: '#e3f2fd' }
+                      '&:hover': { bgcolor: 'rgba(255,215,0,0.15)', borderColor: '#ffd700' }
                     }}
                   >
                     <Box>
-                      <Typography variant="body2" fontWeight={600}>{conn.label}</Typography>
-                      <Typography variant="caption" color="textSecondary">{conn.category}</Typography>
+                      <Typography variant="body2" fontWeight={700} sx={{ color: '#fff' }}>{conn.label}</Typography>
+                      <Typography variant="caption" sx={{ color: '#9ca3af' }}>{conn.category}</Typography>
                     </Box>
-                    <Chip label={conn.relation} size="small" color="primary" sx={{ height: 18, fontSize: '0.6rem' }} />
+                    <Chip label={conn.relation} size="small" sx={{ height: 18, fontSize: '0.6rem', bgcolor: '#ffd700', color: '#000', fontWeight: 800 }} />
                   </Box>
                 ))
               )}
             </Paper>
 
-            <Typography variant="subtitle2" fontWeight={600} gutterBottom>Node Attributes & Metadata</Typography>
+            <Typography variant="subtitle2" fontWeight={800} sx={{ color: '#ffd700', mb: 1 }}>NODE ATTRIBUTES & METADATA</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 3 }}>
               {Object.entries(selectedNodeObject.data.data || {}).map(([key, val]) => (
                 typeof val !== 'object' && val !== null && (
-                  <Box key={key} sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', py: 0.5 }}>
-                    <Typography variant="caption" color="textSecondary" fontWeight={600}>{key.toUpperCase()}:</Typography>
-                    <Typography variant="caption" fontWeight={500}>{String(val)}</Typography>
+                  <Box key={key} sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(255,255,255,0.1)', py: 0.5 }}>
+                    <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 700 }}>{key.toUpperCase()}:</Typography>
+                    <Typography variant="caption" fontWeight={600} sx={{ color: '#fff' }}>{String(val)}</Typography>
                   </Box>
                 )
               ))}
             </Box>
 
-            <Button fullWidth variant="contained" onClick={() => setDrawerOpen(false)} sx={{ bgcolor: '#1a237e' }}>
-              Close Dossier
+            <Button fullWidth variant="contained" onClick={() => setDrawerOpen(false)} sx={{ bgcolor: '#ffd700', color: '#070709', fontWeight: 800, '&:hover': { bgcolor: '#ffc107' } }}>
+              Close Intelligence Dossier
             </Button>
           </Box>
         )}

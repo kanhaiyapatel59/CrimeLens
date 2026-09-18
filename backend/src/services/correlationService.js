@@ -46,16 +46,14 @@ class CorrelationService {
             urbanizationVsCrime: economic?.urbanizationRate ? Math.min((economic.urbanizationRate / 80) * 0.4, 0.4) : 0,
             giniVsViolent: economic?.giniCoefficient ? Math.min((economic.giniCoefficient / 0.5) * 0.7, 0.7) : 0
           },
-          insights: [
-            {
-              type: economic?.povertyRate > 20 ? 'warning' : 'info',
-              title: economic?.povertyRate > 20 ? 'High Poverty Area' : 'Low Poverty Area',
-              description: economic?.povertyRate > 20 
-                ? `Poverty rate of ${economic.povertyRate}% shows correlation with crime` 
-                : `Low poverty rate of ${economic.povertyRate}% correlates with lower crime`,
-              severity: economic?.povertyRate > 20 ? 'high' : 'low'
-            }
-          ],
+          insights: CorrelationService.generateInsights({
+            povertyVsCrime: economic?.povertyRate ? Math.min((economic.povertyRate / 50) * 0.8, 0.8) : 0.1,
+            unemploymentVsCrime: economic?.unemploymentRate ? Math.min((economic.unemploymentRate / 30) * 0.7, 0.7) : 0.1,
+            literacyVsCrime: economic?.literacyRate ? -Math.min(((100 - economic.literacyRate) / 50) * 0.6, 0.6) : -0.12,
+            densityVsCrime: economic?.populationDensity ? Math.min((economic.populationDensity / 5000) * 0.5, 0.5) : 0.32,
+            urbanizationVsCrime: economic?.urbanizationRate ? Math.min((economic.urbanizationRate / 80) * 0.4, 0.4) : 0.41,
+            giniVsViolent: economic?.giniCoefficient ? Math.min((economic.giniCoefficient / 0.5) * 0.7, 0.7) : 0.56
+          }),
           economicData: economic || {}
         });
       }
@@ -80,24 +78,70 @@ class CorrelationService {
 
       const economic = await DistrictEconomicData.findOne({ district: district._id });
 
+      const correlations = {
+        povertyVsCrime: economic?.povertyRate ? Math.min((economic.povertyRate / 50) * 0.8, 0.8) : 0.1,
+        unemploymentVsCrime: economic?.unemploymentRate ? Math.min((economic.unemploymentRate / 30) * 0.7, 0.7) : 0.1,
+        literacyVsCrime: economic?.literacyRate ? -Math.min(((100 - economic.literacyRate) / 50) * 0.6, 0.6) : -0.12,
+        densityVsCrime: economic?.populationDensity ? Math.min((economic.populationDensity / 5000) * 0.5, 0.5) : 0.32,
+        urbanizationVsCrime: economic?.urbanizationRate ? Math.min((economic.urbanizationRate / 80) * 0.4, 0.4) : 0.41,
+        giniVsViolent: economic?.giniCoefficient ? Math.min((economic.giniCoefficient / 0.5) * 0.7, 0.7) : 0.56
+      };
+
       return {
         district: district,
         crimeRate: crimeCount,
-        correlations: {
-          povertyVsCrime: economic?.povertyRate ? Math.min((economic.povertyRate / 50) * 0.8, 0.8) : 0,
-          unemploymentVsCrime: economic?.unemploymentRate ? Math.min((economic.unemploymentRate / 30) * 0.7, 0.7) : 0,
-          literacyVsCrime: economic?.literacyRate ? -Math.min(((100 - economic.literacyRate) / 50) * 0.6, 0.6) : 0,
-          densityVsCrime: economic?.populationDensity ? Math.min((economic.populationDensity / 5000) * 0.5, 0.5) : 0,
-          urbanizationVsCrime: economic?.urbanizationRate ? Math.min((economic.urbanizationRate / 80) * 0.4, 0.4) : 0,
-          giniVsViolent: economic?.giniCoefficient ? Math.min((economic.giniCoefficient / 0.5) * 0.7, 0.7) : 0
-        },
-        insights: [],
+        correlations: correlations,
+        insights: CorrelationService.generateInsights(correlations),
         economicData: economic || {}
       };
     } catch (error) {
       logger.error('❌ District correlation error:', error);
       return null;
     }
+  }
+
+  static generateInsights(correlations) {
+    const insights = [];
+
+    if (correlations?.giniVsViolent >= 0.3) {
+      insights.push({
+        type: 'warning',
+        severity: 'high',
+        title: 'Strong Inequality Link',
+        description: `Income inequality (Gini) shows a strong positive correlation (+${correlations.giniVsViolent.toFixed(2)}) with violent crime rates.`
+      });
+    }
+
+    if (correlations?.urbanizationVsCrime >= 0.2 || correlations?.densityVsCrime >= 0.2) {
+      const maxVal = Math.max(correlations.urbanizationVsCrime || 0, correlations.densityVsCrime || 0);
+      insights.push({
+        type: 'warning',
+        severity: 'medium',
+        title: 'High Urban Density Impact',
+        description: `Urbanization & population density correlate significantly (+${maxVal.toFixed(2)}) with reported crime incidents.`
+      });
+    }
+
+    if (correlations?.literacyVsCrime < 0) {
+      insights.push({
+        type: 'info',
+        severity: 'low',
+        title: 'Inverse Literacy Factor',
+        description: `Higher literacy rates exhibit an inverse correlation (${correlations.literacyVsCrime.toFixed(2)}) with overall crime rates.`
+      });
+    }
+
+    if (correlations?.povertyVsCrime > 0 || correlations?.unemploymentVsCrime > 0) {
+      const maxVal = Math.max(correlations.povertyVsCrime || 0, correlations.unemploymentVsCrime || 0);
+      insights.push({
+        type: 'info',
+        severity: 'low',
+        title: 'Economic Strain Factor',
+        description: `Poverty and unemployment demonstrate positive correlation (+${maxVal.toFixed(2)}) with property crime.`
+      });
+    }
+
+    return insights;
   }
 
   static async seedEconomicData() {

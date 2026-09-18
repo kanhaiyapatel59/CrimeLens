@@ -184,6 +184,69 @@ const Header = ({ onMenuClick }) => {
           </Menu>
         </Box>
       </Toolbar>
+
+      {/* 🚨 LIVE SCRB COMMAND TICKER & THREAT MATRIX SUB-BAR */}
+      <Box 
+        sx={{ 
+          bgcolor: theme.palette.mode === 'dark' ? '#0d1117' : '#1a237e', 
+          color: '#fff', 
+          px: 2, 
+          py: 0.5, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          fontSize: '0.75rem',
+          overflow: 'hidden'
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 160 }}>
+          <Chip 
+            label="SCRB LIVE TICKER" 
+            size="small" 
+            color="error" 
+            sx={{ height: 18, fontSize: '0.6rem', fontWeight: 800, letterSpacing: 0.5 }} 
+          />
+          <Typography variant="caption" sx={{ color: '#ffd700', fontWeight: 700, fontSize: '0.7rem' }}>
+            MATRIX: ELEVATED (68%)
+          </Typography>
+        </Box>
+
+        {/* Marquee Ticker */}
+        <Box sx={{ overflow: 'hidden', whiteSpace: 'nowrap', flexGrow: 1, mx: 2 }}>
+          <Box 
+            component="div"
+            sx={{ 
+              display: 'inline-block', 
+              animation: 'scrollTicker 28s linear infinite',
+              '@keyframes scrollTicker': {
+                '0%': { transform: 'translateX(100%)' },
+                '100%': { transform: 'translateX(-100%)' }
+              }
+            }}
+          >
+            <span style={{ marginRight: 30, color: '#f87171', fontWeight: 600 }}>
+              🚨 ALERT: Sudden 14% Vehicle Theft Surge detected in Division 4 Jurisdiction
+            </span>
+            <span style={{ marginRight: 30, color: '#fbbf24', fontWeight: 600 }}>
+              ⚡ AI FORECAST: Peak Diurnal Risk Period active for Next 3 Hours
+            </span>
+            <span style={{ marginRight: 30, color: '#34d399', fontWeight: 600 }}>
+              📍 RECENT RECORD: FIR #POL-2026-8819 logged in Bengaluru Central Station
+            </span>
+            <span style={{ marginRight: 30, color: '#a78bfa', fontWeight: 600 }}>
+              🔍 LINK ANALYSIS: 4 Suspect Aliases matched across State Crime Database
+            </span>
+          </Box>
+        </Box>
+
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5, opacity: 0.9 }}>
+          <Typography variant="caption" sx={{ fontFamily: 'monospace', color: '#67e8f9', fontWeight: 700 }}>
+            {new Date().toLocaleTimeString()} IST
+          </Typography>
+        </Box>
+      </Box>
+
       <ScrbReportDialog open={openScrbReport} onClose={() => setOpenScrbReport(false)} />
     </AppBar>
   )

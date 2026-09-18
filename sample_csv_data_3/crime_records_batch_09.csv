@@ -1,0 +1,22 @@
+firNumber,incidentId,crimeType,date,time,description,severity,riskScore,status,latitude,longitude,district,policeStation,victimName,suspectName
+FIR2026769,INC2026769,Robbery,2026-01-01,01:05,Armed snatching of cash and gold chain near commercial market.,low,93,reported,12.9716,77.6446,Bengaluru Urban,MG Road PS,Ramesh Nair,Unknown Offender
+FIR2026770,INC2026770,Cybercrime,2026-02-02,04:12,Unauthorized online bank transaction via suspicious phishing link.,medium,38,investigating,13.2465,77.6002,Bengaluru Rural,Hoskote PS,Sunita Rao,Rahul Shetty
+FIR2026771,INC2026771,Theft,2026-03-03,07:19,Stolen mobile device and laptop from parked vehicle.,high,51,in_progress,12.3507,76.6343,Mysuru,Vijayanagar PS,Vikram Hegde,Imran Gowda
+FIR2026772,INC2026772,Burglary,2026-04-04,10:26,Break-in at locked residential house during weekend hours.,critical,64,resolved,15.8568,74.4482,Belagavi,Market PS,Priya Patil,David Naik
+FIR2026773,INC2026773,Homicide,2026-05-05,13:33,Serious violence incident under active police investigation.,low,77,closed,17.2919,76.8033,Kalaburagi,Station Bazar PS,Suresh Mehta,Amit Ali
+FIR2026774,INC2026774,Human Trafficking,2026-06-06,16:40,Inter-state illegal labor trafficking racket intercepted at transport hub.,medium,90,pending,15.3168,75.1382,Hubballi-Dharwad,Old Hubballi PS,Ananya Gupta,Unknown Offender
+FIR2026775,INC2026775,Money Laundering,2026-07-07,19:47,Suspicious financial shell account transfers flagged by financial intelligence.,high,35,reported,12.9001,74.9040,Coastal Mangaluru,Pandeshwar PS,Vijay Joshi,Rohit Pujari
+FIR2026776,INC2026776,Narcotics,2026-08-08,22:54,Seizure of contraband illegal substances during highway checkpost inspection.,critical,48,investigating,12.8128,75.2377,Dakshina Kannada,Puttur PS,Deepa Reddy,Dinesh Singh
+FIR2026777,INC2026777,Extortion,2026-01-09,01:01,Threatening calls demanding protection money from local merchant.,low,61,in_progress,13.0567,76.0939,Hassan,Extension PS,Rajesh Verma,Salman Deshmukh
+FIR2026778,INC2026778,Assault,2026-02-10,04:08,Physical altercation outside public transit stand resulting in injuries.,medium,74,resolved,13.3615,77.0554,Tumakuru,Kyathsandra PS,Meena Kulkarni,Prakash Joshi
+FIR2026779,INC2026779,Vehicle Theft,2026-03-11,07:15,Motorcycle stolen from public complex parking area.,high,87,closed,12.9444,77.5526,Bengaluru Urban,MG Road PS,Kavita Chavan,Unknown Offender
+FIR2026780,INC2026780,Arson,2026-04-12,10:22,Intentional fire set to commercial warehouse inventory overnight.,critical,32,pending,13.1544,77.5734,Bengaluru Rural,Devanahalli PS,Mohan Deshmukh,Mohammad Menon
+FIR2026781,INC2026781,Kidnapping,2026-05-13,13:29,Abduction attempt foiled by local community and quick police response.,low,45,reported,12.2784,76.6973,Mysuru,Devaraja PS,Pooja Gowda,Deepak Hegde
+FIR2026782,INC2026782,Fraud,2026-06-14,16:36,Fake real estate investment transaction involving forged land documents.,medium,58,investigating,15.8707,74.5431,Belagavi,Camp PS,Sanjay Shetty,Ganesh Chavan
+FIR2026783,INC2026783,Drug Trafficking,2026-07-15,19:43,Illicit narcotics seizure during routine checkpost operation.,high,71,in_progress,17.3792,76.8428,Kalaburagi,University PS,Anita Pujari,Vijay Patel
+FIR2026784,INC2026784,Robbery,2026-08-16,22:50,Armed snatching of cash and gold chain near commercial market.,critical,84,resolved,15.3972,75.0860,Hubballi-Dharwad,Vidyanagar PS,Ganesh Naik,Unknown Offender
+FIR2026785,INC2026785,Cybercrime,2026-01-17,01:57,Unauthorized online bank transaction via suspicious phishing link.,low,97,closed,12.8997,74.8081,Coastal Mangaluru,Bunder PS,Prakash Chavan,Vikram Verma
+FIR2026786,INC2026786,Theft,2026-02-18,04:04,Stolen mobile device and laptop from parked vehicle.,medium,42,pending,12.7319,75.1862,Dakshina Kannada,Puttur PS,Shobha Kumar,Rajesh Shaikh
+FIR2026787,INC2026787,Burglary,2026-03-19,07:11,Break-in at locked residential house during weekend hours.,high,55,reported,12.9697,76.1342,Hassan,Extension PS,Arun Sharma,Meena Dsouza
+FIR2026788,INC2026788,Homicide,2026-04-20,10:18,Serious violence incident under active police investigation.,critical,68,investigating,13.3484,77.1504,Tumakuru,Kyathsandra PS,Asha Singh,Arun Shah
+FIR2026789,INC2026789,Human Trafficking,2026-05-21,13:25,Inter-state illegal labor trafficking racket intercepted at transport hub.,low,81,in_progress,13.0172,77.6150,Bengaluru Urban,MG Road PS,Ramesh Nair,Unknown Offender

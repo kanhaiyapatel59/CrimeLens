@@ -11,6 +11,7 @@ import {
   Refresh as RefreshIcon, Upload as UploadIcon, Download as DownloadIcon,
   Visibility as ViewIcon, Close as CloseIcon,
   DeleteSweep as DeleteSweepIcon, FilterList as FilterListIcon,
+  Security as SecurityIcon, VerifiedUser as VerifiedIcon,
 } from '@mui/icons-material'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { crimeAPI } from '../api/crimes'
@@ -587,6 +588,22 @@ const Crimes = () => {
                     </TableCell>
                     <TableCell align="right">
                       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
+                        <Tooltip title="Digital Chain of Custody & Evidence Matrix">
+                          <IconButton
+                            size="small"
+                            onClick={() => { setSelectedCrime(crime); setOpenDetail(true) }}
+                            sx={{
+                              color: '#ffd700',
+                              bgcolor: 'rgba(255,215,0,0.1)',
+                              '&:hover': { bgcolor: 'rgba(255,215,0,0.25)' },
+                              width: 32,
+                              height: 32,
+                              border: '1px solid rgba(255,215,0,0.3)',
+                            }}
+                          >
+                            <SecurityIcon sx={{ fontSize: 18 }} />
+                          </IconButton>
+                        </Tooltip>
                         <Tooltip title="View Details">
                           <IconButton
                             size="small"

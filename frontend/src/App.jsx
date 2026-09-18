@@ -7,9 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Layout from './components/layout/Layout'
 
 // Pages - Public
-import Landing from './pages/Landing'
-import Login from './pages/Login'
-import Register from './pages/Register'
+import AuthPage from './pages/AuthPage'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import VerifyEmail from './pages/VerifyEmail'
@@ -66,9 +64,9 @@ function App() {
             <Routes>
               {/* Public Routes (Redirect logged in users to /dashboard) */}
               <Route element={<PublicRoute />}>
-                <Route path="/" element={<Landing />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                <Route path="/" element={<AuthPage initialMode="login" />} />
+                <Route path="/login" element={<AuthPage initialMode="login" />} />
+                <Route path="/register" element={<AuthPage initialMode="register" />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />

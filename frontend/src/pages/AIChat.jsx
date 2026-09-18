@@ -681,6 +681,24 @@ const AIChat = () => {
           </Box>
         )}
 
+        {/* 🎙️ Animated Audio Waveform Visualizer when Voice Input Active */}
+        {isListening && (
+          <Box sx={{ px: { xs: 2, md: 4 }, py: 1, bgcolor: '#212121', display: 'flex', justifyContent: 'center' }}>
+            <Paper elevation={0} sx={{ p: 1.5, px: 3, bgcolor: 'rgba(16,163,127,0.15)', border: '1px solid #10a37f', borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="caption" fontWeight={700} sx={{ color: '#10a37f', letterSpacing: 0.5 }}>
+                🎙️ LISTENING TO POLICE INVESTIGATOR VOICE COMMAND...
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, height: 20 }}>
+                <Box sx={{ width: 3, height: 12, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate' }} />
+                <Box sx={{ width: 3, height: 20, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.2s' }} />
+                <Box sx={{ width: 3, height: 16, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.4s' }} />
+                <Box sx={{ width: 3, height: 22, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.6s' }} />
+                <Box sx={{ width: 3, height: 10, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.8s' }} />
+              </Box>
+            </Paper>
+          </Box>
+        )}
+
         {/* ChatGPT Style Capsule Input Bar */}
         <Box sx={{ p: 2, px: { xs: 2, md: 4 }, bgcolor: '#212121', display: 'flex', justifyContent: 'center' }}>
           <Paper

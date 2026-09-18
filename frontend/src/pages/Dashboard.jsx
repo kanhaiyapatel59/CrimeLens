@@ -51,26 +51,12 @@ const Dashboard = () => {
     queryFn: () => dashboardAPI.getOverview(filters),
   })
 
-  // Fetch correlation data
-  const { data: correlationData, isLoading: correlationLoading } = useQuery({
-    queryKey: ['correlation-matrix'],
-    queryFn: () => correlationAPI.getMatrix(),
-    refetchOnWindowFocus: false,
-  })
-
-  // Fetch predictive risk scores
-  const { data: predictionsData } = useQuery({
-    queryKey: ['predictions-risk'],
-    queryFn: () => dashboardAPI.getPredictions(),
-  })
-
   // Fetch statistical anomalies
   const { data: anomaliesData } = useQuery({
     queryKey: ['anomalies-list'],
     queryFn: () => dashboardAPI.getAnomalies(),
   })
 
-  const predictionsList = predictionsData?.data?.data || predictionsData?.data || []
   const anomaliesList = anomaliesData?.data?.data || anomaliesData?.data || []
 
   useEffect(() => {
@@ -97,16 +83,6 @@ const Dashboard = () => {
   const chartData = extractData(crimeTypeChart)
   const severityData = extractData(severityChart)
   const recentCrimesList = recentCrimes?.data?.data?.crimes || recentCrimes?.data?.crimes || []
-
-  // Get correlation data for the first district (or aggregate)
-  const correlationInsights = correlationData?.data?.data?.[0]?.insights || []
-  const correlationFactors = correlationData?.data?.data?.[0]?.correlations || []
-
-  // Convert correlation object to array for chart
-  const correlationChartData = Object.entries(correlationFactors).map(([key, value]) => ({
-    name: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
-    value: value || 0,
-  }))
 
   const stats = [
     { title: 'Total Crimes', value: kpiData?.totalCrimes || 0, icon: Warning, color: '#1a237e', change: '+12%' },
@@ -271,160 +247,26 @@ const Dashboard = () => {
         </Grid>
       </Grid>
 
-      {/* ✅ Socio-Economic Correlation Analysis */}
+      {/* Emerging Anomaly Call-outs */}
       <Paper sx={{ mt: 4, p: 3, borderRadius: 3 }}>
-        <Typography variant="h6" fontWeight={600} gutterBottom>
-          Socio-Economic Correlation Analysis
-        </Typography>
-        <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mb: 2 }}>
-          Relationship between crime rates and socio-economic factors
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6" fontWeight={600}>Emerging Anomaly Call-outs</Typography>
+          <Chip label="Statistical Outliers" size="small" color="error" variant="outlined" />
+        </Box>
 
-        {correlationLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : correlationChartData.length > 0 ? (
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8}>
-              <Box sx={{ height: 280 }}>
-                <CorrelationChart 
-                  data={correlationChartData}
-                  title="Correlation with Crime Rate"
-                  height={280}
-                />
-              </Box>
-            </Grid>
-
-            {/* Insights */}
-            <Grid item xs={12} md={4}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                Key Insights
-              </Typography>
-              {correlationInsights.length > 0 ? (
-                correlationInsights.slice(0, 3).map((insight, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Paper
-                      sx={{
-                        p: 1.5,
-                        mb: 1.5,
-                        borderRadius: 2,
-                        bgcolor: insight.severity === 'high' ? 'rgba(244,67,54,0.05)' :
-                                insight.severity === 'medium' ? 'rgba(255,152,0,0.05)' :
-                                'rgba(76,175,80,0.05)',
-                        border: `1px solid ${
-                          insight.severity === 'high' ? 'rgba(244,67,54,0.15)' :
-                          insight.severity === 'medium' ? 'rgba(255,152,0,0.15)' :
-                          'rgba(76,175,80,0.15)'
-                        }`,
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Chip
-                          label={insight.severity?.toUpperCase() || 'INFO'}
-                          size="small"
-                          color={
-                            insight.severity === 'high' ? 'error' :
-                            insight.severity === 'medium' ? 'warning' : 'success'
-                          }
-                          sx={{ height: 20, fontSize: '0.6rem' }}
-                        />
-                        <Typography variant="caption" fontWeight={500}>
-                          {insight.title}
-                        </Typography>
-                      </Box>
-                    </Paper>
-                  </motion.div>
-                ))
-              ) : (
-                <Typography variant="body2" color="textSecondary">
-                  No insights available. Add economic data for districts.
-                </Typography>
-              )}
-            </Grid>
-          </Grid>
-        ) : (
-          <Alert severity="info" sx={{ borderRadius: 2 }}>
-            No correlation data available. Please seed economic data for districts.
-          </Alert>
-        )}
+        {anomaliesList.map((anom, i) => (
+          <Paper key={i} elevation={0} sx={{ p: 1.5, mb: 1.5, borderRadius: 2, bgcolor: 'rgba(233,30,99,0.04)', border: '1px solid rgba(233,30,99,0.15)' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+              <Chip label={anom.severity?.toUpperCase()} size="small" color={anom.severity === 'critical' ? 'error' : 'warning'} sx={{ height: 18, fontSize: '0.6rem' }} />
+              <Typography variant="caption" fontWeight={600} color="error.main">{anom.confidenceScore}% Confidence</Typography>
+            </Box>
+            <Typography variant="subtitle2" fontWeight={600} sx={{ color: '#1a237e' }}>{anom.title}</Typography>
+            <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>
+              <strong>📍 {anom.district}:</strong> {anom.description}
+            </Typography>
+          </Paper>
+        ))}
       </Paper>
-
-      {/* ✅ AI Predictive Risk Scoring & Anomaly Call-outs */}
-      <Grid container spacing={3} sx={{ mt: 1 }}>
-        {/* 7-Day Predictive Risk Forecast */}
-        <Grid item xs={12} md={7}>
-          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Box>
-                <Typography variant="h6" fontWeight={600}>7-Day AI Predictive Risk Forecast</Typography>
-                <Typography variant="caption" color="textSecondary">Forecasted district risk ratings based on trend velocity & economic correlations</Typography>
-              </Box>
-              <Chip label="AI Forecast Engine" size="small" color="primary" sx={{ bgcolor: '#1a237e' }} />
-            </Box>
-
-            {predictionsList.slice(0, 5).map((pred, i) => (
-              <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.5, borderBottom: i < 4 ? '1px solid rgba(0,0,0,0.06)' : 'none' }}>
-                <Box sx={{ width: '35%' }}>
-                  <Typography variant="body2" fontWeight={600}>{pred.districtName}</Typography>
-                  <Typography variant="caption" color="textSecondary">{pred.primaryFactor}</Typography>
-                </Box>
-                <Box sx={{ width: '40%', px: 1 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="caption" color="textSecondary">Risk Rating</Typography>
-                    <Typography variant="caption" fontWeight={700} color={pred.riskScore >= 70 ? 'error.main' : pred.riskScore >= 40 ? 'warning.main' : 'success.main'}>
-                      {pred.riskScore} / 100
-                    </Typography>
-                  </Box>
-                  <Box sx={{ width: '100%', bgcolor: '#e0e0e0', borderRadius: 1, height: 6, overflow: 'hidden' }}>
-                    <Box sx={{ width: `${pred.riskScore}%`, bgcolor: pred.riskScore >= 70 ? '#e91e63' : pred.riskScore >= 40 ? '#ff9800' : '#4caf50', height: '100%' }} />
-                  </Box>
-                </Box>
-                <Box sx={{ textAlign: 'right', width: '25%' }}>
-                  <Chip
-                    label={`${pred.forecastTrend}`}
-                    size="small"
-                    color={pred.forecastTrend.startsWith('+') ? 'error' : 'success'}
-                    sx={{ height: 20, fontSize: '0.65rem' }}
-                  />
-                  <Typography variant="caption" sx={{ display: 'block', opacity: 0.7, fontSize: '0.65rem', mt: 0.2 }}>
-                    ~{pred.projectedIncidents7Days} incidents
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Paper>
-        </Grid>
-
-        {/* Emerging Anomaly Call-outs */}
-        <Grid item xs={12} md={5}>
-          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={600}>Emerging Anomaly Call-outs</Typography>
-              <Chip label="Statistical Outliers" size="small" color="error" variant="outlined" />
-            </Box>
-
-            {anomaliesList.map((anom, i) => (
-              <Paper key={i} elevation={0} sx={{ p: 1.5, mb: 1.5, borderRadius: 2, bgcolor: 'rgba(233,30,99,0.04)', border: '1px solid rgba(233,30,99,0.15)' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-                  <Chip label={anom.severity?.toUpperCase()} size="small" color={anom.severity === 'critical' ? 'error' : 'warning'} sx={{ height: 18, fontSize: '0.6rem' }} />
-                  <Typography variant="caption" fontWeight={600} color="error.main">{anom.confidenceScore}% Confidence</Typography>
-                </Box>
-                <Typography variant="subtitle2" fontWeight={600} sx={{ color: '#1a237e' }}>{anom.title}</Typography>
-                <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>
-                  <strong>📍 {anom.district}:</strong> {anom.description}
-                </Typography>
-              </Paper>
-            ))}
-          </Paper>
-        </Grid>
-      </Grid>
 
       {/* Recent Crimes */}
       <Paper sx={{ mt: 4, p: 3, borderRadius: 3 }}>

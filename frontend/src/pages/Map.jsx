@@ -299,7 +299,19 @@ const Map = () => {
   })
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [currentLayer, setCurrentLayer] = useState('street')
+  const [diurnalHour, setDiurnalHour] = useState(14)
+  const [isPlayingDiurnal, setIsPlayingDiurnal] = useState(false)
   const mapRef = useRef()
+
+  useEffect(() => {
+    let interval = null
+    if (isPlayingDiurnal) {
+      interval = setInterval(() => {
+        setDiurnalHour((prev) => (prev + 1) % 24)
+      }, 1000)
+    }
+    return () => clearInterval(interval)
+  }, [isPlayingDiurnal])
 
   const tileLayers = {
     street: {
@@ -463,6 +475,67 @@ const Map = () => {
           border: '1px solid rgba(0,0,0,0.06)',
         }}
       >
+        {/* 🗺️ 24-HOUR DIURNAL CRIME RADAR CONTROL OVERLAY */}
+        <Paper
+          elevation={4}
+          sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            zIndex: 1000,
+            p: 1.5,
+            px: 2.5,
+            borderRadius: 3,
+            bgcolor: 'rgba(11,12,16,0.92)',
+            color: '#fff',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,215,0,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            maxWidth: 520,
+            width: 'calc(100% - 100px)'
+          }}
+        >
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => setIsPlayingDiurnal(!isPlayingDiurnal)}
+            sx={{
+              bgcolor: isPlayingDiurnal ? '#e91e63' : '#ffd700',
+              color: isPlayingDiurnal ? '#fff' : '#070709',
+              fontWeight: 800,
+              fontSize: '0.7rem',
+              minWidth: 80,
+              '&:hover': { bgcolor: isPlayingDiurnal ? '#c2185b' : '#ffc107' }
+            }}
+          >
+            {isPlayingDiurnal ? '⏸ PAUSE' : '▶ PLAY'}
+          </Button>
+
+          <Box sx={{ flexGrow: 1, px: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+              <Typography variant="caption" sx={{ color: '#ffd700', fontWeight: 800, fontSize: '0.65rem' }}>
+                📡 DIURNAL SURGE RADAR: {String(diurnalHour).padStart(2, '0')}:00 HRS
+              </Typography>
+              <Chip 
+                label={diurnalHour >= 21 || diurnalHour <= 4 ? 'HIGH NIGHT SURGE' : 'DAYTIME PATROL'} 
+                size="small" 
+                color={diurnalHour >= 21 || diurnalHour <= 4 ? 'error' : 'success'}
+                sx={{ height: 16, fontSize: '0.55rem', fontWeight: 800 }}
+              />
+            </Box>
+            <Slider
+              value={diurnalHour}
+              onChange={(e, val) => setDiurnalHour(val)}
+              min={0}
+              max={23}
+              step={1}
+              size="small"
+              sx={{ color: '#ffd700', py: 0.5 }}
+            />
+          </Box>
+        </Paper>
         <MapContainer
           center={center}
           zoom={12}
