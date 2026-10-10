@@ -176,6 +176,7 @@ CrimeLens
 ├── sample_csv_data/            # Original batch CSV sample data
 ├── sample_csv_data_2/          # 10 batch CSV files (200 records ready for manual upload)
 ├── sample_csv_data_3/          # 10 batch CSV files (multi-district ready-to-test batches)
+├── sample_csv_data_4/          # 10 batch CSV files (200 fresh non-colliding records, 20 per file)
 └── README.md
 ```
 
