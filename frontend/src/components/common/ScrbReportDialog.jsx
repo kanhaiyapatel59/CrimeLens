@@ -1,13 +1,30 @@
 import React, { useRef } from 'react'
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography,
-  Paper, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Chip, Divider, IconButton, CircularProgress, Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Box,
+  Typography,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+  IconButton,
+  CircularProgress,
 } from '@mui/material'
 import {
-  Print as PrintIcon, Close as CloseIcon, Security as SecurityIcon,
-  TrendingUp as TrendingUpIcon, Warning as WarningIcon, LocalPolice as PoliceIcon,
-  Assessment as AssessmentIcon,
+  Print as PrintIcon,
+  Close as CloseIcon,
+  Security as SecurityIcon,
+  TrendingUp as TrendingUpIcon,
+  Warning as WarningIcon,
+  LocalPolice as PoliceIcon,
 } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
 import { dashboardAPI } from '../../api/dashboard'
@@ -52,184 +69,232 @@ const ScrbReportDialog = ({ open, onClose }) => {
   const reportRefId = `SCRB-KSP-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-      <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#1a237e', color: '#fff' }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="lg"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: '24px',
+          bgcolor: 'var(--neu-surface, #E8ECF3)',
+          boxShadow: 'var(--neu-shadow-raised-lg, 10px 10px 24px #C3C9D3, -10px -10px 24px #FFFFFF)',
+          border: '1px solid rgba(255, 255, 255, 0.65)',
+        },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          bgcolor: 'var(--neu-surface, #E8ECF3)',
+          borderBottom: '1px solid var(--neu-divider, #D7DDE7)',
+          py: 2,
+          px: 3,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <SecurityIcon />
-          <Typography variant="h6" component="span" fontWeight={700}>
-            SCRB Executive Crime Intelligence Briefing
-          </Typography>
+          <Box
+            sx={{
+              width: 38,
+              height: 38,
+              borderRadius: '12px',
+              bgcolor: '#356AE6',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fff',
+              boxShadow: '3px 3px 8px rgba(53, 106, 230, 0.35)',
+            }}
+          >
+            <SecurityIcon sx={{ fontSize: 22 }} />
+          </Box>
+          <Box>
+            <Typography variant="h6" component="span" fontWeight={800} color="#202A3A" sx={{ fontSize: '1.1rem' }}>
+              SCRB Executive Crime Intelligence Briefing
+            </Typography>
+            <Typography variant="caption" sx={{ display: 'block', color: '#8893A4', fontWeight: 600 }}>
+              Ref: {reportRefId} • Karnataka State Police HQ
+            </Typography>
+          </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           <Button
             variant="contained"
-            color="secondary"
+            size="small"
             startIcon={<PrintIcon />}
             onClick={handlePrint}
-            sx={{ bgcolor: '#e91e63', '&:hover': { bgcolor: '#c2185b' }, fontWeight: 600 }}
+            sx={{
+              bgcolor: '#356AE6',
+              borderRadius: '10px',
+              fontWeight: 700,
+              boxShadow: 'var(--neu-shadow-primary-btn, 4px 4px 12px rgba(53, 106, 230, 0.35))',
+            }}
           >
-            Export PDF / Print Report
+            Print
           </Button>
-          <IconButton onClick={onClose} sx={{ color: '#fff' }}><CloseIcon /></IconButton>
+          <IconButton
+            onClick={onClose}
+            size="small"
+            sx={{
+              bgcolor: 'var(--neu-surface, #E8ECF3)',
+              boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+              borderRadius: '10px',
+              color: '#5C6779',
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ p: 4 }} id="printable-scrb-report" ref={printRef}>
-        {/* Print Styles CSS */}
-        <style>
-          {`
-            @media print {
-              body * { visibility: hidden; }
-              #printable-scrb-report, #printable-scrb-report * { visibility: visible; }
-              #printable-scrb-report { position: absolute; left: 0; top: 0; width: 100%; }
-              .no-print { display: none !important; }
-            }
-          `}
-        </style>
-
-        {/* Official Header */}
-        <Box sx={{ textAlign: 'center', mb: 3, pb: 2, borderBottom: '3px double #1a237e' }}>
-          <Typography variant="h5" fontWeight={800} sx={{ color: '#1a237e', letterSpacing: 1, textTransform: 'uppercase' }}>
-            Karnataka State Police — State Crime Records Bureau (SCRB)
-          </Typography>
-          <Typography variant="subtitle2" fontWeight={700} color="error" sx={{ letterSpacing: 1.5, mt: 0.5 }}>
-            CONFIDENTIAL // LAW ENFORCEMENT SENSITIVE BRIEFING REPORT
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 1.5 }}>
-            <Chip label={`Report Ref: ${reportRefId}`} size="small" variant="outlined" sx={{ fontWeight: 600 }} />
-            <Chip label={`Date: ${new Date().toLocaleDateString('en-IN', { dateStyle: 'full' })}`} size="small" variant="outlined" />
-            <Chip label="Scope: Karnataka State Wide" size="small" color="primary" />
-          </Box>
-        </Box>
-
+      <DialogContent sx={{ p: { xs: 2, sm: 3.5 }, bgcolor: 'var(--neu-surface, #E8ECF3)' }} ref={printRef}>
         {kpisLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <CircularProgress sx={{ color: '#356AE6' }} />
+          </Box>
         ) : (
-          <Box>
-            {/* Section 1: Executive KPI Overview */}
-            <Typography variant="h6" fontWeight={700} sx={{ color: '#1a237e', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <AssessmentIcon fontSize="small" /> 1. Executive State-Wide Crime Overview
-            </Typography>
-
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-              <Grid item xs={3}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: '#e8eaf6', borderRadius: 2, border: '1px solid #c5cae9', textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={800} color="#1a237e">{kpis.totalCrimes || 0}</Typography>
-                  <Typography variant="caption" fontWeight={600} color="textSecondary">Total FIR Records</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={3}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: '#fbe9e7', borderRadius: 2, border: '1px solid #ffccbc', textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={800} color="#d84315">{kpis.highRiskCount || 0}</Typography>
-                  <Typography variant="caption" fontWeight={600} color="textSecondary">High-Risk Cases</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={3}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: '#fce4ec', borderRadius: 2, border: '1px solid #f8bbd0', textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={800} color="#c2185b">{repeatOffenders.length}</Typography>
-                  <Typography variant="caption" fontWeight={600} color="textSecondary">Active Repeat Suspects</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={3}>
-                <Paper elevation={0} sx={{ p: 2, bgcolor: '#e8f5e9', borderRadius: 2, border: '1px solid #c8e6c9', textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={800} color="#2e7d32">{kpis.status?.resolved || 0}</Typography>
-                  <Typography variant="caption" fontWeight={600} color="textSecondary">Resolved Cases</Typography>
-                </Paper>
-              </Grid>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* KPI Summary Cards */}
+            <Grid container spacing={2}>
+              {[
+                { label: 'Total FIR Cases Logged', val: kpis?.totalCrimes || 0, color: '#356AE6' },
+                { label: 'High/Critical Severity', val: kpis?.highRiskCount || 0, color: '#D94F55' },
+                { label: 'Resolved / Closed Cases', val: kpis?.status?.resolved || 0, color: '#239B62' },
+                { label: 'Active SCRB Inquiries', val: (kpis?.status?.investigating || 0) + (kpis?.status?.in_progress || 0), color: '#D99118' },
+              ].map((kpi, idx) => (
+                <Grid item xs={12} sm={6} md={3} key={idx}>
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: '16px',
+                      bgcolor: 'var(--neu-surface, #E8ECF3)',
+                      boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ color: '#5C6779', fontWeight: 600 }}>
+                      {kpi.label}
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, color: kpi.color, mt: 0.5 }}>
+                      {kpi.val}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
             </Grid>
 
-            {/* Section 2: 7-Day AI Predictive Risk Forecast */}
-            <Typography variant="h6" fontWeight={700} sx={{ color: '#1a237e', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <TrendingUpIcon fontSize="small" /> 2. 7-Day AI Predictive Risk & Hotspot Forecast
-            </Typography>
-
-            <TableContainer component={Paper} variant="outlined" sx={{ mb: 4, borderRadius: 2 }}>
-              <Table size="small">
-                <TableHead sx={{ bgcolor: '#1a237e' }}>
-                  <TableRow>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>District Name</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Risk Score (0-100)</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>7-Day Projected FIRs</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Forecast Trend</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Primary Socio-Economic Driver</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {predictions.slice(0, 6).map((pred, i) => (
-                    <TableRow key={i}>
-                      <TableCell sx={{ fontWeight: 600 }}>{pred.districtName}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={`${pred.riskScore} / 100`}
-                          size="small"
-                          color={pred.riskScore >= 70 ? 'error' : pred.riskScore >= 40 ? 'warning' : 'success'}
-                          sx={{ fontWeight: 700 }}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>~{pred.projectedIncidents7Days} Incidents</TableCell>
-                      <TableCell>
-                        <Chip label={pred.forecastTrend} size="small" variant="outlined" color={pred.forecastTrend?.startsWith('+') ? 'error' : 'success'} />
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '0.8rem' }}>{pred.primaryFactor}</TableCell>
-                    </TableRow>
+            {/* Emerging Anomalies Section */}
+            <Box
+              sx={{
+                p: 2.5,
+                borderRadius: '18px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+                border: '1px solid rgba(255, 255, 255, 0.6)',
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight={800} color="#202A3A" sx={{ mb: 1.5 }}>
+                ⚠️ Emerging Statistical Anomalies
+              </Typography>
+              {anomalies.length === 0 ? (
+                <Typography variant="body2" color="#8893A4">No critical anomalies detected.</Typography>
+              ) : (
+                <Grid container spacing={1.5}>
+                  {anomalies.slice(0, 4).map((anom, i) => (
+                    <Grid item xs={12} sm={6} key={i}>
+                      <Box
+                        sx={{
+                          p: 1.5,
+                          borderRadius: '12px',
+                          bgcolor: 'rgba(217, 79, 85, 0.05)',
+                          border: '1px solid rgba(217, 79, 85, 0.2)',
+                        }}
+                      >
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Chip label={anom.severity?.toUpperCase()} size="small" sx={{ height: 18, fontSize: '0.62rem', fontWeight: 800, bgcolor: '#D94F55', color: '#fff' }} />
+                          <Typography variant="caption" fontWeight={700} color="#D94F55">
+                            {anom.confidenceScore}% Confidence
+                          </Typography>
+                        </Box>
+                        <Typography variant="body2" fontWeight={700} color="#202A3A" sx={{ mt: 0.8 }}>
+                          {anom.title}
+                        </Typography>
+                        <Typography variant="caption" color="#5C6779" sx={{ display: 'block', mt: 0.3 }}>
+                          {anom.description}
+                        </Typography>
+                      </Box>
+                    </Grid>
                   ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                </Grid>
+              )}
+            </Box>
 
-            {/* Section 3: Repeat Offender & Cross-Jurisdiction Watchlist */}
-            <Typography variant="h6" fontWeight={700} sx={{ color: '#1a237e', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <PoliceIcon fontSize="small" /> 3. Cross-Jurisdiction Repeat Offender Watchlist
-            </Typography>
-
-            <TableContainer component={Paper} variant="outlined" sx={{ mb: 4, borderRadius: 2 }}>
-              <Table size="small">
-                <TableHead sx={{ bgcolor: '#37474f' }}>
-                  <TableRow>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Offender Name & Alias</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Jurisdiction Flag</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Crimes Linked</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Police Stations Covered</TableCell>
-                    <TableCell sx={{ color: '#fff', fontWeight: 700 }}>Modus Operandi Tactics</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {repeatOffenders.slice(0, 5).map((offender, i) => (
-                    <TableRow key={i}>
-                      <TableCell sx={{ fontWeight: 600 }}>{offender.name} <Typography variant="caption" color="textSecondary">({offender.alias})</Typography></TableCell>
-                      <TableCell>
-                        {offender.crossJurisdiction ? (
-                          <Chip label="CROSS-JURISDICTION" color="error" size="small" sx={{ fontWeight: 700, fontSize: '0.65rem' }} />
-                        ) : (
-                          <Chip label="LOCAL" color="info" size="small" sx={{ fontSize: '0.65rem' }} />
-                        )}
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>{offender.crimesCount} FIRs</TableCell>
-                      <TableCell sx={{ fontSize: '0.8rem' }}>{offender.policeStations?.join(', ') || 'District Central'}</TableCell>
-                      <TableCell sx={{ fontSize: '0.8rem', fontStyle: 'italic' }}>{offender.moTactics?.join('; ') || 'N/A'}</TableCell>
+            {/* Repeat Offenders & Suspects Section */}
+            <Box
+              sx={{
+                p: 2.5,
+                borderRadius: '18px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+                border: '1px solid rgba(255, 255, 255, 0.6)',
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight={800} color="#202A3A" sx={{ mb: 1.5 }}>
+                🔍 Monitored Repeat Offenders & Syndicate Members
+              </Typography>
+              <TableContainer
+                sx={{
+                  borderRadius: '14px',
+                  boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+                }}
+              >
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: 'rgba(215, 221, 231, 0.4)' }}>
+                      <TableCell sx={{ fontWeight: 700, color: '#5C6779' }}>Offender / Alias</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: '#5C6779' }}>Primary MO</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: '#5C6779' }}>Known Links</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: '#5C6779' }}>Status</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            {/* Section 4: Actionable Tactical Patrolling Directives */}
-            <Typography variant="h6" fontWeight={700} sx={{ color: '#1a237e', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <WarningIcon fontSize="small" /> 4. Actionable Patrolling & Dispatch Directives
-            </Typography>
-
-            <Alert severity="warning" sx={{ borderRadius: 2, mb: 2 }}>
-              <Typography variant="subtitle2" fontWeight={700}>SCRB Executive Directive:</Typography>
-              District Superintendents of Police in high-risk zones (Risk Score &gt; 70) are instructed to deploy night patrolling units during peak diurnal hours (00:00 - 06:00) and establish cross-border checkpoints along identified repeat offender routes.
-            </Alert>
+                  </TableHead>
+                  <TableBody>
+                    {repeatOffenders.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} align="center" sx={{ color: '#8893A4' }}>No offender records</TableCell>
+                      </TableRow>
+                    ) : (
+                      repeatOffenders.slice(0, 5).map((off, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell sx={{ fontWeight: 600, color: '#202A3A' }}>{off.name || off.alias || 'Suspect'}</TableCell>
+                          <TableCell sx={{ color: '#5C6779' }}>{off.tactics || off.crimeType || 'Burglary'}</TableCell>
+                          <TableCell sx={{ fontWeight: 700, color: '#356AE6' }}>{off.linkCount || 3} cases</TableCell>
+                          <TableCell>
+                            <Chip label="Active Watch" size="small" sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700, bgcolor: '#D99118', color: '#fff' }} />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
           </Box>
         )}
       </DialogContent>
-
-      <DialogActions sx={{ p: 2, bgcolor: '#f5f7fa', borderTop: '1px solid #e0e0e0' }}>
-        <Button variant="outlined" onClick={onClose}>Close Briefing</Button>
-        <Button variant="contained" color="secondary" startIcon={<PrintIcon />} onClick={handlePrint} sx={{ bgcolor: '#e91e63' }}>
-          Export PDF / Print Report
+      <DialogActions sx={{ p: 2, px: 3, borderTop: '1px solid var(--neu-divider, #D7DDE7)' }}>
+        <Button
+          onClick={onClose}
+          sx={{
+            color: '#5C6779',
+            fontWeight: 600,
+            borderRadius: '10px',
+            bgcolor: 'var(--neu-surface, #E8ECF3)',
+            boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+            px: 2.5,
+          }}
+        >
+          Close Briefing
         </Button>
       </DialogActions>
     </Dialog>

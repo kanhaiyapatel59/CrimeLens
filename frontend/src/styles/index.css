@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import 'leaflet/dist/leaflet.css';
 
 @tailwind base;
@@ -13,113 +13,69 @@
   }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--neu-bg, #E8ECF3);
+    color: var(--neu-text-primary, #202A3A);
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
-  /* Scrollbar Styling */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #c1c7cd;
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #a8b0b8;
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    background-color: var(--neu-bg, #E8ECF3);
   }
 }
 
-@layer components {
-  .glass-effect {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+@layer utilities {
+  .neu-shadow-raised {
+    box-shadow: var(--neu-shadow-raised);
   }
-
-  .card-hover {
-    transition: all 0.3s ease;
+  .neu-shadow-raised-sm {
+    box-shadow: var(--neu-shadow-raised-sm);
   }
-
-  .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  .neu-shadow-inset {
+    box-shadow: var(--neu-shadow-inset);
   }
-
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  .neu-shadow-inset-sm {
+    box-shadow: var(--neu-shadow-inset-sm);
+  }
+  .neu-surface {
+    background-color: var(--neu-surface);
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+/* MUI Overrides for Neumorphism */
+.MuiPaper-root {
+  background-color: var(--neu-surface, #E8ECF3) !important;
+  color: var(--neu-text-primary, #202A3A) !important;
 }
 
-/* ✅ FIX: Prevent sidebar from disappearing */
+.MuiDialog-paper {
+  background-color: var(--neu-surface, #E8ECF3) !important;
+  box-shadow: var(--neu-shadow-raised-lg, 10px 10px 24px #C3C9D3, -10px -10px 24px #FFFFFF) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+.MuiMenu-paper {
+  background-color: var(--neu-surface, #E8ECF3) !important;
+  box-shadow: var(--neu-shadow-raised, 7px 7px 16px #C7CDD7, -7px -7px 16px #FFFFFF) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Fix drawer positioning cleanly */
 .MuiDrawer-root {
   display: block !important;
 }
 
 .MuiDrawer-paper {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* ✅ Fix: Ensure sidebar stays visible when console is open */
-@media (max-width: 600px) {
-  .MuiDrawer-paper {
-    transform: none !important;
-  }
-}
-
-/* ✅ Fix: Prevent content from shifting */
-main {
-  transition: margin-left 0.25s ease-in-out !important;
-}
-
-/* ✅ Fix: Ensure sidebar is always visible */
-[role="presentation"] {
-  display: block !important;
-}
-
-/* ✅ FIX: Remove any gap between sidebar and content */
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ✅ FIX: Ensure main content starts at 0 */
-main {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-}
-
-/* ✅ FIX: For desktop, content should start after sidebar */
-@media (min-width: 900px) {
-  main {
-    padding-left: 0 !important;
-  }
+  background-color: var(--neu-surface, #E8ECF3) !important;
+  border-right: 1px solid var(--neu-divider, #D7DDE7) !important;
 }

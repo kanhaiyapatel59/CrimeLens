@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import {
-  Box, Grid, TextField, Select, MenuItem, FormControl,
-  InputLabel, Button, CircularProgress, Alert, Typography,
+  Box,
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
+  CircularProgress,
+  Alert,
+  Typography,
 } from '@mui/material'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { crimeAPI } from '../../api/crimes'
@@ -13,9 +22,14 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [formData, setFormData] = useState({
-    firNumber: '', incidentId: '', crimeType: '',
-    date: '', time: '', description: '',
-    severity: 'medium', status: 'reported',
+    firNumber: '',
+    incidentId: '',
+    crimeType: '',
+    date: '',
+    time: '',
+    description: '',
+    severity: 'medium',
+    status: 'reported',
     location: {
       coordinates: [77.5946, 12.9716],
       address: { street: '', area: '', city: '', district: '', policeStation: '', pincode: '', landmark: '' },
@@ -143,17 +157,30 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
       const msg = err.message || err.response?.data?.message || 'Failed to save crime'
       setError(msg)
       toast.error(msg)
-      console.error('❌ Submit error:', err.response?.data || err.message)
+      console.error('Submit error:', err.response?.data || err.message)
     } finally {
       setLoading(false)
     }
   }
 
+  // Neumorphic Input sx helper
+  const neuInputSx = {
+    '& .MuiOutlinedInput-root': {
+      bgcolor: 'var(--neu-surface, #E8ECF3)',
+      boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+      borderRadius: '12px',
+      border: '1px solid rgba(255, 255, 255, 0.4)',
+      '& fieldset': { border: 'none' },
+      '&:hover fieldset': { border: 'none' },
+      '&.Mui-focused fieldset': { border: '1.5px solid #356AE6' },
+    },
+  }
+
   return (
-    <Box 
-      component="form" 
-      onSubmit={handleSubmit} 
-      sx={{ 
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
         width: '100%',
         maxWidth: '100%',
         boxSizing: 'border-box',
@@ -162,12 +189,20 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
       }}
     >
       {error && (
-        <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+        <Alert
+          severity="error"
+          sx={{
+            mb: 2.5,
+            borderRadius: '14px',
+            boxShadow: 'inset 2px 2px 4px rgba(217, 79, 85, 0.15)',
+          }}
+        >
           {error}
         </Alert>
       )}
-      
+
       <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+        {/* Field 1: FIR Number */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -177,8 +212,11 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             onChange={handleChange}
             required
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
+
+        {/* Field 2: Incident ID */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -188,11 +226,13 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             onChange={handleChange}
             required
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 3: Crime Type */}
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required size="small">
+          <FormControl fullWidth required size="small" sx={neuInputSx}>
             <InputLabel>Crime Type</InputLabel>
             <Select
               name="crimeType"
@@ -210,6 +250,7 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
           </FormControl>
         </Grid>
 
+        {/* Field 4: Date */}
         <Grid item xs={12} sm={3}>
           <TextField
             fullWidth
@@ -221,9 +262,11 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             required
             InputLabelProps={{ shrink: true }}
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 5: Time */}
         <Grid item xs={12} sm={3}>
           <TextField
             fullWidth
@@ -235,9 +278,11 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             required
             InputLabelProps={{ shrink: true }}
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 6: Description */}
         <Grid item xs={12}>
           <TextField
             fullWidth
@@ -249,11 +294,13 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             rows={3}
             required
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 7: Severity */}
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth size="small">
+          <FormControl fullWidth size="small" sx={neuInputSx}>
             <InputLabel>Severity</InputLabel>
             <Select
               name="severity"
@@ -269,8 +316,9 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
           </FormControl>
         </Grid>
 
+        {/* Field 8: Status */}
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth size="small">
+          <FormControl fullWidth size="small" sx={neuInputSx}>
             <InputLabel>Status</InputLabel>
             <Select
               name="status"
@@ -287,12 +335,22 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
           </FormControl>
         </Grid>
 
+        {/* Section Header: Location Details */}
         <Grid item xs={12}>
-          <Typography variant="subtitle2" fontWeight={600} gutterBottom sx={{ fontSize: '0.85rem' }}>
-            Location Details
-          </Typography>
+          <Box
+            sx={{
+              pt: 1,
+              pb: 0.5,
+              borderBottom: '1px solid var(--neu-divider, #D7DDE7)',
+            }}
+          >
+            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: '0.88rem', color: '#202A3A' }}>
+              📍 Location Details
+            </Typography>
+          </Box>
         </Grid>
 
+        {/* Field 10: Street */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -301,9 +359,11 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             value={formData.location.address.street}
             onChange={handleChange}
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 11: Area */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -312,9 +372,11 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             value={formData.location.address.area}
             onChange={handleChange}
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 12: City */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -323,11 +385,13 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             value={formData.location.address.city}
             onChange={handleChange}
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 13: District */}
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth size="small">
+          <FormControl fullWidth size="small" sx={neuInputSx}>
             <InputLabel>District</InputLabel>
             <Select
               name="location.address.district"
@@ -346,6 +410,7 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
           </FormControl>
         </Grid>
 
+        {/* Field 14: Pincode */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -354,9 +419,11 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             value={formData.location.address.pincode}
             onChange={handleChange}
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
 
+        {/* Field 15: Landmark */}
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
@@ -365,25 +432,42 @@ const CrimeForm = ({ crime, onSuccess, onCancel }) => {
             value={formData.location.address.landmark}
             onChange={handleChange}
             size="small"
+            sx={neuInputSx}
           />
         </Grid>
       </Grid>
 
-      <Box sx={{ display: 'flex', gap: 2, mt: 3, justifyContent: 'flex-end' }}>
-        <Button onClick={onCancel} disabled={loading} variant="outlined">
+      {/* Action Buttons */}
+      <Box sx={{ display: 'flex', gap: 2, mt: 3.5, justifyContent: 'flex-end' }}>
+        <Button
+          onClick={onCancel}
+          disabled={loading}
+          sx={{
+            color: '#5C6779',
+            fontWeight: 600,
+            borderRadius: '12px',
+            bgcolor: 'var(--neu-surface, #E8ECF3)',
+            boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+            px: 3,
+            '&:hover': { color: '#202A3A' },
+          }}
+        >
           Cancel
         </Button>
         <Button
           type="submit"
           variant="contained"
           disabled={loading}
-          sx={{ 
-            bgcolor: '#1a237e', 
-            '&:hover': { bgcolor: '#283593' },
-            minWidth: 100,
+          sx={{
+            bgcolor: '#356AE6',
+            '&:hover': { bgcolor: '#2955C4' },
+            minWidth: 120,
+            borderRadius: '12px',
+            fontWeight: 700,
+            boxShadow: 'var(--neu-shadow-primary-btn, 5px 5px 14px rgba(53, 106, 230, 0.35))',
           }}
         >
-          {loading ? <CircularProgress size={24} /> : (crime ? 'Update' : 'Create')}
+          {loading ? <CircularProgress size={22} sx={{ color: '#fff' }} /> : (crime ? 'Update FIR' : 'Create FIR')}
         </Button>
       </Box>
     </Box>

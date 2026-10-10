@@ -8,27 +8,27 @@ import { restoreSession } from '../../redux/slices/authSlice'
 // ✅ Role-based route access mapping
 const rolePermissions = {
   admin: {
-    allowedPaths: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports', '/profile', '/settings', '/users', '/audit'],
+    allowedPaths: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports', '/forensics', '/profile', '/settings', '/users', '/audit'],
     redirect: '/dashboard'
   },
   scrb_officer: {
-    allowedPaths: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports', '/profile', '/settings'],
+    allowedPaths: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports', '/forensics', '/profile', '/settings'],
     redirect: '/dashboard'
   },
   district_officer: {
-    allowedPaths: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports', '/profile', '/settings'],
+    allowedPaths: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports', '/forensics', '/profile', '/settings'],
     redirect: '/dashboard'
   },
   station_officer: {
-    allowedPaths: ['/dashboard', '/crimes', '/map', '/ai-chat', '/profile', '/settings'],
+    allowedPaths: ['/dashboard', '/crimes', '/map', '/forensics', '/ai-chat', '/profile', '/settings'],
     redirect: '/dashboard'
   },
   analyst: {
-    allowedPaths: ['/dashboard', '/map', '/network', '/ai-chat', '/reports', '/profile'],
+    allowedPaths: ['/dashboard', '/map', '/network', '/forensics', '/ai-chat', '/reports', '/profile'],
     redirect: '/dashboard'
   },
   viewer: {
-    allowedPaths: ['/dashboard', '/ai-chat', '/profile'],
+    allowedPaths: ['/dashboard', '/forensics', '/ai-chat', '/profile'],
     redirect: '/dashboard'
   }
 }

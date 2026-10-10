@@ -27,4 +27,7 @@ export const dashboardAPI = {
 
   getAnomalies: (params = {}) =>
     axios.get('/api/dashboard/anomalies', { params }),
+
+  getTactical: (params = {}) =>
+    axios.get('/api/dashboard/tactical', { params }),
 }

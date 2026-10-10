@@ -5,6 +5,7 @@ import {
   ListItemText, Tooltip, Menu, MenuItem, Fade, Dialog, DialogTitle, DialogContent,
   DialogActions, InputAdornment, Badge,
 } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import {
   Send as SendIcon,
   SmartToy as AIIcon,
@@ -40,10 +41,10 @@ import remarkGfm from 'remark-gfm'
 import { useDropzone } from 'react-dropzone'
 
 const SUGGESTED_PROMPTS = [
-  { icon: <TrendingUpIcon sx={{ color: '#10a37f' }} />, title: 'Analyze Crime Trends', subtitle: 'State-wide district forecasts & risk scores' },
-  { icon: <LocationIcon sx={{ color: '#ff9800' }} />, title: 'Predict Hotspots', subtitle: '7-day diurnal high-risk areas' },
-  { icon: <PeopleIcon sx={{ color: '#e91e63' }} />, title: 'Repeat Suspects', subtitle: 'Cross-jurisdiction offender profiling' },
-  { icon: <DescriptionIcon sx={{ color: '#9c27b0' }} />, title: 'Executive Report', subtitle: 'SCRB briefing & dispatch directives' },
+  { icon: <TrendingUpIcon sx={{ color: '#239B62' }} />, title: 'Analyze Crime Trends', subtitle: 'State-wide district forecasts & risk scores' },
+  { icon: <LocationIcon sx={{ color: '#D99118' }} />, title: 'Predict Hotspots', subtitle: '7-day diurnal high-risk areas' },
+  { icon: <PeopleIcon sx={{ color: '#356AE6' }} />, title: 'Repeat Suspects', subtitle: 'Cross-jurisdiction offender profiling' },
+  { icon: <DescriptionIcon sx={{ color: '#8E44AD' }} />, title: 'Executive Report', subtitle: 'SCRB briefing & dispatch directives' },
 ]
 
 const INTELLIGENCE_MODES = [
@@ -54,7 +55,7 @@ const INTELLIGENCE_MODES = [
   { id: 'executive', label: 'Executive Briefing', icon: DescriptionIcon },
 ]
 
-// ✅ Smart Chat Title Generator
+// Smart Chat Title Generator
 const generateSmartTitle = (chatMessages) => {
   const userMessages = chatMessages.filter(m => m.type === 'user')
   if (userMessages.length === 0) return 'New Chat'
@@ -76,6 +77,23 @@ const generateSmartTitle = (chatMessages) => {
 }
 
 const AIChat = () => {
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
+
+  const bgSurface = isDark ? '#1A1E29' : '#E8ECF3'
+  const textPrimary = isDark ? '#F0F4FC' : '#202A3A'
+  const textSecondary = isDark ? '#9DA8BA' : '#5C6779'
+  const dividerColor = isDark ? '#262B3A' : '#D7DDE7'
+  const raisedShadow = isDark
+    ? '6px 6px 14px #12151D, -6px -6px 14px #222735'
+    : '7px 7px 16px #C7CDD7, -7px -7px 16px #FFFFFF'
+  const raisedSubtle = isDark
+    ? '4px 4px 10px #12151D, -4px -4px 10px #222735'
+    : '4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF'
+  const insetShadow = isDark
+    ? 'inset 3px 3px 7px #12151D, inset -3px -3px 7px #232837'
+    : 'inset 4px 4px 8px #C7CDD7, inset -4px -4px 8px #FFFFFF'
+
   const loadChatsFromStorage = () => {
     try {
       const saved = localStorage.getItem('aiChatHistory')
@@ -352,8 +370,8 @@ const AIChat = () => {
   )
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', bgcolor: '#212121', color: '#ececec', overflow: 'hidden', fontFamily: 'Inter, sans-serif' }}>
-      {/* Sidebar - ChatGPT Style */}
+    <Box sx={{ height: '100vh', display: 'flex', bgcolor: bgSurface, color: textPrimary, overflow: 'hidden', position: 'relative' }}>
+      {/* Sidebar - Neumorphic History Drawer */}
       <Drawer
         variant="permanent"
         open={sidebarOpen}
@@ -363,169 +381,289 @@ const AIChat = () => {
           '& .MuiDrawer-paper': {
             width: sidebarOpen ? 280 : 0,
             boxSizing: 'border-box',
-            bgcolor: '#171717',
-            color: '#ececec',
-            height: '100vh',
-            borderRight: '1px solid #2f2f2f',
+            bgcolor: bgSurface,
+            color: textPrimary,
+            position: 'relative',
+            height: '100%',
+            borderRight: `1px solid ${dividerColor}`,
             display: 'flex',
             flexDirection: 'column',
           },
         }}
       >
-        <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Logo & Header */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Avatar sx={{ bgcolor: '#10a37f', width: 32, height: 32 }}>
+              <Avatar sx={{ bgcolor: '#356AE6', width: 34, height: 34, boxShadow: '3px 3px 8px rgba(53, 106, 230, 0.4)' }}>
                 <AIIcon fontSize="small" sx={{ color: '#fff' }} />
               </Avatar>
-              <Typography variant="h6" fontWeight={700} sx={{ color: '#fff', fontSize: '1.05rem' }}>
-                CrimeLens AI
-              </Typography>
+              <Box>
+                <Typography variant="subtitle2" fontWeight={800} sx={{ color: textPrimary, fontSize: '0.95rem', lineHeight: 1.2 }}>
+                  CrimeLens AI
+                </Typography>
+                <Typography variant="caption" sx={{ color: textSecondary, fontSize: '0.7rem' }}>
+                  Karnataka Intelligence
+                </Typography>
+              </Box>
             </Box>
-            <IconButton onClick={() => setSidebarOpen(false)} size="small" sx={{ color: '#8e8e8e' }}>
-              <ChevronLeftIcon />
+            <IconButton
+              onClick={() => setSidebarOpen(false)}
+              size="small"
+              sx={{
+                width: 28,
+                height: 28,
+                bgcolor: bgSurface,
+                boxShadow: raisedSubtle,
+                color: textSecondary,
+                '&:hover': { color: '#356AE6' },
+              }}
+            >
+              <ChevronLeftIcon fontSize="small" />
             </IconButton>
           </Box>
 
           {/* New Chat Button */}
           <Button
-            variant="outlined"
             fullWidth
             startIcon={<AddIcon />}
             onClick={clearChat}
             sx={{
-              borderColor: '#3e3e3e',
-              color: '#fff',
-              '&:hover': { bgcolor: '#212121', borderColor: '#10a37f' },
-              borderRadius: 2,
+              bgcolor: bgSurface,
+              boxShadow: raisedSubtle,
+              color: '#356AE6',
+              borderRadius: 3,
               py: 1,
               textTransform: 'none',
-              fontWeight: 600,
+              fontWeight: 700,
+              fontSize: '0.85rem',
               mb: 2,
               justifyContent: 'flex-start',
               px: 2,
+              border: `1px solid ${dividerColor}`,
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                bgcolor: bgSurface,
+                boxShadow: insetShadow,
+                transform: 'none',
+              },
             }}
           >
-            New chat
+            New Session
           </Button>
 
           {/* Search Chat History Bar */}
-          <TextField
-            size="small"
-            placeholder="Search conversations..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#666', fontSize: 18 }} />
-                </InputAdornment>
-              ),
-            }}
+          <Box
             sx={{
+              display: 'flex',
+              alignItems: 'center',
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 3,
+              boxShadow: insetShadow,
+              bgcolor: bgSurface,
               mb: 2,
-              '& .MuiInputBase-input': { color: '#fff', fontSize: '0.8rem', py: 0.8 },
-              '& .MuiOutlinedInput-root': {
-                bgcolor: '#212121',
-                borderRadius: 2,
-                '& fieldset': { borderColor: '#2f2f2f' },
-                '&:hover fieldset': { borderColor: '#444' },
-              },
             }}
-          />
+          >
+            <SearchIcon sx={{ color: textSecondary, fontSize: 18, mr: 1 }} />
+            <TextField
+              size="small"
+              placeholder="Search conversations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              variant="standard"
+              InputProps={{ disableUnderline: true }}
+              sx={{
+                width: '100%',
+                '& .MuiInputBase-input': {
+                  color: textPrimary,
+                  fontSize: '0.8rem',
+                  py: 0.5,
+                  '&::placeholder': { color: textSecondary, opacity: 0.7 },
+                },
+              }}
+            />
+          </Box>
 
           {/* Chat History List */}
-          <Typography variant="caption" sx={{ px: 1, mb: 1, color: '#8e8e8e', fontWeight: 600, fontSize: '0.7rem' }}>
-            Recent Conversations ({filteredHistory.length})
+          <Typography variant="caption" sx={{ px: 1, mb: 1, color: textSecondary, fontWeight: 700, fontSize: '0.7rem', letterSpacing: 0.5, textTransform: 'uppercase' }}>
+            Past Records ({filteredHistory.length})
           </Typography>
 
-          <List sx={{ flex: 1, overflowY: 'auto', px: 0 }}>
+          <List sx={{ flex: 1, overflowY: 'auto', px: 0, pr: 0.5 }}>
             {filteredHistory.length === 0 ? (
-              <Typography variant="caption" color="textSecondary" sx={{ px: 1 }}>No chats found</Typography>
+              <Box sx={{ p: 2, textAlign: 'center' }}>
+                <Typography variant="caption" sx={{ color: textSecondary }}>No conversations found</Typography>
+              </Box>
             ) : (
-              filteredHistory.map((chat) => (
-                <ListItem
-                  key={chat.id}
-                  disablePadding
-                  sx={{ mb: 0.5 }}
-                  secondaryAction={
-                    <IconButton size="small" onClick={(e) => handleDeleteChat(chat.id, e)} sx={{ color: '#666', '&:hover': { color: '#f44336' } }}>
-                      <DeleteIcon sx={{ fontSize: 16 }} />
-                    </IconButton>
-                  }
-                >
-                  <ListItemButton
-                    onClick={() => handleOpenChat(chat)}
-                    sx={{
-                      borderRadius: 2,
-                      bgcolor: currentChatId === chat.id ? '#2f2f2f' : 'transparent',
-                      '&:hover': { bgcolor: '#212121' },
-                      py: 1,
-                      px: 1.5,
-                    }}
+              filteredHistory.map((chat) => {
+                const isActive = currentChatId === chat.id
+                return (
+                  <ListItem
+                    key={chat.id}
+                    disablePadding
+                    sx={{ mb: 1 }}
+                    secondaryAction={
+                      <IconButton
+                        size="small"
+                        onClick={(e) => handleDeleteChat(chat.id, e)}
+                        sx={{
+                          color: textSecondary,
+                          opacity: 0.6,
+                          '&:hover': { color: '#D94F55', opacity: 1 },
+                        }}
+                      >
+                        <DeleteIcon sx={{ fontSize: 15 }} />
+                      </IconButton>
+                    }
                   >
-                    <ListItemText
-                      primary={<Typography variant="body2" noWrap sx={{ color: currentChatId === chat.id ? '#10a37f' : '#ececec', fontWeight: 500, fontSize: '0.85rem' }}>{chat.title}</Typography>}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))
+                    <ListItemButton
+                      onClick={() => handleOpenChat(chat)}
+                      sx={{
+                        borderRadius: 2.5,
+                        bgcolor: bgSurface,
+                        boxShadow: isActive ? insetShadow : raisedSubtle,
+                        py: 0.8,
+                        px: 1.5,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          bgcolor: bgSurface,
+                        },
+                      }}
+                    >
+                      <ListItemText
+                        primary={
+                          <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{
+                              color: isActive ? '#356AE6' : textPrimary,
+                              fontWeight: isActive ? 700 : 500,
+                              fontSize: '0.8rem',
+                            }}
+                          >
+                            {chat.title}
+                          </Typography>
+                        }
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                )
+              })
             )}
           </List>
 
-          <Divider sx={{ borderColor: '#2f2f2f', my: 1 }} />
-          <Typography variant="caption" sx={{ color: '#666', textAlign: 'center' }}>
+          <Divider sx={{ borderColor: dividerColor, my: 1.5 }} />
+          <Typography variant="caption" sx={{ color: textSecondary, textAlign: 'center', fontSize: '0.7rem' }}>
             CrimeLens Llama 3.3 70B • KSP AI
           </Typography>
         </Box>
       </Drawer>
 
-      {/* Main ChatGPT Chat Canvas */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#212121', height: '100vh', position: 'relative' }}>
+      {/* Main Chat Canvas */}
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: bgSurface, position: 'relative', overflow: 'hidden' }}>
         {/* Top Header */}
-        <Box sx={{ p: 2, px: 3, borderBottom: '1px solid #2f2f2f', display: 'flex', alignItems: 'center', justifyContent: 'space-between', bgcolor: '#212121', flexWrap: 'wrap', gap: 1 }}>
+        <Box
+          sx={{
+            p: 2,
+            px: 3,
+            borderBottom: `1px solid ${dividerColor}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            bgcolor: bgSurface,
+            flexWrap: 'wrap',
+            gap: 1.5,
+          }}
+        >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             {!sidebarOpen && (
-              <IconButton onClick={() => setSidebarOpen(true)} size="small" sx={{ color: '#fff' }}>
-                <MenuIcon />
+              <IconButton
+                onClick={() => setSidebarOpen(true)}
+                size="small"
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: textPrimary,
+                  '&:hover': { color: '#356AE6' },
+                }}
+              >
+                <MenuIcon fontSize="small" />
               </IconButton>
             )}
-            <Typography variant="h6" fontWeight={700} sx={{ color: '#fff', fontSize: '1rem' }}>
+            <Typography variant="h6" fontWeight={800} sx={{ color: textPrimary, fontSize: '0.95rem' }}>
               CrimeLens Intelligence Assistant
             </Typography>
-            <Chip label="Llama 3.3 70B Enterprise" size="small" sx={{ bgcolor: '#10a37f', color: '#fff', fontWeight: 600, fontSize: '0.65rem', height: 20 }} />
+            <Chip
+              label="Llama 3.3 70B Enterprise"
+              size="small"
+              sx={{
+                bgcolor: 'rgba(53, 106, 230, 0.12)',
+                color: '#356AE6',
+                fontWeight: 700,
+                fontSize: '0.65rem',
+                height: 22,
+                borderRadius: 2,
+              }}
+            />
           </Box>
 
           {/* Intelligence Mode Filter Chips */}
           <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', py: 0.5 }}>
-            {INTELLIGENCE_MODES.map((mode) => (
-              <Chip
-                key={mode.id}
-                icon={<mode.icon style={{ fontSize: 14, color: selectedMode === mode.id ? '#fff' : '#a1a1aa' }} />}
-                label={mode.label}
-                size="small"
-                onClick={() => setSelectedMode(mode.id)}
-                sx={{
-                  bgcolor: selectedMode === mode.id ? '#10a37f' : '#2f2f2f',
-                  color: selectedMode === mode.id ? '#fff' : '#a1a1aa',
-                  fontWeight: 600,
-                  fontSize: '0.7rem',
-                  cursor: 'pointer',
-                  '&:hover': { bgcolor: selectedMode === mode.id ? '#0d8c6e' : '#383838' },
-                }}
-              />
-            ))}
+            {INTELLIGENCE_MODES.map((mode) => {
+              const isSelected = selectedMode === mode.id
+              return (
+                <Chip
+                  key={mode.id}
+                  icon={<mode.icon style={{ fontSize: 14, color: isSelected ? '#356AE6' : textSecondary }} />}
+                  label={mode.label}
+                  size="small"
+                  onClick={() => setSelectedMode(mode.id)}
+                  sx={{
+                    bgcolor: bgSurface,
+                    boxShadow: isSelected ? insetShadow : raisedSubtle,
+                    color: isSelected ? '#356AE6' : textSecondary,
+                    fontWeight: isSelected ? 700 : 500,
+                    fontSize: '0.72rem',
+                    cursor: 'pointer',
+                    borderRadius: 3,
+                    border: 'none',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      bgcolor: bgSurface,
+                    },
+                  }}
+                />
+              )
+            })}
           </Box>
 
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Tooltip title="Export Chat Markdown">
-              <IconButton onClick={handleExportChat} sx={{ color: '#aaa', '&:hover': { color: '#fff' } }}>
+              <IconButton
+                size="small"
+                onClick={handleExportChat}
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: textSecondary,
+                  '&:hover': { color: '#356AE6' },
+                }}
+              >
                 <DownloadIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Tooltip title="New Chat">
-              <IconButton onClick={clearChat} sx={{ color: '#aaa', '&:hover': { color: '#fff' } }}>
+            <Tooltip title="New Chat Session">
+              <IconButton
+                size="small"
+                onClick={clearChat}
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: textSecondary,
+                  '&:hover': { color: '#356AE6' },
+                }}
+              >
                 <RefreshIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -533,20 +671,29 @@ const AIChat = () => {
         </Box>
 
         {/* Message Container */}
-        <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 2, md: 4 }, display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ flex: 1, overflowY: 'auto', p: { xs: 2, md: 3 }, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           {messages.length === 0 && !loading ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, textAlign: 'center', my: 'auto' }}>
-              <Avatar sx={{ width: 64, height: 64, bgcolor: '#10a37f', mb: 2 }}>
-                <SparklesIcon sx={{ fontSize: 36, color: '#fff' }} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, textAlign: 'center', my: 'auto', px: 2 }}>
+              <Avatar
+                sx={{
+                  width: 64,
+                  height: 64,
+                  bgcolor: bgSurface,
+                  boxShadow: raisedShadow,
+                  mb: 2.5,
+                  color: '#356AE6',
+                }}
+              >
+                <SparklesIcon sx={{ fontSize: 34, color: '#356AE6' }} />
               </Avatar>
-              <Typography variant="h4" fontWeight={700} sx={{ color: '#fff', mb: 1 }}>
-                How can I help you today?
+              <Typography variant="h5" fontWeight={800} sx={{ color: textPrimary, mb: 1, letterSpacing: -0.3 }}>
+                How can I assist your investigation today?
               </Typography>
-              <Typography variant="body2" sx={{ color: '#8e8e8e', mb: 4, maxWidth: 550 }}>
+              <Typography variant="body2" sx={{ color: textSecondary, mb: 4, maxWidth: 540, lineHeight: 1.6 }}>
                 Ask CrimeLens AI about FIR records, 7-day predictive risk forecasts, cross-jurisdiction repeat offenders, or Modus Operandi (MO) signatures.
               </Typography>
 
-              <Grid container spacing={2} sx={{ maxWidth: 850 }}>
+              <Grid container spacing={2.5} sx={{ maxWidth: 840 }}>
                 {SUGGESTED_PROMPTS.map((card, idx) => (
                   <Grid item xs={12} sm={6} key={idx}>
                     <Paper
@@ -554,20 +701,24 @@ const AIChat = () => {
                       elevation={0}
                       sx={{
                         p: 2.5,
-                        bgcolor: '#2f2f2f',
-                        border: '1px solid #3e3e3e',
-                        borderRadius: 3,
+                        bgcolor: bgSurface,
+                        boxShadow: raisedShadow,
+                        borderRadius: 3.5,
                         cursor: 'pointer',
                         textAlign: 'left',
-                        transition: 'all 0.2s ease',
-                        '&:hover': { bgcolor: '#383838', borderColor: '#10a37f', transform: 'translateY(-2px)' },
+                        transition: 'all 0.25s ease',
+                        border: 'none',
+                        '&:hover': {
+                          transform: 'translateY(-2px)',
+                          boxShadow: '9px 9px 20px #B8C0CC, -9px -9px 20px #FFFFFF',
+                        },
                       }}
                     >
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
                         {card.icon}
-                        <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#fff' }}>{card.title}</Typography>
+                        <Typography variant="subtitle2" fontWeight={700} sx={{ color: textPrimary }}>{card.title}</Typography>
                       </Box>
-                      <Typography variant="caption" sx={{ color: '#b4b4b4' }}>{card.subtitle}</Typography>
+                      <Typography variant="caption" sx={{ color: textSecondary }}>{card.subtitle}</Typography>
                     </Paper>
                   </Grid>
                 ))}
@@ -575,19 +726,42 @@ const AIChat = () => {
             </Box>
           ) : (
             messages.map((message) => (
-              <Box key={message.id} sx={{ display: 'flex', gap: 2, maxWidth: '900px', width: '100%', mx: 'auto', flexDirection: message.type === 'user' ? 'row-reverse' : 'row' }}>
-                <Avatar sx={{ width: 34, height: 34, bgcolor: message.type === 'user' ? '#383838' : '#10a37f', flexShrink: 0 }}>
+              <Box
+                key={message.id}
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  maxWidth: '850px',
+                  width: '100%',
+                  mx: 'auto',
+                  flexDirection: message.type === 'user' ? 'row-reverse' : 'row',
+                }}
+              >
+                <Avatar
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    bgcolor: message.type === 'user' ? '#356AE6' : bgSurface,
+                    color: message.type === 'user' ? '#fff' : '#356AE6',
+                    boxShadow: message.type === 'user' ? '2px 2px 8px rgba(53, 106, 230, 0.4)' : raisedSubtle,
+                    flexShrink: 0,
+                  }}
+                >
                   {message.type === 'user' ? <PersonIcon fontSize="small" /> : <AIIcon fontSize="small" />}
                 </Avatar>
-                <Box sx={{ flex: 1 }}>
+
+                <Box sx={{ flex: 1, maxWidth: '85%' }}>
                   <Paper
                     elevation={0}
                     sx={{
                       p: 2.5,
-                      borderRadius: 3,
-                      bgcolor: message.type === 'user' ? '#2f2f2f' : '#1a1a1a',
-                      color: '#ececec',
-                      border: message.type === 'user' ? '1px solid #3e3e3e' : '1px solid #2f2f2f',
+                      borderRadius: 3.5,
+                      bgcolor: message.type === 'user' ? '#356AE6' : bgSurface,
+                      color: message.type === 'user' ? '#fff' : textPrimary,
+                      boxShadow: message.type === 'user'
+                        ? '4px 4px 12px rgba(53, 106, 230, 0.35)'
+                        : raisedShadow,
+                      border: 'none',
                     }}
                   >
                     {message.type === 'bot' ? (
@@ -595,52 +769,122 @@ const AIChat = () => {
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
-                            p: ({ children }) => <Typography variant="body1" sx={{ lineHeight: 1.7, mb: 1, fontSize: '0.95rem' }}>{children}</Typography>,
-                            strong: ({ children }) => <strong style={{ color: '#10a37f' }}>{children}</strong>,
-                            ul: ({ children }) => <Box component="ul" sx={{ pl: 2.5, mb: 1 }}>{children}</Box>,
-                            li: ({ children }) => <Typography component="li" variant="body1" sx={{ lineHeight: 1.7, fontSize: '0.95rem' }}>{children}</Typography>,
-                            table: ({ children }) => <Box component="table" sx={{ borderCollapse: 'collapse', width: '100%', my: 1, border: '1px solid #333' }}>{children}</Box>,
-                            th: ({ children }) => <Box component="th" sx={{ border: '1px solid #333', p: 1, bgcolor: '#27272a', fontWeight: 700 }}>{children}</Box>,
-                            td: ({ children }) => <Box component="td" sx={{ border: '1px solid #333', p: 1 }}>{children}</Box>,
+                            p: ({ children }) => (
+                              <Typography variant="body1" sx={{ lineHeight: 1.7, mb: 1.2, fontSize: '0.92rem', color: textPrimary }}>
+                                {children}
+                              </Typography>
+                            ),
+                            strong: ({ children }) => <strong style={{ color: '#356AE6', fontWeight: 700 }}>{children}</strong>,
+                            ul: ({ children }) => <Box component="ul" sx={{ pl: 2.5, mb: 1.2 }}>{children}</Box>,
+                            li: ({ children }) => (
+                              <Typography component="li" variant="body1" sx={{ lineHeight: 1.7, fontSize: '0.92rem', color: textPrimary }}>
+                                {children}
+                              </Typography>
+                            ),
+                            table: ({ children }) => (
+                              <Box
+                                component="table"
+                                sx={{
+                                  borderCollapse: 'collapse',
+                                  width: '100%',
+                                  my: 1.5,
+                                  borderRadius: 2,
+                                  overflow: 'hidden',
+                                  boxShadow: insetShadow,
+                                }}
+                              >
+                                {children}
+                              </Box>
+                            ),
+                            th: ({ children }) => (
+                              <Box component="th" sx={{ p: 1.2, bgcolor: isDark ? '#222736' : '#DFE5EE', color: textPrimary, fontWeight: 700, fontSize: '0.8rem', textAlign: 'left' }}>
+                                {children}
+                              </Box>
+                            ),
+                            td: ({ children }) => (
+                              <Box component="td" sx={{ p: 1, borderTop: `1px solid ${dividerColor}`, fontSize: '0.85rem', color: textPrimary }}>
+                                {children}
+                              </Box>
+                            ),
                           }}
                         >
                           {message.content}
                         </ReactMarkdown>
 
                         {/* Interactive Bot Message Action Bar */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2, pt: 1, borderTop: '1px solid #2a2a2a' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2, pt: 1.5, borderTop: `1px solid ${dividerColor}` }}>
                           <Box sx={{ display: 'flex', gap: 1 }}>
                             <Tooltip title="Copy Response">
-                              <IconButton size="small" onClick={() => handleCopyMessage(message.content)} sx={{ color: '#8e8e8e', '&:hover': { color: '#fff' } }}>
-                                <CopyIcon sx={{ fontSize: 16 }} />
+                              <IconButton
+                                size="small"
+                                onClick={() => handleCopyMessage(message.content)}
+                                sx={{
+                                  bgcolor: bgSurface,
+                                  boxShadow: raisedSubtle,
+                                  color: textSecondary,
+                                  '&:hover': { color: '#356AE6' },
+                                }}
+                              >
+                                <CopyIcon sx={{ fontSize: 15 }} />
                               </IconButton>
                             </Tooltip>
                             <Tooltip title={speakingId === message.id ? 'Stop Reading' : 'Read Aloud'}>
-                              <IconButton size="small" onClick={() => handleSpeak(message.content, message.id)} sx={{ color: speakingId === message.id ? '#10a37f' : '#8e8e8e', '&:hover': { color: '#fff' } }}>
-                                <SpeakerIcon sx={{ fontSize: 16 }} />
+                              <IconButton
+                                size="small"
+                                onClick={() => handleSpeak(message.content, message.id)}
+                                sx={{
+                                  bgcolor: bgSurface,
+                                  boxShadow: speakingId === message.id ? insetShadow : raisedSubtle,
+                                  color: speakingId === message.id ? '#239B62' : textSecondary,
+                                  '&:hover': { color: '#239B62' },
+                                }}
+                              >
+                                <SpeakerIcon sx={{ fontSize: 15 }} />
                               </IconButton>
                             </Tooltip>
                           </Box>
 
                           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                            <IconButton size="small" onClick={() => handleRateResponse(message.id, 'up')} sx={{ color: ratings[message.id] === 'up' ? '#10a37f' : '#666' }}>
-                              <ThumbUpIcon sx={{ fontSize: 16 }} />
+                            <IconButton
+                              size="small"
+                              onClick={() => handleRateResponse(message.id, 'up')}
+                              sx={{
+                                bgcolor: bgSurface,
+                                boxShadow: ratings[message.id] === 'up' ? insetShadow : raisedSubtle,
+                                color: ratings[message.id] === 'up' ? '#239B62' : textSecondary,
+                              }}
+                            >
+                              <ThumbUpIcon sx={{ fontSize: 15 }} />
                             </IconButton>
-                            <IconButton size="small" onClick={() => handleRateResponse(message.id, 'down')} sx={{ color: ratings[message.id] === 'down' ? '#f44336' : '#666' }}>
-                              <ThumbDownIcon sx={{ fontSize: 16 }} />
+                            <IconButton
+                              size="small"
+                              onClick={() => handleRateResponse(message.id, 'down')}
+                              sx={{
+                                bgcolor: bgSurface,
+                                boxShadow: ratings[message.id] === 'down' ? insetShadow : raisedSubtle,
+                                color: ratings[message.id] === 'down' ? '#D94F55' : textSecondary,
+                              }}
+                            >
+                              <ThumbDownIcon sx={{ fontSize: 15 }} />
                             </IconButton>
                           </Box>
                         </Box>
                       </>
                     ) : (
                       <>
-                        <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.95rem' }}>
+                        <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.6, fontSize: '0.92rem', color: '#fff' }}>
                           {message.content}
                         </Typography>
                         {message.attachments?.length > 0 && (
-                          <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                          <Box sx={{ mt: 1.5, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                             {message.attachments.map((att, idx) => (
-                              <Chip key={idx} icon={<AttachFileIcon sx={{ fontSize: 14 }} />} label={att.name} size="small" sx={{ bgcolor: '#383838', color: '#fff' }} />
+                              <Chip
+                                key={idx}
+                                icon={<AttachFileIcon sx={{ fontSize: 14, color: '#fff !important' }} />}
+                                label={att.name}
+                                size="small"
+                                sx={{ bgcolor: 'rgba(255, 255, 255, 0.25)', color: '#fff', borderRadius: 2 }}
+                              />
                             ))}
                           </Box>
                         )}
@@ -653,12 +897,28 @@ const AIChat = () => {
           )}
 
           {loading && (
-            <Box sx={{ display: 'flex', gap: 2, maxWidth: '900px', width: '100%', mx: 'auto' }}>
-              <Avatar sx={{ width: 34, height: 34, bgcolor: '#10a37f' }}><AIIcon fontSize="small" /></Avatar>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pt: 1 }}>
-                <CircularProgress size={18} sx={{ color: '#10a37f' }} />
-                <Typography variant="caption" sx={{ color: '#8e8e8e', fontWeight: 600 }}>Analyzing Karnataka CrimeLens records...</Typography>
-              </Box>
+            <Box sx={{ display: 'flex', gap: 2, maxWidth: '850px', width: '100%', mx: 'auto' }}>
+              <Avatar sx={{ width: 36, height: 36, bgcolor: bgSurface, boxShadow: raisedSubtle, color: '#356AE6' }}>
+                <AIIcon fontSize="small" />
+              </Avatar>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  px: 2.5,
+                  borderRadius: 3.5,
+                  bgcolor: bgSurface,
+                  boxShadow: raisedShadow,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                }}
+              >
+                <CircularProgress size={16} sx={{ color: '#356AE6' }} />
+                <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 700, letterSpacing: 0.2 }}>
+                  Analyzing Karnataka CrimeLens records & intelligence database...
+                </Typography>
+              </Paper>
             </Box>
           )}
           <div ref={messagesEndRef} />
@@ -666,64 +926,94 @@ const AIChat = () => {
 
         {/* Attached Files Bar */}
         {attachedFiles.length > 0 && (
-          <Box sx={{ px: { xs: 2, md: 4 }, py: 1, bgcolor: '#212121', display: 'flex', justifyContent: 'center' }}>
-            <Box sx={{ width: '100%', maxWidth: '900px', display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Box sx={{ px: { xs: 2, md: 3 }, py: 1, bgcolor: bgSurface, display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ width: '100%', maxWidth: '850px', display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               {attachedFiles.map((file) => (
                 <Chip
                   key={file.id}
                   label={file.name}
                   onDelete={() => setAttachedFiles(prev => prev.filter(f => f.id !== file.id))}
                   size="small"
-                  sx={{ bgcolor: '#2f2f2f', color: '#fff', borderColor: '#3e3e3e' }}
+                  sx={{ bgcolor: bgSurface, boxShadow: raisedSubtle, color: textPrimary, borderRadius: 2 }}
                 />
               ))}
             </Box>
           </Box>
         )}
 
-        {/* 🎙️ Animated Audio Waveform Visualizer when Voice Input Active */}
+        {/* Animated Audio Waveform Visualizer when Voice Input Active */}
         {isListening && (
-          <Box sx={{ px: { xs: 2, md: 4 }, py: 1, bgcolor: '#212121', display: 'flex', justifyContent: 'center' }}>
-            <Paper elevation={0} sx={{ p: 1.5, px: 3, bgcolor: 'rgba(16,163,127,0.15)', border: '1px solid #10a37f', borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant="caption" fontWeight={700} sx={{ color: '#10a37f', letterSpacing: 0.5 }}>
+          <Box sx={{ px: { xs: 2, md: 3 }, py: 1, bgcolor: bgSurface, display: 'flex', justifyContent: 'center' }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 1.5,
+                px: 3,
+                bgcolor: bgSurface,
+                boxShadow: insetShadow,
+                borderRadius: 3,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+              }}
+            >
+              <Typography variant="caption" fontWeight={700} sx={{ color: '#239B62', letterSpacing: 0.5 }}>
                 🎙️ LISTENING TO POLICE INVESTIGATOR VOICE COMMAND...
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, height: 20 }}>
-                <Box sx={{ width: 3, height: 12, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate' }} />
-                <Box sx={{ width: 3, height: 20, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.2s' }} />
-                <Box sx={{ width: 3, height: 16, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.4s' }} />
-                <Box sx={{ width: 3, height: 22, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.6s' }} />
-                <Box sx={{ width: 3, height: 10, bgcolor: '#10a37f', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.8s' }} />
+                <Box sx={{ width: 3, height: 12, bgcolor: '#239B62', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate' }} />
+                <Box sx={{ width: 3, height: 20, bgcolor: '#239B62', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.2s' }} />
+                <Box sx={{ width: 3, height: 16, bgcolor: '#239B62', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.4s' }} />
+                <Box sx={{ width: 3, height: 22, bgcolor: '#239B62', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.6s' }} />
+                <Box sx={{ width: 3, height: 10, bgcolor: '#239B62', borderRadius: 1, animation: 'audioPulse 0.8s ease-in-out infinite alternate 0.8s' }} />
               </Box>
             </Paper>
           </Box>
         )}
 
-        {/* ChatGPT Style Capsule Input Bar */}
-        <Box sx={{ p: 2, px: { xs: 2, md: 4 }, bgcolor: '#212121', display: 'flex', justifyContent: 'center' }}>
+        {/* Neumorphic Capsule Input Bar */}
+        <Box sx={{ pt: 1.5, pb: { xs: 2.5, md: 3.5 }, px: { xs: 2, md: 3 }, bgcolor: bgSurface, display: 'flex', justifyContent: 'center' }}>
           <Paper
-            elevation={4}
+            elevation={0}
             sx={{
               width: '100%',
-              maxWidth: '900px',
-              bgcolor: '#2f2f2f',
-              border: isListening ? '1px solid #10a37f' : '1px solid #3e3e3e',
+              maxWidth: '850px',
+              bgcolor: bgSurface,
+              boxShadow: isListening ? '0 0 0 2px #239B62, ' + raisedShadow : raisedShadow,
               borderRadius: 4,
               p: 1,
               px: 2,
               display: 'flex',
               alignItems: 'center',
               gap: 1,
-              transition: 'border 0.2s ease',
+              transition: 'box-shadow 0.2s ease',
             }}
           >
-            <IconButton onClick={() => setFileDialogOpen(true)} sx={{ color: '#b4b4b4' }}>
-              <AttachFileIcon />
+            <IconButton
+              onClick={() => setFileDialogOpen(true)}
+              size="small"
+              sx={{
+                bgcolor: bgSurface,
+                boxShadow: raisedSubtle,
+                color: textSecondary,
+                '&:hover': { color: '#356AE6' },
+              }}
+            >
+              <AttachFileIcon fontSize="small" />
             </IconButton>
 
             <Tooltip title={isListening ? 'Listening...' : 'Voice Dictation'}>
-              <IconButton onClick={toggleListening} sx={{ color: isListening ? '#10a37f' : '#b4b4b4' }}>
-                {isListening ? <MicOffIcon sx={{ color: '#f44336' }} /> : <MicIcon />}
+              <IconButton
+                onClick={toggleListening}
+                size="small"
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: isListening ? insetShadow : raisedSubtle,
+                  color: isListening ? '#D94F55' : textSecondary,
+                  '&:hover': { color: '#356AE6' },
+                }}
+              >
+                {isListening ? <MicOffIcon fontSize="small" sx={{ color: '#D94F55' }} /> : <MicIcon fontSize="small" />}
               </IconButton>
             </Tooltip>
 
@@ -735,9 +1025,16 @@ const AIChat = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
+              variant="standard"
+              InputProps={{ disableUnderline: true }}
               sx={{
-                '& .MuiInputBase-input': { color: '#fff', fontSize: '0.95rem' },
-                '& .MuiOutlinedInput-root': { '& fieldset': { border: 'none' } },
+                px: 1,
+                '& .MuiInputBase-input': {
+                  color: textPrimary,
+                  fontSize: '0.92rem',
+                  py: 0.5,
+                  '&::placeholder': { color: textSecondary, opacity: 0.7 },
+                },
               }}
             />
 
@@ -745,10 +1042,19 @@ const AIChat = () => {
               onClick={() => handleSend()}
               disabled={(!input.trim() && attachedFiles.length === 0) || loading}
               sx={{
-                bgcolor: input.trim() ? '#10a37f' : '#3e3e3e',
-                color: '#fff',
-                '&:hover': { bgcolor: '#0d8c6e' },
-                '&.Mui-disabled': { bgcolor: '#3e3e3e', color: '#666' },
+                bgcolor: input.trim() ? '#356AE6' : bgSurface,
+                boxShadow: input.trim() ? '3px 3px 10px rgba(53, 106, 230, 0.4)' : raisedSubtle,
+                color: input.trim() ? '#fff' : textSecondary,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  bgcolor: input.trim() ? '#254EBF' : bgSurface,
+                },
+                '&.Mui-disabled': {
+                  bgcolor: bgSurface,
+                  color: textSecondary,
+                  opacity: 0.4,
+                  boxShadow: 'none',
+                },
               }}
             >
               <SendIcon fontSize="small" />
@@ -758,22 +1064,84 @@ const AIChat = () => {
       </Box>
 
       {/* File Upload Modal */}
-      <Dialog open={fileDialogOpen} onClose={() => setFileDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ bgcolor: '#212121', color: '#fff', display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6">Attach Files</Typography>
-          <IconButton onClick={() => setFileDialogOpen(false)} sx={{ color: '#fff' }}><CloseIcon /></IconButton>
+      <Dialog
+        open={fileDialogOpen}
+        onClose={() => setFileDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: bgSurface,
+            borderRadius: 4,
+            boxShadow: raisedShadow,
+            p: 1,
+          },
+        }}
+      >
+        <DialogTitle sx={{ bgcolor: bgSurface, color: textPrimary, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6" fontWeight={800} sx={{ fontSize: '1.05rem' }}>Attach Case Documents</Typography>
+          <IconButton
+            onClick={() => setFileDialogOpen(false)}
+            size="small"
+            sx={{ bgcolor: bgSurface, boxShadow: raisedSubtle, color: textSecondary }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ bgcolor: '#212121' }}>
-          <Box {...getRootProps()} sx={{ border: '2px dashed #444', borderRadius: 3, p: 4, textAlign: 'center', cursor: 'pointer', bgcolor: '#2f2f2f' }}>
+        <DialogContent sx={{ bgcolor: bgSurface }}>
+          <Box
+            {...getRootProps()}
+            sx={{
+              border: `2px dashed ${dividerColor}`,
+              borderRadius: 3.5,
+              p: 4,
+              textAlign: 'center',
+              cursor: 'pointer',
+              bgcolor: bgSurface,
+              boxShadow: insetShadow,
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                borderColor: '#356AE6',
+              },
+            }}
+          >
             <input {...getInputProps()} />
-            <AttachFileIcon sx={{ fontSize: 48, color: '#10a37f', mb: 1 }} />
-            <Typography variant="h6" sx={{ color: '#fff' }}>Drag & drop files here</Typography>
-            <Typography variant="caption" sx={{ color: '#aaa' }}>Supported: Images, PDF, TXT, CSV (Max 10MB)</Typography>
+            <AttachFileIcon sx={{ fontSize: 44, color: '#356AE6', mb: 1.5 }} />
+            <Typography variant="subtitle1" fontWeight={700} sx={{ color: textPrimary }}>Drag & drop case files here</Typography>
+            <Typography variant="caption" sx={{ color: textSecondary }}>Supported: Images, PDF, TXT, CSV (Max 10MB)</Typography>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ bgcolor: '#212121', p: 2 }}>
-          <Button onClick={() => setFileDialogOpen(false)} sx={{ color: '#aaa' }}>Cancel</Button>
-          <Button variant="contained" onClick={() => setFileDialogOpen(false)} sx={{ bgcolor: '#10a37f' }}>Done</Button>
+        <DialogActions sx={{ bgcolor: bgSurface, p: 2.5 }}>
+          <Button
+            onClick={() => setFileDialogOpen(false)}
+            sx={{
+              bgcolor: bgSurface,
+              boxShadow: raisedSubtle,
+              color: textSecondary,
+              borderRadius: 2.5,
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 2.5,
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => setFileDialogOpen(false)}
+            sx={{
+              bgcolor: '#356AE6',
+              boxShadow: '3px 3px 10px rgba(53, 106, 230, 0.4)',
+              color: '#fff',
+              borderRadius: 2.5,
+              textTransform: 'none',
+              fontWeight: 700,
+              px: 3,
+              '&:hover': { bgcolor: '#254EBF' },
+            }}
+          >
+            Done
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

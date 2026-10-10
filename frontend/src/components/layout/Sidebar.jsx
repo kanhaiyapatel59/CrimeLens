@@ -12,6 +12,7 @@ import {
   Avatar,
   Tooltip,
   IconButton,
+  Chip,
 } from '@mui/material'
 import {
   Dashboard as DashboardIcon,
@@ -26,39 +27,41 @@ import {
   Security as SecurityIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
+  Add as AddIcon,
+  Fingerprint as ForensicsIcon,
 } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../../redux/slices/authSlice'
 
-// ✅ Role-based menu items
+// Role-based menu items (preserving all existing routes and roles)
 const getMenuItems = (role) => {
   const roleName = role?.name || 'viewer'
   
   const allItems = [
     { path: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
-    { path: '/crimes', label: 'Crimes', icon: CrimeIcon },
+    { path: '/crimes', label: 'Crime Records', icon: CrimeIcon },
     { path: '/map', label: 'Crime Map', icon: MapIcon },
-    { path: '/network', label: 'Network', icon: NetworkIcon },
-    { path: '/ai-chat', label: 'AI Assistant', icon: ChatIcon },
-    { path: '/reports', label: 'Reports', icon: ReportIcon },
+    { path: '/network', label: 'Criminal Network', icon: NetworkIcon },
+    { path: '/forensics', label: 'Tactical Forensics', icon: ForensicsIcon },
+    { path: '/ai-chat', label: 'AI Intelligence', icon: ChatIcon },
+    { path: '/reports', label: 'Crime Reports', icon: ReportIcon },
   ]
   
   const roleAccess = {
-    admin: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports'],
-    scrb_officer: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports'],
-    district_officer: ['/dashboard', '/crimes', '/map', '/network', '/ai-chat', '/reports'],
-    station_officer: ['/dashboard', '/crimes', '/map', '/ai-chat'],
-    analyst: ['/dashboard', '/map', '/network', '/ai-chat', '/reports'],
-    viewer: ['/dashboard', '/ai-chat'],
+    admin: ['/dashboard', '/crimes', '/map', '/network', '/forensics', '/ai-chat', '/reports'],
+    scrb_officer: ['/dashboard', '/crimes', '/map', '/network', '/forensics', '/ai-chat', '/reports'],
+    district_officer: ['/dashboard', '/crimes', '/map', '/network', '/forensics', '/ai-chat', '/reports'],
+    station_officer: ['/dashboard', '/crimes', '/map', '/forensics', '/ai-chat'],
+    analyst: ['/dashboard', '/map', '/network', '/forensics', '/ai-chat', '/reports'],
+    viewer: ['/dashboard', '/forensics', '/ai-chat'],
   }
   
   const allowedPaths = roleAccess[roleName] || ['/dashboard']
   return allItems.filter(item => allowedPaths.includes(item.path))
 }
 
-// ✅ Profile & Settings in Sidebar Bottom
 const bottomMenuItems = [
-  { path: '/profile', label: 'Profile', icon: PersonIcon },
+  { path: '/profile', label: 'User Profile', icon: PersonIcon },
   { path: '/settings', label: 'Settings', icon: SettingsIcon },
 ]
 
@@ -69,11 +72,9 @@ const Sidebar = ({ open, onClose, isMobile }) => {
 
   const menuItems = getMenuItems(user?.role)
 
-  // ✅ State for collapsible sidebar (desktop only)
   const [collapsed, setCollapsed] = useState(false)
   const [hovered, setHovered] = useState(false)
 
-  // ✅ Determine if sidebar is expanded
   const isExpanded = !collapsed || hovered
 
   const handleLogout = async () => {
@@ -81,13 +82,11 @@ const Sidebar = ({ open, onClose, isMobile }) => {
     navigate('/', { replace: true })
   }
 
-  // ✅ Toggle sidebar collapse
   const toggleCollapse = () => {
     setCollapsed(!collapsed)
     setHovered(false)
   }
 
-  // ✅ Handle mouse enter/leave for hover expand
   const handleMouseEnter = () => {
     if (collapsed) setHovered(true)
   }
@@ -96,151 +95,231 @@ const Sidebar = ({ open, onClose, isMobile }) => {
     if (collapsed) setHovered(false)
   }
 
+  const handleItemClick = () => {
+    if (isMobile) {
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur()
+      }
+      if (onClose) onClose()
+    }
+  }
+
   const drawerContent = (
     <Box
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       sx={{
-        width: isMobile ? 280 : (isExpanded ? 280 : 64),
+        width: isMobile ? 270 : (isExpanded ? 270 : 76),
         height: '100vh',
-        backgroundColor: '#1a237e',
-        color: '#fff',
+        bgcolor: 'var(--neu-surface, #E8ECF3)',
+        color: 'var(--neu-text-primary, #202A3A)',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
         flexShrink: 0,
-        transition: isMobile ? 'none' : 'width 0.3s ease',
+        transition: isMobile ? 'none' : 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
         position: 'relative',
+        boxSizing: 'border-box',
+        p: isExpanded ? 2 : 1,
       }}
     >
-      {/* Logo with Toggle Button */}
+      {/* Brand Header */}
       <Box
         sx={{
-          p: isExpanded ? 2.5 : 1.5,
+          mb: 2.5,
+          p: isExpanded ? 1.5 : 1,
           display: 'flex',
           alignItems: 'center',
           justifyContent: isExpanded ? 'space-between' : 'center',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-          minHeight: 64,
+          minHeight: 56,
+          borderRadius: '16px',
+          bgcolor: 'var(--neu-surface, #E8ECF3)',
+          boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+          border: '1px solid rgba(255, 255, 255, 0.6)',
         }}
       >
-        {isExpanded ? (
-          <>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <SecurityIcon sx={{ fontSize: 28, color: '#4fc3f7' }} />
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>
-                  CrimeLens
-                </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.6, fontSize: '0.6rem' }}>
-                  AI Crime Intelligence
-                </Typography>
-              </Box>
-            </Box>
-            {!isMobile && (
-              <IconButton 
-                onClick={toggleCollapse} 
-                size="small" 
-                sx={{ color: 'rgba(255,255,255,0.6)' }}
-              >
-                <ChevronLeftIcon />
-              </IconButton>
-            )}
-          </>
-        ) : (
-          <>
-            <SecurityIcon sx={{ fontSize: 28, color: '#4fc3f7' }} />
-            {!isMobile && (
-              <IconButton 
-                onClick={toggleCollapse} 
-                size="small" 
-                sx={{ 
-                  color: 'rgba(255,255,255,0.6)', 
-                  position: 'absolute', 
-                  right: 2,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          {/* Logo Badge */}
+          <Box
+            sx={{
+              width: 38,
+              height: 38,
+              borderRadius: '12px',
+              bgcolor: '#356AE6',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '4px 4px 10px rgba(53, 106, 230, 0.35), -2px -2px 6px rgba(255, 255, 255, 0.8)',
+              color: '#fff',
+              flexShrink: 0,
+            }}
+          >
+            <SecurityIcon sx={{ fontSize: 22 }} />
+          </Box>
+          {isExpanded && (
+            <Box>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 800,
+                  fontSize: '1.05rem',
+                  letterSpacing: '-0.02em',
+                  color: '#202A3A',
+                  lineHeight: 1.1,
                 }}
               >
-                <ChevronRightIcon />
-              </IconButton>
-            )}
-          </>
+                Crime<span style={{ color: '#356AE6' }}>Lens</span>
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: '0.65rem',
+                  fontWeight: 600,
+                  color: '#8893A4',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Police Intelligence
+              </Typography>
+            </Box>
+          )}
+        </Box>
+
+        {isExpanded && !isMobile && (
+          <IconButton
+            onClick={toggleCollapse}
+            size="small"
+            sx={{
+              width: 28,
+              height: 28,
+              borderRadius: '8px',
+              color: '#5C6779',
+              boxShadow: 'inset 2px 2px 4px #C7CDD7, inset -2px -2px 4px #FFFFFF',
+              '&:hover': { color: '#356AE6' },
+            }}
+          >
+            <ChevronLeftIcon sx={{ fontSize: 18 }} />
+          </IconButton>
         )}
       </Box>
 
-      {/* User Info */}
-      <Box
-        sx={{
-          p: isExpanded ? 2 : 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: isExpanded ? 'flex-start' : 'center',
-          gap: isExpanded ? 1.5 : 0,
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-        }}
-      >
-        <Tooltip title={!isExpanded ? `${user?.firstName} ${user?.lastName}` : ''} placement="right" arrow>
+      {/* User Status Card */}
+      {isExpanded ? (
+        <Box
+          sx={{
+            mb: 2,
+            p: 1.5,
+            borderRadius: '16px',
+            bgcolor: 'var(--neu-surface, #E8ECF3)',
+            boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+          }}
+        >
           <Avatar
             sx={{
-              width: isExpanded ? 36 : 32,
-              height: isExpanded ? 36 : 32,
-              bgcolor: '#4fc3f7',
-              color: '#1a237e',
-              fontWeight: 600,
+              width: 36,
+              height: 36,
+              borderRadius: '10px',
+              bgcolor: '#356AE6',
+              color: '#FFFFFF',
+              fontWeight: 700,
               fontSize: '0.9rem',
-              flexShrink: 0,
+              boxShadow: '2px 2px 6px rgba(53, 106, 230, 0.3)',
             }}
           >
             {user?.firstName?.[0]}{user?.lastName?.[0]}
           </Avatar>
-        </Tooltip>
-        {isExpanded && (
-          <Box sx={{ overflow: 'hidden' }}>
-            <Typography variant="body2" fontWeight={600} noWrap fontSize="0.85rem">
+          <Box sx={{ overflow: 'hidden', flex: 1 }}>
+            <Typography variant="body2" fontWeight={700} noWrap sx={{ fontSize: '0.85rem', color: '#202A3A' }}>
               {user?.firstName} {user?.lastName}
             </Typography>
-            <Typography variant="caption" sx={{ opacity: 0.6, display: 'block', fontSize: '0.65rem', textTransform: 'capitalize' }}>
-              {user?.role?.displayName || user?.role?.name?.replace('_', ' ') || 'Officer'}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
+              <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#239B62' }} />
+              <Typography variant="caption" sx={{ color: '#5C6779', fontSize: '0.68rem', fontWeight: 600 }}>
+                {user?.role?.displayName || user?.role?.name?.replace('_', ' ') || 'Officer'}
+              </Typography>
+            </Box>
           </Box>
-        )}
-      </Box>
+        </Box>
+      ) : (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <Tooltip title={`${user?.firstName} ${user?.lastName} (${user?.role?.name || 'Officer'})`} placement="right" arrow>
+            <Avatar
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: '10px',
+                bgcolor: '#356AE6',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                boxShadow: '3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF',
+              }}
+            >
+              {user?.firstName?.[0]}{user?.lastName?.[0]}
+            </Avatar>
+          </Tooltip>
+        </Box>
+      )}
 
-      {/* Main Menu */}
-      <List sx={{ flex: 1, pt: 1, px: isExpanded ? 1 : 0.5, overflowY: 'auto' }}>
+      {/* Main Menu Navigation */}
+      <List sx={{ flex: 1, py: 0.5, overflowY: 'auto', px: 0 }}>
         {menuItems.map((item) => {
           const IconComponent = item.icon
           return (
-            <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
-              <Tooltip 
-                title={!isExpanded ? item.label : ''} 
-                placement="right" 
+            <ListItem key={item.path} disablePadding sx={{ mb: 1 }}>
+              <Tooltip
+                title={!isExpanded ? item.label : ''}
+                placement="right"
                 arrow
               >
                 <ListItemButton
                   component={NavLink}
                   to={item.path}
                   end={item.path === '/dashboard'}
+                  onClick={handleItemClick}
                   sx={{
-                    borderRadius: 1,
-                    py: isExpanded ? 1 : 1.2,
-                    px: isExpanded ? 1.5 : 1,
+                    borderRadius: '14px',
+                    py: 1.1,
+                    px: isExpanded ? 1.8 : 1.2,
                     justifyContent: isExpanded ? 'flex-start' : 'center',
-                    minHeight: 40,
-                    '&.active': {
-                      backgroundColor: 'rgba(79, 195, 247, 0.15)',
-                      '& .MuiListItemIcon-root': { color: '#4fc3f7' },
-                      '& .MuiListItemText-primary': { color: '#fff', fontWeight: 600 },
+                    minHeight: 44,
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    bgcolor: 'var(--neu-surface, #E8ECF3)',
+                    color: '#5C6779',
+                    border: '1px solid transparent',
+                    '&:hover': {
+                      color: '#202A3A',
+                      bgcolor: 'rgba(255, 255, 255, 0.5)',
+                      boxShadow: '3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF',
+                      transform: 'translateY(-1px)',
                     },
-                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.06)' },
+                    '&.active': {
+                      bgcolor: 'var(--neu-surface, #E8ECF3)',
+                      color: '#356AE6 !important',
+                      boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+                      border: '1px solid rgba(255, 255, 255, 0.7)',
+                      fontWeight: 700,
+                      '& .MuiListItemIcon-root': {
+                        color: '#356AE6',
+                        transform: 'scale(1.08)',
+                      },
+                      '& .MuiListItemText-primary': {
+                        color: '#202A3A',
+                        fontWeight: 700,
+                      },
+                    },
                   }}
                 >
-                  <ListItemIcon 
-                    sx={{ 
-                      color: 'rgba(255,255,255,0.5)', 
-                      minWidth: isExpanded ? 36 : 0,
+                  <ListItemIcon
+                    sx={{
+                      color: 'inherit',
+                      minWidth: isExpanded ? 34 : 0,
                       justifyContent: 'center',
+                      transition: 'transform 0.2s ease',
                     }}
                   >
                     <IconComponent sx={{ fontSize: 20 }} />
@@ -248,9 +327,9 @@ const Sidebar = ({ open, onClose, isMobile }) => {
                   {isExpanded && (
                     <ListItemText
                       primary={item.label}
-                      primaryTypographyProps={{ 
-                        fontSize: '0.8rem', 
-                        color: 'rgba(255,255,255,0.7)',
+                      primaryTypographyProps={{
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
                         noWrap: true,
                       }}
                     />
@@ -262,49 +341,99 @@ const Sidebar = ({ open, onClose, isMobile }) => {
         })}
       </List>
 
-      {/* Bottom Menu - Profile & Settings & Logout */}
-      <Box sx={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+      {/* Quick Action Button (Neumorphic Primary Button like reference "+ Create Project") */}
+      {isExpanded && (
+        <Box sx={{ px: 0.5, mb: 2 }}>
+          <Box
+            component={NavLink}
+            to="/crimes"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1,
+              width: '100%',
+              py: 1.2,
+              borderRadius: '14px',
+              bgcolor: '#356AE6',
+              color: '#FFFFFF !important',
+              textDecoration: 'none',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              boxShadow: 'var(--neu-shadow-primary-btn, 5px 5px 14px rgba(53, 106, 230, 0.35), -5px -5px 14px rgba(255, 255, 255, 0.9))',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                bgcolor: '#2955C4',
+                transform: 'translateY(-1px)',
+                boxShadow: '6px 6px 18px rgba(53, 106, 230, 0.45)',
+              },
+              '&:active': {
+                transform: 'translateY(1px)',
+              },
+            }}
+          >
+            <AddIcon sx={{ fontSize: 18 }} />
+            <span>New Crime FIR</span>
+          </Box>
+        </Box>
+      )}
+
+      {/* Bottom Section - Profile, Settings & Logout */}
+      <Box
+        sx={{
+          pt: 1.5,
+          borderTop: '1px solid var(--neu-divider, #D7DDE7)',
+        }}
+      >
         {bottomMenuItems.map((item) => {
           const IconComponent = item.icon
           return (
-            <ListItem key={item.path} disablePadding sx={{ px: isExpanded ? 1 : 0.5, py: 0.5 }}>
-              <Tooltip 
-                title={!isExpanded ? item.label : ''} 
-                placement="right" 
+            <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
+              <Tooltip
+                title={!isExpanded ? item.label : ''}
+                placement="right"
                 arrow
               >
                 <ListItemButton
                   component={NavLink}
                   to={item.path}
+                  onClick={handleItemClick}
                   sx={{
-                    borderRadius: 1,
-                    py: isExpanded ? 1 : 1.2,
+                    borderRadius: '12px',
+                    py: 0.9,
                     px: isExpanded ? 1.5 : 1,
                     justifyContent: isExpanded ? 'flex-start' : 'center',
-                    minHeight: 40,
-                    '&.active': {
-                      backgroundColor: 'rgba(79, 195, 247, 0.15)',
-                      '& .MuiListItemIcon-root': { color: '#4fc3f7' },
-                      '& .MuiListItemText-primary': { color: '#fff', fontWeight: 600 },
+                    minHeight: 38,
+                    color: '#5C6779',
+                    '&:hover': {
+                      color: '#202A3A',
+                      bgcolor: 'rgba(255, 255, 255, 0.5)',
+                      boxShadow: '2px 2px 6px #C7CDD7, -2px -2px 6px #FFFFFF',
                     },
-                    '&:hover': { backgroundColor: 'rgba(255,255,255,0.06)' },
+                    '&.active': {
+                      color: '#356AE6',
+                      boxShadow: 'inset 2px 2px 4px #C7CDD7, inset -2px -2px 4px #FFFFFF',
+                      '& .MuiListItemIcon-root': { color: '#356AE6' },
+                      '& .MuiListItemText-primary': { color: '#202A3A', fontWeight: 700 },
+                    },
                   }}
                 >
-                  <ListItemIcon 
-                    sx={{ 
-                      color: 'rgba(255,255,255,0.5)', 
-                      minWidth: isExpanded ? 36 : 0,
+                  <ListItemIcon
+                    sx={{
+                      color: 'inherit',
+                      minWidth: isExpanded ? 32 : 0,
                       justifyContent: 'center',
                     }}
                   >
-                    <IconComponent sx={{ fontSize: 20 }} />
+                    <IconComponent sx={{ fontSize: 19 }} />
                   </ListItemIcon>
                   {isExpanded && (
                     <ListItemText
                       primary={item.label}
-                      primaryTypographyProps={{ 
-                        fontSize: '0.8rem', 
-                        color: 'rgba(255,255,255,0.7)',
+                      primaryTypographyProps={{
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
                         noWrap: true,
                       }}
                     />
@@ -315,41 +444,40 @@ const Sidebar = ({ open, onClose, isMobile }) => {
           )
         })}
 
-        {/* Logout */}
-        <ListItem disablePadding sx={{ px: isExpanded ? 1 : 0.5, pb: 1.5 }}>
-          <Tooltip 
-            title={!isExpanded ? 'Logout' : ''} 
-            placement="right" 
-            arrow
-          >
+        {/* Logout Action */}
+        <ListItem disablePadding sx={{ mt: 0.5 }}>
+          <Tooltip title={!isExpanded ? 'Logout' : ''} placement="right" arrow>
             <ListItemButton
               onClick={handleLogout}
               sx={{
-                borderRadius: 1,
-                py: isExpanded ? 1 : 1.2,
+                borderRadius: '12px',
+                py: 0.9,
                 px: isExpanded ? 1.5 : 1,
                 justifyContent: isExpanded ? 'flex-start' : 'center',
-                minHeight: 40,
-                color: '#ff5252',
-                '&:hover': { backgroundColor: 'rgba(255, 82, 82, 0.12)' },
+                minHeight: 38,
+                color: '#D94F55',
+                '&:hover': {
+                  bgcolor: 'rgba(217, 79, 85, 0.08)',
+                  boxShadow: '2px 2px 6px #C7CDD7, -2px -2px 6px #FFFFFF',
+                },
               }}
             >
-              <ListItemIcon 
-                sx={{ 
-                  color: '#ff5252', 
-                  minWidth: isExpanded ? 36 : 0,
+              <ListItemIcon
+                sx={{
+                  color: '#D94F55',
+                  minWidth: isExpanded ? 32 : 0,
                   justifyContent: 'center',
                 }}
               >
-                <LogoutIcon sx={{ fontSize: 20 }} />
+                <LogoutIcon sx={{ fontSize: 19 }} />
               </ListItemIcon>
               {isExpanded && (
                 <ListItemText
                   primary="Logout"
-                  primaryTypographyProps={{ 
-                    fontSize: '0.8rem', 
-                    color: '#ff5252',
-                    fontWeight: 600,
+                  primaryTypographyProps={{
+                    fontSize: '0.82rem',
+                    color: '#D94F55',
+                    fontWeight: 700,
                     noWrap: true,
                   }}
                 />
@@ -361,28 +489,51 @@ const Sidebar = ({ open, onClose, isMobile }) => {
     </Box>
   )
 
+  const currentWidth = isMobile ? 270 : (!open ? 0 : (collapsed && !hovered ? 76 : 270))
+
+  const handleDrawerClose = (event, reason) => {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur()
+    }
+    if (onClose) onClose(event, reason)
+  }
+
   return (
     <Drawer
       variant={isMobile ? 'temporary' : 'permanent'}
       open={open}
-      onClose={onClose}
+      onClose={handleDrawerClose}
+      ModalProps={{
+        keepMounted: true,
+        disableAutoFocus: true,
+        disableEnforceFocus: true,
+        disableRestoreFocus: true,
+      }}
+      SlideProps={{
+        onExited: () => {
+          if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur()
+          }
+        },
+      }}
       sx={{
-        width: isMobile ? 280 : (collapsed && !hovered ? 64 : 280),
+        width: currentWidth,
         flexShrink: 0,
+        transition: isMobile ? 'none' : 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
         '& .MuiDrawer-paper': {
-          width: isMobile ? 280 : (collapsed && !hovered ? 64 : 280),
+          width: currentWidth,
           boxSizing: 'border-box',
-          borderRight: 'none',
-          boxShadow: '2px 0 12px rgba(0,0,0,0.1)',
-          position: 'fixed',  // ✅ FIXED - Sidebar stays in place
+          borderRight: '1px solid var(--neu-divider, #D7DDE7)',
+          boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+          position: 'fixed',
           top: 0,
           left: 0,
-          height: '100vh',  // ✅ Full viewport height
+          height: '100vh',
           zIndex: isMobile ? 1300 : 1200,
-          transform: isMobile ? 'none' : (open ? 'translateX(0)' : 'translateX(-280px)'),
-          transition: isMobile ? 'none' : 'width 0.3s ease, transform 0.25s ease-in-out',
+          transition: isMobile ? 'none' : 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
           overflowX: 'hidden',
-          backgroundColor: '#1a237e',
+          bgcolor: 'var(--neu-surface, #E8ECF3)',
+          display: !open && !isMobile ? 'none' : 'flex',
         },
       }}
     >

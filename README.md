@@ -42,23 +42,42 @@
 
 CrimeLens is an enterprise-grade AI-powered crime intelligence and analytics platform developed for the **Karnataka State Police (KSP) Datathon 2026**.
 
-The platform empowers law enforcement officers, station house officers (SHOs), and intelligence analysts to monitor real-time crime incidents, predict high-risk spatial hotspots, profile repeat criminal syndicates, run socio-economic correlation matrices, and generate official briefings.
+The platform empowers law enforcement officers, station house officers (SHOs), and intelligence analysts to monitor real-time crime incidents, predict high-risk spatial hotspots, profile repeat criminal syndicates, run socio-economic correlation matrices, optimize tactical patrol deployments, and generate official briefings.
 
 ---
 
-## ✨ Key Features
+## ✨ Key Features & Capabilities
 
-### 📊 Real-Time Crime Analytics & Dashboard
-- State-wide incident counters, high-risk case metrics, and case resolution rates.
-- District-wise comparison breakdown across Karnataka districts (Bengaluru Urban, Mysuru, Hubballi-Dharwad, Mangaluru, Belagavi, etc.).
-- Diurnal crime time-series graphs and category severity distribution.
+### 📊 Real-Time Crime Analytics & Dashboard (`/dashboard`)
+- **State-wide Incident Metrics**: Live incident counters, high-risk case distributions, and real-time case resolution rates.
+- **District-Level Comparison**: Comparative crime metrics across Karnataka districts (*Bengaluru Urban, Mysuru, Hubballi-Dharwad, Mangaluru, Belagavi, Kalaburagi, etc.*).
+- **Diurnal Time-Series Trends**: Peak crime hour tracking, day-of-week patterns, and severity classification breakdown.
+- **Defensive Chart Containers**: Auto-bounding responsive layout preventing resize overflow warnings.
+
+### 📁 Smart Bulk FIR Ingestion Engine (`/crimes`)
+- **Multi-Policy Duplicate Handling**:
+  - **Update Existing (Upsert)**: Update existing database records matching uploaded FIR numbers without rejection.
+  - **Auto-rename Duplicates**: Auto-generate unique FIR suffixes (`_DUP`) so test batches can be imported side-by-side.
+  - **Skip Duplicates**: Ignore duplicate FIRs gracefully without failing the batch.
+  - **Strict (Reject Duplicates)**: Flag duplicate FIR numbers for strict data auditing.
+- **Sample CSV Generator**: One-click **"Sample CSV"** download providing a pre-formatted template compliant with system schemas.
+- **Excel & Encoding Protection**: Automatic UTF-8 BOM (`\uFEFF`) sanitization and flexible column header alias matching (`firNumber`, `CrimeNo`, `case_number`, etc.).
+- **Granular Progress & Error Breakdown**: Clear status chips for *Created*, *Updated*, *Skipped*, and *Failed* with per-row FIR error chips.
+
+### 🚔 Tactical Patrol Deployment & Route Optimizer (`/api/tactical`)
+- **Shift-Based Route Generation**: Morning, evening, and night shift patrol itineraries ranked by historical hotspot density.
+- **Priority Waypoints**: Checkpoint sequencing linking critical risk zones to nearby police station jurisdictions.
+- **Modus Operandi (MO) Linkage**: Pattern-matching engine linking recurring crime signatures, keywords, and suspect modus operandi.
+
+### 🔬 Forensic Intelligence & Evidence Hub (`/forensics`)
+- Ballistics analysis, digital evidence tracking, chain-of-custody verification, and lab status management.
 
 ### 🤖 AI Assistant & Conversational Intelligence (`/ai-chat`)
-- Powered by Groq Llama 3.3 70B & CrimeLens Domain Intelligence Engine.
-- **Voice Dictation (Speech-to-Text)**: Officer voice input support.
-- **Text-to-Speech (Read Aloud)**: Audio playback of AI briefings.
-- **Interactive Prompts**: 7-day hotspot matrix, repeat offender profiling, and SCRB executive summaries.
-- Export chat transcripts as Markdown files.
+- Powered by **Groq Llama 3.3 70B** and domain-specific crime intelligence prompting.
+- **Voice Dictation (Speech-to-Text)**: Officer voice command input via Web Speech API.
+- **Text-to-Speech (Read Aloud)**: Audio playback of synthesized tactical briefings.
+- **Quick Prompts**: 7-day hotspot matrix, repeat offender profiling, and SCRB executive summaries.
+- Export chat transcripts directly as Markdown files.
 
 ### 📄 Persistent Reports & Data Export (`/reports`)
 - Configure briefings by report type (Crime Summary, Network Analysis, AI Insights, District Comparison, Trend Analysis).
@@ -73,11 +92,11 @@ The platform empowers law enforcement officers, station house officers (SHOs), a
 - Graph visualization linking offenders, suspects, gang syndicates, victims, and shared modus operandi (MO).
 
 ### 📈 Socio-Economic Correlation Analysis
-- Pearson correlation matrix evaluating crime rates against economic factors (unemployment, literacy, poverty, urbanization).
+- Pearson correlation matrix evaluating crime rates against socio-economic factors (unemployment, literacy, poverty, urbanization).
 
-### 🔐 Enterprise Auth, Profile & Settings Persistence (`/profile`, `/settings`)
-- JWT Access & Refresh token rotation with bcrypt password security.
-- MongoDB persistence for custom user profiles, designations, avatars, dark mode preferences, and system settings.
+### 🎨 Neumorphic Modern UI System
+- Ergonomic Neumorphic soft-shadow interface with sticky non-scrolling sidebars, smooth transitions, and accessible contrast.
+- Global AI Copilot drawer accessible from every screen.
 
 ---
 
@@ -89,7 +108,7 @@ The platform empowers law enforcement officers, station house officers (SHOs), a
                        |  (Redux Toolkit, Tailwind, MUI)   |
                        +-----------------+-----------------+
                                          |
-                               REST API (JSON)
+                                REST API (JSON)
                                          |
                        +-----------------v-----------------+
                        |     Render Express Node.js Server |
@@ -111,15 +130,15 @@ The platform empowers law enforcement officers, station house officers (SHOs), a
 ### Frontend
 - **Framework**: React 18 (Vite)
 - **State Management**: Redux Toolkit & React Query
-- **Styling**: Tailwind CSS & Material-UI (MUI)
+- **Styling**: Tailwind CSS & Material-UI (MUI v5)
 - **Visualization**: Recharts, Leaflet, Framer Motion
-- **Markdown & Code**: React Markdown & Remark GFM
+- **Markdown & Speech**: React Markdown, Web Speech API
 
 ### Backend
 - **Runtime**: Node.js 24 & Express.js
 - **Database**: MongoDB Atlas (Mongoose ORM)
-- **Authentication**: JWT (JSON Web Tokens) & Bcrypt
-- **Logging & Security**: Winston Logger, Helmet, CORS, Rate Limiting
+- **Authentication**: JWT (JSON Web Tokens) & Bcrypt password hashing
+- **Security & Logging**: Winston Logger, Helmet, CORS, Rate Limiting, Express Validator
 
 ---
 
@@ -130,21 +149,25 @@ CrimeLens
 ├── backend
 │   ├── src
 │   │   ├── config/             # Database & environment configurations
-│   │   ├── controllers/        # Auth, Crime, Report, Dashboard, AI controllers
+│   │   ├── controllers/        # Auth, Crime, Report, Dashboard, Tactical, AI controllers
 │   │   ├── database/seeds/     # Database seeders (roles, districts, users, crimes)
 │   │   ├── middlewares/        # Authentication & error handling middleware
-│   │   ├── models/             # Mongoose models (User, CrimeIncident, Report, etc.)
-│   │   ├── routes/             # Express API routes
-│   │   ├── services/           # AIService, CorrelationService, NetworkService
-│   │   └── server.js           # Server entry point
+│   │   ├── models/             # Mongoose models (User, CrimeIncident, Suspect, etc.)
+│   │   ├── routes/             # Express API routes (auth, crimes, dashboard, tactical)
+│   │   ├── services/           # AIService, TacticalService, CorrelationService
+│   │   └── server.js           # Express server entry point
 │   ├── package.json
 │   └── render.yaml             # Render deployment configuration
 │
 ├── frontend
 │   ├── src
 │   │   ├── api/                # Axios API service instances
-│   │   ├── components/         # Reusable UI components & layouts
-│   │   ├── pages/              # Dashboard, Crimes, Map, Network, Reports, AIChat, Profile, Settings
+│   │   ├── components/         # Reusable Neumorphic UI components & layouts
+│   │   │   ├── charts/         # Responsive Recharts wrappers
+│   │   │   ├── crimes/         # CrimeDetail, CrimeForm, BulkUpload
+│   │   │   ├── layout/         # Header, Fixed Sidebar, Navbar, Footer
+│   │   │   └── common/         # GlobalAiCopilot, StatCard, ErrorBoundary
+│   │   ├── pages/              # Dashboard, Crimes, Map, Network, Reports, AIChat, Forensics
 │   │   ├── redux/              # Redux slices for auth & application state
 │   │   └── main.jsx            # App entry point
 │   ├── vercel.json             # Vercel SPA routing configuration
@@ -152,6 +175,7 @@ CrimeLens
 │
 ├── sample_csv_data/            # Original batch CSV sample data
 ├── sample_csv_data_2/          # 10 batch CSV files (200 records ready for manual upload)
+├── sample_csv_data_3/          # 10 batch CSV files (multi-district ready-to-test batches)
 └── README.md
 ```
 

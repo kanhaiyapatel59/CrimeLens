@@ -25,6 +25,7 @@ const adminRoutes = require('./routes/adminRoutes'); // ✅ Added Admin Routes r
 const correlationRoutes = require('./routes/correlationRoutes');
 const seedRoutes = require('./routes/seedRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const tacticalRoutes = require('./routes/tacticalRoutes');
 
 // Utils & Middleware
 const logger = require('./utils/logger');
@@ -195,6 +196,7 @@ app.use('/api/admin', adminRoutes); // ✅ Added Admin Routes registration
 app.use('/api/correlation', correlationRoutes);
 app.use('/api/seed', seedRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/tactical', tacticalRoutes);
 
 // Districts lookup endpoint
 const District = require('./models/District');

@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Alert,
   Divider,
+  useTheme,
 } from '@mui/material'
 import {
   Security as SecurityIcon,
@@ -21,6 +22,23 @@ import { authAPI } from '../api/auth'
 import toast from 'react-hot-toast'
 
 const VerifyEmail = () => {
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
+
+  const bgSurface = isDark ? '#1A1E29' : '#E8ECF3'
+  const textPrimary = isDark ? '#F0F4FC' : '#202A3A'
+  const textSecondary = isDark ? '#9DA8BA' : '#5C6779'
+  const dividerColor = isDark ? '#262B3A' : '#D7DDE7'
+  const raisedShadow = isDark
+    ? '8px 8px 20px #12151D, -8px -8px 20px #222735'
+    : '10px 10px 24px #C7CDD7, -10px -10px 24px #FFFFFF'
+  const raisedSubtle = isDark
+    ? '4px 4px 10px #12151D, -4px -4px 10px #222735'
+    : '4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF'
+  const insetShadow = isDark
+    ? 'inset 3px 3px 7px #12151D, inset -3px -3px 7px #232837'
+    : 'inset 4px 4px 8px #C7CDD7, inset -4px -4px 8px #FFFFFF'
+
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
@@ -46,7 +64,7 @@ const VerifyEmail = () => {
       setSuccess(true)
       toast.success('Email verified successfully!')
       
-      // Auto redirect after 3 seconds
+      // Auto redirect after 5 seconds
       setTimeout(() => {
         navigate('/login')
       }, 5000)
@@ -59,8 +77,6 @@ const VerifyEmail = () => {
   }
 
   const handleResendVerification = async () => {
-    // This would typically require email address
-    // For now, show a message
     toast.info('Please contact support or try registering again')
   }
 
@@ -72,23 +88,28 @@ const VerifyEmail = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#f5f7fa',
+          bgcolor: bgSurface,
+          p: 2,
         }}
       >
         <Paper
+          elevation={0}
           sx={{
-            p: 4,
-            borderRadius: 3,
+            p: 5,
+            borderRadius: 4.5,
             textAlign: 'center',
-            maxWidth: 400,
+            maxWidth: 420,
+            bgcolor: bgSurface,
+            boxShadow: raisedShadow,
+            border: `1px solid ${dividerColor}`,
           }}
         >
-          <CircularProgress size={48} />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Verifying your email...
+          <CircularProgress size={44} sx={{ color: '#356AE6' }} />
+          <Typography variant="h6" fontWeight={800} sx={{ mt: 2.5, color: textPrimary }}>
+            Verifying Officer Credential...
           </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Please wait while we confirm your email address.
+          <Typography variant="body2" sx={{ color: textSecondary, mt: 0.5 }}>
+            Validating cryptographic authorization token against police registry
           </Typography>
         </Paper>
       </Box>
@@ -101,59 +122,100 @@ const VerifyEmail = () => {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: '#f5f7fa',
-        backgroundImage: 'linear-gradient(135deg, #1a237e 0%, #283593 100%)',
+        justifyContent: 'center',
+        bgcolor: bgSurface,
+        p: 2,
       }}
     >
       <Container maxWidth="sm">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
         >
           <Paper
             elevation={0}
             sx={{
-              p: 4,
-              borderRadius: 3,
-              backgroundColor: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(10px)',
+              p: { xs: 3, sm: 5 },
+              borderRadius: 4.5,
+              bgcolor: bgSurface,
+              boxShadow: raisedShadow,
+              border: `1px solid ${dividerColor}`,
               textAlign: 'center',
             }}
           >
-            <SecurityIcon sx={{ fontSize: 48, color: '#1a237e' }} />
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: 3,
+                bgcolor: bgSurface,
+                boxShadow: raisedSubtle,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mx: 'auto',
+                mb: 2,
+                color: '#356AE6',
+              }}
+            >
+              <SecurityIcon fontSize="medium" />
+            </Box>
 
             {success ? (
               <>
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ duration: 0.5 }}
+                  transition={{ duration: 0.4 }}
                 >
-                  <CheckIcon sx={{ fontSize: 80, color: 'success.main', my: 2 }} />
+                  <Box
+                    sx={{
+                      width: 76,
+                      height: 76,
+                      borderRadius: '50%',
+                      bgcolor: bgSurface,
+                      boxShadow: raisedSubtle,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mx: 'auto',
+                      my: 2.5,
+                      color: '#239B62',
+                    }}
+                  >
+                    <CheckIcon sx={{ fontSize: 48, color: '#239B62' }} />
+                  </Box>
                 </motion.div>
-                <Typography variant="h5" fontWeight={700}>
-                  Email Verified! ✅
+                <Typography variant="h5" fontWeight={800} sx={{ color: textPrimary, letterSpacing: -0.3 }}>
+                  Official Email Verified!
                 </Typography>
-                <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                  Your email address has been successfully verified.
+                <Typography variant="body2" sx={{ color: textSecondary, mt: 1 }}>
+                  Your official police email address has been successfully verified.
                   <br />
-                  You can now login to your account.
+                  You may now sign in to your authorized investigation workstation.
                 </Typography>
-                <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
+                <Box sx={{ mt: 3.5, display: 'flex', gap: 2, justifyContent: 'center' }}>
                   <Button
                     variant="contained"
                     onClick={() => navigate('/login')}
                     sx={{
-                      bgcolor: '#1a237e',
-                      '&:hover': { bgcolor: '#283593' },
+                      bgcolor: '#356AE6',
+                      color: '#fff',
+                      borderRadius: 3,
+                      px: 4,
+                      py: 1.2,
+                      fontWeight: 700,
+                      textTransform: 'none',
+                      boxShadow: '4px 4px 12px rgba(53, 106, 230, 0.4)',
+                      '&:hover': { bgcolor: '#254EBF' },
                     }}
                   >
-                    Go to Login
+                    Sign In to Workstation
                   </Button>
                 </Box>
-                <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 2 }}>
-                  Redirecting to login in 5 seconds...
+                <Typography variant="caption" sx={{ color: textSecondary, display: 'block', mt: 2.5 }}>
+                  Redirecting to official terminal in 5 seconds...
                 </Typography>
               </>
             ) : (
@@ -161,20 +223,36 @@ const VerifyEmail = () => {
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ duration: 0.5 }}
+                  transition={{ duration: 0.4 }}
                 >
-                  <ErrorIcon sx={{ fontSize: 80, color: 'error.main', my: 2 }} />
+                  <Box
+                    sx={{
+                      width: 76,
+                      height: 76,
+                      borderRadius: '50%',
+                      bgcolor: bgSurface,
+                      boxShadow: raisedSubtle,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mx: 'auto',
+                      my: 2.5,
+                      color: '#D94F55',
+                    }}
+                  >
+                    <ErrorIcon sx={{ fontSize: 48, color: '#D94F55' }} />
+                  </Box>
                 </motion.div>
-                <Typography variant="h5" fontWeight={700} color="error">
-                  Verification Failed
+                <Typography variant="h5" fontWeight={800} sx={{ color: '#D94F55', letterSpacing: -0.3 }}>
+                  Verification Token Expired
                 </Typography>
-                <Alert severity="error" sx={{ mt: 2 }}>
+                <Alert severity="error" sx={{ mt: 2, borderRadius: 3, boxShadow: raisedSubtle }}>
                   {error || 'Invalid or expired verification token'}
                 </Alert>
-                <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
-                  The verification link may have expired or been invalid.
+                <Typography variant="body2" sx={{ color: textSecondary, mt: 2 }}>
+                  The verification link may have expired or was already redeemed.
                   <br />
-                  You can request a new verification email.
+                  You can request a new verification email below.
                 </Typography>
                 <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Button
@@ -182,36 +260,52 @@ const VerifyEmail = () => {
                     onClick={handleResendVerification}
                     disabled={resending}
                     sx={{
-                      bgcolor: '#1a237e',
-                      '&:hover': { bgcolor: '#283593' },
+                      bgcolor: '#356AE6',
+                      color: '#fff',
+                      borderRadius: 3,
+                      py: 1.2,
+                      fontWeight: 700,
+                      textTransform: 'none',
+                      boxShadow: '4px 4px 12px rgba(53, 106, 230, 0.4)',
+                      '&:hover': { bgcolor: '#254EBF' },
                     }}
                   >
-                    {resending ? <CircularProgress size={24} /> : 'Resend Verification Email'}
+                    {resending ? <CircularProgress size={20} color="inherit" /> : 'Resend Verification Email'}
                   </Button>
                   <Button
-                    variant="outlined"
                     onClick={() => navigate('/login')}
+                    sx={{
+                      bgcolor: bgSurface,
+                      boxShadow: raisedSubtle,
+                      color: textPrimary,
+                      borderRadius: 3,
+                      py: 1.2,
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      border: `1px solid ${dividerColor}`,
+                      '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+                    }}
                   >
-                    Back to Login
+                    Back to Sign In
                   </Button>
                 </Box>
               </>
             )}
 
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 3, borderColor: dividerColor }} />
 
             <Box>
-              <Typography variant="body2" color="textSecondary">
-                Need help?{' '}
+              <Typography variant="body2" sx={{ color: textSecondary }}>
+                Need technical assistance?{' '}
                 <Link
                   to="/login"
                   style={{
-                    color: '#1a237e',
+                    color: '#356AE6',
                     textDecoration: 'none',
-                    fontWeight: 600,
+                    fontWeight: 700,
                   }}
                 >
-                  Contact Support
+                  Contact IT Support Desk
                 </Link>
               </Typography>
             </Box>

@@ -55,17 +55,42 @@ import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
 const reportTypes = [
-  { id: 'crime_summary', name: 'Crime Summary', icon: AssessmentIcon, color: '#1e293b', desc: 'Overview of all crime records and incidents' },
-  { id: 'crime_analysis', name: 'Crime Analysis', icon: TrendingUpIcon, color: '#3b82f6', desc: 'Patterns, severities, and temporal trends analysis' },
-  { id: 'network_analysis', name: 'Network Analysis', icon: NetworkIcon, color: '#0284c7', desc: 'Criminal syndicate and offender connections' },
-  { id: 'ai_insights', name: 'AI Insights', icon: AIIcon, color: '#475569', desc: 'AI-powered predictive risk & anomaly forecasts' },
-  { id: 'district_comparison', name: 'District Comparison', icon: MapIcon, color: '#64748b', desc: 'Cross-district crime distribution & performance' },
-  { id: 'trend_analysis', name: 'Trend Analysis', icon: TimelineIcon, color: '#0f172a', desc: 'Longitudinal time-series crime trends' },
+  { id: 'crime_summary', name: 'Crime Summary', icon: AssessmentIcon, color: '#356AE6', desc: 'Overview of all crime records and incidents' },
+  { id: 'crime_analysis', name: 'Crime Analysis', icon: TrendingUpIcon, color: '#239B62', desc: 'Patterns, severities, and temporal trends analysis' },
+  { id: 'network_analysis', name: 'Network Analysis', icon: NetworkIcon, color: '#356AE6', desc: 'Criminal syndicate and offender connections' },
+  { id: 'ai_insights', name: 'AI Insights', icon: AIIcon, color: '#8E44AD', desc: 'AI-powered predictive risk & anomaly forecasts' },
+  { id: 'district_comparison', name: 'District Comparison', icon: MapIcon, color: '#D99118', desc: 'Cross-district crime distribution & performance' },
+  { id: 'trend_analysis', name: 'Trend Analysis', icon: TimelineIcon, color: '#2C3E50', desc: 'Longitudinal time-series crime trends' },
 ]
 
 const Reports = () => {
   const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
   const queryClient = useQueryClient()
+
+  const bgSurface = isDark ? '#1A1E29' : '#E8ECF3'
+  const textPrimary = isDark ? '#F0F4FC' : '#202A3A'
+  const textSecondary = isDark ? '#9DA8BA' : '#5C6779'
+  const dividerColor = isDark ? '#262B3A' : '#D7DDE7'
+  const raisedShadow = isDark
+    ? '6px 6px 14px #12151D, -6px -6px 14px #222735'
+    : '7px 7px 16px #C7CDD7, -7px -7px 16px #FFFFFF'
+  const raisedSubtle = isDark
+    ? '4px 4px 10px #12151D, -4px -4px 10px #222735'
+    : '4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF'
+  const insetShadow = isDark
+    ? 'inset 3px 3px 7px #12151D, inset -3px -3px 7px #232837'
+    : 'inset 4px 4px 8px #C7CDD7, inset -4px -4px 8px #FFFFFF'
+
+  const selectSx = {
+    bgcolor: bgSurface,
+    boxShadow: insetShadow,
+    borderRadius: 3,
+    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+    '& .MuiSelect-select': { color: textPrimary, fontWeight: 600, fontSize: '0.88rem', py: 1.2 },
+    '& .MuiSvgIcon-root': { color: textSecondary },
+  }
+
   const [openPreview, setOpenPreview] = useState(false)
   const [activeReportData, setActiveReportData] = useState(null)
 
@@ -215,106 +240,192 @@ const Reports = () => {
 
   return (
     <Box sx={{ width: '100%', maxWidth: '100%', overflowX: 'hidden', pb: 4 }}>
-      {/* Page Header */}
-      <Box
+      {/* Neumorphic Page Header */}
+      <Paper
+        elevation={0}
         sx={{
           display: 'flex',
-          justify: 'space-between',
+          justifyContent: 'space-between',
           alignItems: 'center',
           mb: 4,
           flexWrap: 'wrap',
           gap: 2,
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-          p: 4,
-          borderRadius: 3,
-          color: '#fff',
+          p: { xs: 3, md: 3.5 },
+          borderRadius: 4,
+          bgcolor: bgSurface,
+          boxShadow: raisedShadow,
           position: 'relative',
           overflow: 'hidden',
+          border: `1px solid ${dividerColor}`,
         }}
       >
         <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Typography variant="h4" fontWeight={700} sx={{ mb: 0.5 }}>
-            Reports & Analytics
-          </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.8 }}>
-            Generate, persist, and manage official crime intelligence reports
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+            <Box
+              sx={{
+                width: 38,
+                height: 38,
+                borderRadius: 3,
+                bgcolor: bgSurface,
+                boxShadow: raisedSubtle,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#356AE6',
+              }}
+            >
+              <AssessmentIcon fontSize="small" />
+            </Box>
+            <Typography variant="h5" fontWeight={800} sx={{ color: textPrimary, letterSpacing: -0.3 }}>
+              Intelligence Reports & Analytics
+            </Typography>
+          </Box>
+          <Typography variant="body2" sx={{ color: textSecondary }}>
+            Generate, persist, and distribute statutory Karnataka police intelligence reports
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
+
+        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
           <Button
             variant="contained"
-            startIcon={generateMutation.isLoading ? <CircularProgress size={18} color="inherit" /> : <AddIcon />}
+            startIcon={generateMutation.isLoading ? <CircularProgress size={16} color="inherit" /> : <AddIcon />}
             onClick={handleGenerateReport}
             disabled={generateMutation.isLoading}
             sx={{
-              bgcolor: '#3b82f6',
+              bgcolor: '#356AE6',
               color: '#ffffff',
-              fontWeight: 600,
-              '&:hover': { bgcolor: '#2563eb' },
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              borderRadius: 3,
+              px: 2.5,
+              py: 1,
+              textTransform: 'none',
+              boxShadow: '4px 4px 12px rgba(53, 106, 230, 0.4)',
+              '&:hover': { bgcolor: '#254EBF' },
             }}
           >
             {generateMutation.isLoading ? 'Generating...' : 'Generate New Report'}
           </Button>
+
           <Button
-            variant="outlined"
             startIcon={<RefreshIcon />}
             onClick={() => {
               refetchSaved()
               toast.success('Reports updated')
             }}
-            sx={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff', '&:hover': { borderColor: '#fff' } }}
+            sx={{
+              bgcolor: bgSurface,
+              boxShadow: raisedSubtle,
+              color: textPrimary,
+              borderRadius: 3,
+              px: 2,
+              py: 1,
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              textTransform: 'none',
+              border: `1px solid ${dividerColor}`,
+              '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+            }}
           >
             Refresh
           </Button>
         </Box>
-        <Box sx={{ position: 'absolute', right: -50, top: -50, opacity: 0.1 }}>
-          <AssessmentIcon sx={{ fontSize: 200 }} />
-        </Box>
-      </Box>
+      </Paper>
 
       {/* Real Live KPI Stat Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-            <Paper sx={{ p: 3, borderRadius: 3, textAlign: 'center' }}>
-              <Typography variant="h3" fontWeight={700} sx={{ color: '#0f172a' }}>
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, bgcolor: bgSurface, boxShadow: raisedShadow, textAlign: 'left', border: `1px solid ${dividerColor}` }}>
+              <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Total Crime Records
+              </Typography>
+              <Typography variant="h3" fontWeight={800} sx={{ color: textPrimary, my: 0.8, letterSpacing: -0.5 }}>
                 {kpiData.totalCrimes || 0}
               </Typography>
-              <Typography variant="body2" color="textSecondary">Total Crimes</Typography>
-              <Chip label="Live Record Count" size="small" sx={{ mt: 1, bgcolor: '#f1f5f9', color: '#475569', fontWeight: 600 }} />
+              <Chip
+                label="Live Records"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(53, 106, 230, 0.1)',
+                  color: '#356AE6',
+                  fontWeight: 700,
+                  fontSize: '0.68rem',
+                  borderRadius: 2,
+                }}
+              />
             </Paper>
           </motion.div>
         </Grid>
+
         <Grid item xs={12} sm={6} md={3}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Paper sx={{ p: 3, borderRadius: 3, textAlign: 'center' }}>
-              <Typography variant="h3" fontWeight={700} sx={{ color: '#3b82f6' }}>
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, bgcolor: bgSurface, boxShadow: raisedShadow, textAlign: 'left', border: `1px solid ${dividerColor}` }}>
+              <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                High Risk Cases
+              </Typography>
+              <Typography variant="h3" fontWeight={800} sx={{ color: '#D94F55', my: 0.8, letterSpacing: -0.5 }}>
                 {kpiData.highRiskCount || 0}
               </Typography>
-              <Typography variant="body2" color="textSecondary">High Risk Cases</Typography>
-              <Chip label="Risk Score ≥ 70" size="small" sx={{ mt: 1, bgcolor: '#eff6ff', color: '#1d4ed8', fontWeight: 600 }} />
+              <Chip
+                label="Score ≥ 70"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(217, 79, 85, 0.12)',
+                  color: '#D94F55',
+                  fontWeight: 700,
+                  fontSize: '0.68rem',
+                  borderRadius: 2,
+                }}
+              />
             </Paper>
           </motion.div>
         </Grid>
+
         <Grid item xs={12} sm={6} md={3}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-            <Paper sx={{ p: 3, borderRadius: 3, textAlign: 'center' }}>
-              <Typography variant="h3" fontWeight={700} sx={{ color: '#0284c7' }}>
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, bgcolor: bgSurface, boxShadow: raisedShadow, textAlign: 'left', border: `1px solid ${dividerColor}` }}>
+              <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Resolved Incidents
+              </Typography>
+              <Typography variant="h3" fontWeight={800} sx={{ color: '#239B62', my: 0.8, letterSpacing: -0.5 }}>
                 {kpiData.status?.resolved || 0}
               </Typography>
-              <Typography variant="body2" color="textSecondary">Resolved Cases</Typography>
-              <Chip label="Closed & Solved" size="small" sx={{ mt: 1, bgcolor: '#f0f9ff', color: '#0369a1', fontWeight: 600 }} />
+              <Chip
+                label="Closed & Solved"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(35, 155, 98, 0.12)',
+                  color: '#239B62',
+                  fontWeight: 700,
+                  fontSize: '0.68rem',
+                  borderRadius: 2,
+                }}
+              />
             </Paper>
           </motion.div>
         </Grid>
+
         <Grid item xs={12} sm={6} md={3}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Paper sx={{ p: 3, borderRadius: 3, textAlign: 'center' }}>
-              <Typography variant="h3" fontWeight={700} sx={{ color: '#475569' }}>
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Paper sx={{ p: 3, borderRadius: 4, bgcolor: bgSurface, boxShadow: raisedShadow, textAlign: 'left', border: `1px solid ${dividerColor}` }}>
+              <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Active Inquiries
+              </Typography>
+              <Typography variant="h3" fontWeight={800} sx={{ color: '#D99118', my: 0.8, letterSpacing: -0.5 }}>
                 {(kpiData.status?.investigating || 0) + (kpiData.status?.in_progress || 0)}
               </Typography>
-              <Typography variant="body2" color="textSecondary">Active Investigations</Typography>
-              <Chip label="Under Active Review" size="small" sx={{ mt: 1, bgcolor: '#f8fafc', color: '#475569', fontWeight: 600 }} />
+              <Chip
+                label="Under Investigation"
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(217, 145, 24, 0.12)',
+                  color: '#D99118',
+                  fontWeight: 700,
+                  fontSize: '0.68rem',
+                  borderRadius: 2,
+                }}
+              />
             </Paper>
           </motion.div>
         </Grid>
@@ -324,23 +435,24 @@ const Reports = () => {
       <Grid container spacing={3}>
         {/* Left Column: Configure Report Form */}
         <Grid item xs={12} md={7}>
-          <Paper sx={{ p: 4, borderRadius: 3, mb: 4 }}>
-            <Typography variant="h6" fontWeight={700} sx={{ mb: 1, color: '#0f172a' }}>
-              Configure Report
+          <Paper sx={{ p: 4, borderRadius: 4, mb: 4, bgcolor: bgSurface, boxShadow: raisedShadow, border: `1px solid ${dividerColor}` }}>
+            <Typography variant="h6" fontWeight={800} sx={{ mb: 0.5, color: textPrimary, fontSize: '1.05rem' }}>
+              Configure Statutory Report
             </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+            <Typography variant="body2" sx={{ color: textSecondary, mb: 3 }}>
               Select parameters to generate persistent intelligence briefings
             </Typography>
 
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth size="small">
-                  <InputLabel id="report-type-label">Report Type</InputLabel>
+                  <InputLabel id="report-type-label" sx={{ color: textSecondary, fontWeight: 600 }}>Report Type</InputLabel>
                   <Select
                     labelId="report-type-label"
                     label="Report Type"
                     value={reportParams.type}
                     onChange={(e) => handleParamChange('type', e.target.value)}
+                    sx={selectSx}
                   >
                     {reportTypes.map((t) => (
                       <MenuItem key={t.id} value={t.id}>
@@ -353,15 +465,16 @@ const Reports = () => {
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth size="small">
-                  <InputLabel id="report-format-label">Format</InputLabel>
+                  <InputLabel id="report-format-label" sx={{ color: textSecondary, fontWeight: 600 }}>Export Format</InputLabel>
                   <Select
                     labelId="report-format-label"
-                    label="Format"
+                    label="Export Format"
                     value={reportParams.format}
                     onChange={(e) => handleParamChange('format', e.target.value)}
+                    sx={selectSx}
                   >
-                    <MenuItem value="pdf">PDF Document</MenuItem>
-                    <MenuItem value="excel">Excel Workbook</MenuItem>
+                    <MenuItem value="pdf">PDF Document (Official SCRB)</MenuItem>
+                    <MenuItem value="excel">Excel Workbook (.xlsx)</MenuItem>
                     <MenuItem value="csv">CSV Spreadsheets</MenuItem>
                     <MenuItem value="json">Structured JSON Payload</MenuItem>
                   </Select>
@@ -370,12 +483,13 @@ const Reports = () => {
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth size="small">
-                  <InputLabel id="report-daterange-label">Date Range</InputLabel>
+                  <InputLabel id="report-daterange-label" sx={{ color: textSecondary, fontWeight: 600 }}>Date Range</InputLabel>
                   <Select
                     labelId="report-daterange-label"
                     label="Date Range"
                     value={reportParams.dateRange}
                     onChange={(e) => handleParamChange('dateRange', e.target.value)}
+                    sx={selectSx}
                   >
                     <MenuItem value="last_7_days">Last 7 Days</MenuItem>
                     <MenuItem value="last_30_days">Last 30 Days</MenuItem>
@@ -393,9 +507,13 @@ const Reports = () => {
                         checked={reportParams.includeCharts}
                         onChange={(e) => handleParamChange('includeCharts', e.target.checked)}
                         size="small"
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': { color: '#356AE6' },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#356AE6' },
+                        }}
                       />
                     }
-                    label={<Typography variant="body2" fontWeight={500}>📈 Include Charts</Typography>}
+                    label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>📈 Include Statistical Charts</Typography>}
                   />
                   <FormControlLabel
                     control={
@@ -403,28 +521,58 @@ const Reports = () => {
                         checked={reportParams.includeMap}
                         onChange={(e) => handleParamChange('includeMap', e.target.checked)}
                         size="small"
+                        sx={{
+                          '& .MuiSwitch-switchBase.Mui-checked': { color: '#356AE6' },
+                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#356AE6' },
+                        }}
                       />
                     }
-                    label={<Typography variant="body2" fontWeight={500}>🗺️ Include Map Coordinates</Typography>}
+                    label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>🗺️ Include Map Coordinates</Typography>}
                   />
                 </Box>
               </Grid>
             </Grid>
 
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 3, borderColor: dividerColor }} />
 
             {/* Selected Report Information Card */}
-            <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, bgcolor: '#f8fafc', borderColor: '#e2e8f0' }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2.5,
+                borderRadius: 3,
+                bgcolor: bgSurface,
+                boxShadow: insetShadow,
+                border: 'none',
+              }}
+            >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                {selectedTypeObj && <selectedTypeObj.icon sx={{ fontSize: 36, color: selectedTypeObj.color }} />}
+                {selectedTypeObj && (
+                  <Box
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 3,
+                      bgcolor: bgSurface,
+                      boxShadow: raisedSubtle,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: selectedTypeObj.color,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <selectedTypeObj.icon sx={{ fontSize: 24 }} />
+                  </Box>
+                )}
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="caption" color="textSecondary" fontWeight={600} sx={{ textTransform: 'uppercase' }}>
+                  <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
                     Selected Report Category
                   </Typography>
-                  <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#0f172a' }}>
+                  <Typography variant="subtitle1" fontWeight={800} sx={{ color: textPrimary }}>
                     {selectedTypeObj?.name}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="body2" sx={{ color: textSecondary, fontSize: '0.85rem' }}>
                     {selectedTypeObj?.desc}
                   </Typography>
                 </Box>
@@ -436,8 +584,19 @@ const Reports = () => {
                 variant="contained"
                 onClick={handleGenerateReport}
                 disabled={generateMutation.isLoading}
-                startIcon={generateMutation.isLoading ? <CircularProgress size={18} color="inherit" /> : <AddIcon />}
-                sx={{ bgcolor: '#1e293b', color: '#fff', '&:hover': { bgcolor: '#0f172a' }, fontWeight: 600, px: 3 }}
+                startIcon={generateMutation.isLoading ? <CircularProgress size={16} color="inherit" /> : <AddIcon />}
+                sx={{
+                  bgcolor: '#356AE6',
+                  color: '#fff',
+                  borderRadius: 3,
+                  fontWeight: 700,
+                  fontSize: '0.88rem',
+                  textTransform: 'none',
+                  px: 3,
+                  py: 1,
+                  boxShadow: '4px 4px 12px rgba(53, 106, 230, 0.4)',
+                  '&:hover': { bgcolor: '#254EBF' },
+                }}
               >
                 {generateMutation.isLoading ? 'Generating Report...' : 'Generate & Save Report'}
               </Button>
@@ -447,37 +606,50 @@ const Reports = () => {
 
         {/* Right Column: Persistent Saved Reports List from MongoDB */}
         <Grid item xs={12} md={5}>
-          <Paper sx={{ p: 4, borderRadius: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Paper sx={{ p: 4, borderRadius: 4, bgcolor: bgSurface, boxShadow: raisedShadow, border: `1px solid ${dividerColor}` }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
               <Box>
-                <Typography variant="h6" fontWeight={700} sx={{ color: '#0f172a' }}>
-                  Saved Reports
+                <Typography variant="h6" fontWeight={800} sx={{ color: textPrimary, fontSize: '1.05rem' }}>
+                  Saved Briefings
                 </Typography>
-                <Typography variant="caption" color="textSecondary">
-                  Persistent MongoDB records
+                <Typography variant="caption" sx={{ color: textSecondary }}>
+                  Persistent MongoDB archival store
                 </Typography>
               </Box>
-              <Chip label={`${savedReportsList.length} reports`} size="small" sx={{ bgcolor: '#f1f5f9', fontWeight: 600 }} />
+              <Chip
+                label={`${savedReportsList.length} files`}
+                size="small"
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: '#356AE6',
+                  fontWeight: 700,
+                  fontSize: '0.7rem',
+                  borderRadius: 2,
+                }}
+              />
             </Box>
 
             {reportsLoading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                <CircularProgress size={28} />
+                <CircularProgress size={28} sx={{ color: '#356AE6' }} />
               </Box>
             ) : savedReportsList.length > 0 ? (
               savedReportsList.map((report) => (
                 <Card
                   key={report._id}
-                  variant="outlined"
+                  elevation={0}
                   sx={{
                     mb: 2,
-                    borderRadius: 2,
-                    borderColor: '#e2e8f0',
+                    borderRadius: 3,
+                    bgcolor: bgSurface,
+                    boxShadow: raisedSubtle,
                     transition: 'all 0.2s ease',
                     cursor: 'pointer',
+                    border: `1px solid ${dividerColor}`,
                     '&:hover': {
-                      borderColor: '#3b82f6',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                      boxShadow: insetShadow,
+                      transform: 'translateY(-1px)',
                     },
                   }}
                   onClick={() => handleViewReport(report)}
@@ -485,10 +657,10 @@ const Reports = () => {
                   <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <Box>
-                        <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#0f172a' }}>
+                        <Typography variant="subtitle2" fontWeight={800} sx={{ color: textPrimary, fontSize: '0.88rem' }}>
                           {report.name}
                         </Typography>
-                        <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.3 }}>
+                        <Typography variant="caption" sx={{ color: textSecondary, display: 'block', mt: 0.3, fontSize: '0.72rem' }}>
                           {report.type?.replace('_', ' ').toUpperCase()} • {new Date(report.createdAt).toLocaleDateString()} • {report.fileSize}
                         </Typography>
                       </Box>
@@ -501,17 +673,21 @@ const Reports = () => {
                             height: 20,
                             fontSize: '0.65rem',
                             fontWeight: 700,
-                            bgcolor: report.status === 'completed' ? '#ecfdf5' : '#fffbebb',
-                            color: report.status === 'completed' ? '#047857' : '#b45309',
+                            bgcolor: report.status === 'completed' ? 'rgba(35, 155, 98, 0.15)' : 'rgba(217, 145, 24, 0.15)',
+                            color: report.status === 'completed' ? '#239B62' : '#D99118',
+                            borderRadius: 1.5,
                           }}
                         />
                         <IconButton
                           size="small"
-                          color="error"
                           onClick={(e) => handleDeleteReport(report._id, e)}
                           title="Delete Report"
+                          sx={{
+                            color: textSecondary,
+                            '&:hover': { color: '#D94F55' },
+                          }}
                         >
-                          <DeleteIcon sx={{ fontSize: 18 }} />
+                          <DeleteIcon sx={{ fontSize: 16 }} />
                         </IconButton>
                       </Box>
                     </Box>
@@ -519,109 +695,174 @@ const Reports = () => {
                 </Card>
               ))
             ) : (
-              <Typography variant="body2" color="textSecondary" align="center" sx={{ py: 4 }}>
-                No saved reports found. Generate a report above.
-              </Typography>
+              <Box sx={{ p: 4, textAlign: 'center' }}>
+                <Typography variant="body2" sx={{ color: textSecondary }}>
+                  No saved reports found. Configure and generate above.
+                </Typography>
+              </Box>
             )}
           </Paper>
         </Grid>
       </Grid>
 
       {/* Real Interactive Report Preview Dialog */}
-      <Dialog open={openPreview} onClose={() => setOpenPreview(false)} maxWidth="lg" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#0f172a', color: '#fff' }}>
-          <Typography variant="h6" fontWeight={700}>
-            {activeReportData?.title || 'Crime Intelligence Report Preview'}
-          </Typography>
-          <IconButton onClick={() => setOpenPreview(false)} sx={{ color: '#fff' }}>
-            <CloseIcon />
+      <Dialog
+        open={openPreview}
+        onClose={() => setOpenPreview(false)}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            bgcolor: bgSurface,
+            boxShadow: raisedShadow,
+            border: `1px solid ${dividerColor}`,
+          },
+        }}
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <AssessmentIcon sx={{ color: '#356AE6' }} />
+            <Typography variant="h6" fontWeight={800} sx={{ fontSize: '1.05rem' }}>
+              {activeReportData?.title || 'Crime Intelligence Report Preview'}
+            </Typography>
+          </Box>
+          <IconButton
+            onClick={() => setOpenPreview(false)}
+            size="small"
+            sx={{ bgcolor: bgSurface, boxShadow: raisedSubtle, color: textSecondary }}
+          >
+            <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ p: 4 }}>
+        <DialogContent sx={{ p: 3.5, bgcolor: bgSurface }}>
           <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
             <Box>
-              <Typography variant="caption" color="textSecondary" sx={{ display: 'block' }}>
+              <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 700, letterSpacing: 0.5, display: 'block' }}>
                 DOCUMENT TYPE & DATE RANGE
               </Typography>
-              <Typography variant="subtitle1" fontWeight={700} sx={{ color: '#0f172a' }}>
+              <Typography variant="subtitle1" fontWeight={800} sx={{ color: textPrimary }}>
                 {activeReportData?.type?.toUpperCase()} ({activeReportData?.dateRange?.replace('_', ' ')})
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button variant="outlined" startIcon={<PrintIcon />} onClick={handlePrint} size="small">
-                Print Report
+            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+              <Button
+                startIcon={<PrintIcon />}
+                onClick={handlePrint}
+                size="small"
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: textPrimary,
+                  borderRadius: 2.5,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  px: 2,
+                  '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+                }}
+              >
+                Print
               </Button>
-              <Button variant="contained" startIcon={<DownloadIcon />} onClick={() => handleDownload('csv')} size="small" sx={{ bgcolor: '#1e293b' }}>
+              <Button
+                variant="contained"
+                startIcon={<DownloadIcon />}
+                onClick={() => handleDownload('csv')}
+                size="small"
+                sx={{
+                  bgcolor: '#356AE6',
+                  color: '#fff',
+                  borderRadius: 2.5,
+                  fontWeight: 700,
+                  textTransform: 'none',
+                  px: 2,
+                  boxShadow: '3px 3px 8px rgba(53, 106, 230, 0.4)',
+                  '&:hover': { bgcolor: '#254EBF' },
+                }}
+              >
                 Download CSV
               </Button>
-              <Button variant="contained" startIcon={<PdfIcon />} onClick={() => handleDownload('json')} size="small" sx={{ bgcolor: '#3b82f6' }}>
+              <Button
+                startIcon={<PdfIcon />}
+                onClick={() => handleDownload('json')}
+                size="small"
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: '#356AE6',
+                  borderRadius: 2.5,
+                  fontWeight: 700,
+                  textTransform: 'none',
+                  px: 2,
+                  '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+                }}
+              >
                 Export Payload
               </Button>
             </Box>
           </Box>
 
-          <Divider sx={{ mb: 3 }} />
+          <Divider sx={{ mb: 3, borderColor: dividerColor }} />
 
           {/* Real Summary Metrics Grid */}
-          <Grid container spacing={2} sx={{ mb: 4 }}>
+          <Grid container spacing={2} sx={{ mb: 3.5 }}>
             <Grid item xs={6} sm={3}>
-              <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', borderRadius: 2 }}>
-                <Typography variant="h4" fontWeight={700} sx={{ color: '#0f172a' }}>
+              <Paper sx={{ p: 2, textAlign: 'center', borderRadius: 3, bgcolor: bgSurface, boxShadow: raisedSubtle }}>
+                <Typography variant="h4" fontWeight={800} sx={{ color: textPrimary }}>
                   {activeReportData?.summaryStats?.totalCrimes || kpiData.totalCrimes || 0}
                 </Typography>
-                <Typography variant="caption" color="textSecondary">Total Incidents</Typography>
+                <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 600 }}>Total Incidents</Typography>
               </Paper>
             </Grid>
             <Grid item xs={6} sm={3}>
-              <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', borderRadius: 2 }}>
-                <Typography variant="h4" fontWeight={700} sx={{ color: '#3b82f6' }}>
+              <Paper sx={{ p: 2, textAlign: 'center', borderRadius: 3, bgcolor: bgSurface, boxShadow: raisedSubtle }}>
+                <Typography variant="h4" fontWeight={800} sx={{ color: '#D94F55' }}>
                   {activeReportData?.summaryStats?.highRiskCount || kpiData.highRiskCount || 0}
                 </Typography>
-                <Typography variant="caption" color="textSecondary">High Risk Cases</Typography>
+                <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 600 }}>High Risk Cases</Typography>
               </Paper>
             </Grid>
             <Grid item xs={6} sm={3}>
-              <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', borderRadius: 2 }}>
-                <Typography variant="h4" fontWeight={700} sx={{ color: '#0284c7' }}>
+              <Paper sx={{ p: 2, textAlign: 'center', borderRadius: 3, bgcolor: bgSurface, boxShadow: raisedSubtle }}>
+                <Typography variant="h4" fontWeight={800} sx={{ color: '#239B62' }}>
                   {activeReportData?.summaryStats?.resolvedCount || kpiData.status?.resolved || 0}
                 </Typography>
-                <Typography variant="caption" color="textSecondary">Resolved Cases</Typography>
+                <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 600 }}>Resolved Cases</Typography>
               </Paper>
             </Grid>
             <Grid item xs={6} sm={3}>
-              <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', borderRadius: 2 }}>
-                <Typography variant="h4" fontWeight={700} sx={{ color: '#475569' }}>
+              <Paper sx={{ p: 2, textAlign: 'center', borderRadius: 3, bgcolor: bgSurface, boxShadow: raisedSubtle }}>
+                <Typography variant="h4" fontWeight={800} sx={{ color: '#356AE6' }}>
                   {activeReportData?.summaryStats?.averageRiskScore || 68} / 100
                 </Typography>
-                <Typography variant="caption" color="textSecondary">Avg Risk Score</Typography>
+                <Typography variant="caption" sx={{ color: textSecondary, fontWeight: 600 }}>Avg Risk Score</Typography>
               </Paper>
             </Grid>
           </Grid>
 
           {/* Real Crime Incidents Table from MongoDB */}
-          <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 2, color: '#0f172a' }}>
-            Crime Records Included in Report ({activeReportData?.crimes?.length || liveCrimes.length} records)
+          <Typography variant="subtitle1" fontWeight={800} sx={{ mb: 2, color: textPrimary }}>
+            Included FIR Incidents ({activeReportData?.crimes?.length || liveCrimes.length} records)
           </Typography>
-          <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, maxHeight: 350 }}>
+          <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 3, maxHeight: 350, bgcolor: bgSurface, boxShadow: insetShadow }}>
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>FIR Number</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Crime Type</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Severity</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Risk Score</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>District / Station</TableCell>
-                  <TableCell sx={{ fontWeight: 700, bgcolor: '#f8fafc' }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>FIR Number</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>Crime Type</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>Date</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>Severity</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>Risk Score</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>District / Station</TableCell>
+                  <TableCell sx={{ fontWeight: 700, bgcolor: bgSurface, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {(activeReportData?.crimes || liveCrimes.slice(0, 15)).map((crime, idx) => (
-                  <TableRow key={idx} hover>
-                    <TableCell sx={{ fontWeight: 600, color: '#1e3a8a' }}>{crime.firNumber}</TableCell>
-                    <TableCell>{crime.crimeType?.name || crime.crimeType}</TableCell>
-                    <TableCell>{crime.date ? new Date(crime.date).toISOString().split('T')[0] : 'N/A'}</TableCell>
-                    <TableCell>
+                  <TableRow key={idx} hover sx={{ '&:hover': { bgcolor: 'rgba(53, 106, 230, 0.05)' } }}>
+                    <TableCell sx={{ fontWeight: 700, color: '#356AE6', borderBottom: `1px solid ${dividerColor}` }}>{crime.firNumber}</TableCell>
+                    <TableCell sx={{ color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>{crime.crimeType?.name || crime.crimeType}</TableCell>
+                    <TableCell sx={{ color: textSecondary, borderBottom: `1px solid ${dividerColor}` }}>{crime.date ? new Date(crime.date).toISOString().split('T')[0] : 'N/A'}</TableCell>
+                    <TableCell sx={{ borderBottom: `1px solid ${dividerColor}` }}>
                       <Chip
                         label={crime.severity}
                         size="small"
@@ -629,15 +870,16 @@ const Reports = () => {
                           height: 20,
                           fontSize: '0.65rem',
                           fontWeight: 700,
-                          bgcolor: crime.severity === 'critical' ? '#fee2e2' : crime.severity === 'high' ? '#fef3c7' : '#f1f5f9',
-                          color: crime.severity === 'critical' ? '#991b1b' : crime.severity === 'high' ? '#92400e' : '#475569',
+                          bgcolor: crime.severity === 'critical' ? 'rgba(217, 79, 85, 0.15)' : crime.severity === 'high' ? 'rgba(217, 145, 24, 0.15)' : 'rgba(100, 116, 139, 0.12)',
+                          color: crime.severity === 'critical' ? '#D94F55' : crime.severity === 'high' ? '#D99118' : textSecondary,
+                          borderRadius: 1.5,
                         }}
                       />
                     </TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>{crime.riskScore}</TableCell>
-                    <TableCell>{crime.district || crime.location?.address?.city} ({crime.policeStation || crime.location?.address?.street})</TableCell>
-                    <TableCell>
-                      <Chip label={crime.status} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.65rem' }} />
+                    <TableCell sx={{ fontWeight: 800, color: textPrimary, borderBottom: `1px solid ${dividerColor}` }}>{crime.riskScore}</TableCell>
+                    <TableCell sx={{ color: textSecondary, borderBottom: `1px solid ${dividerColor}` }}>{crime.district || crime.location?.address?.city} ({crime.policeStation || crime.location?.address?.street})</TableCell>
+                    <TableCell sx={{ borderBottom: `1px solid ${dividerColor}` }}>
+                      <Chip label={crime.status} size="small" sx={{ height: 20, fontSize: '0.65rem', bgcolor: bgSurface, boxShadow: raisedSubtle, color: textPrimary }} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -645,11 +887,37 @@ const Reports = () => {
             </Table>
           </TableContainer>
         </DialogContent>
-        <DialogActions sx={{ p: 2.5, bgcolor: '#f8fafc' }}>
-          <Button onClick={() => setOpenPreview(false)} sx={{ color: '#64748b' }}>
+        <DialogActions sx={{ p: 2.5, bgcolor: bgSurface, borderTop: `1px solid ${dividerColor}` }}>
+          <Button
+            onClick={() => setOpenPreview(false)}
+            sx={{
+              bgcolor: bgSurface,
+              boxShadow: raisedSubtle,
+              color: textSecondary,
+              borderRadius: 2.5,
+              fontWeight: 600,
+              textTransform: 'none',
+              px: 2.5,
+              '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+            }}
+          >
             Close Preview
           </Button>
-          <Button variant="contained" onClick={() => handleDownload('csv')} startIcon={<DownloadIcon />} sx={{ bgcolor: '#1e293b' }}>
+          <Button
+            variant="contained"
+            onClick={() => handleDownload('csv')}
+            startIcon={<DownloadIcon />}
+            sx={{
+              bgcolor: '#356AE6',
+              color: '#fff',
+              borderRadius: 2.5,
+              fontWeight: 700,
+              textTransform: 'none',
+              px: 3,
+              boxShadow: '3px 3px 10px rgba(53, 106, 230, 0.4)',
+              '&:hover': { bgcolor: '#254EBF' },
+            }}
+          >
             Export Full Dataset (CSV)
           </Button>
         </DialogActions>

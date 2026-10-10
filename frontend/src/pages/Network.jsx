@@ -1,21 +1,38 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import {
-  Box, Paper, Typography, Button, Chip, Drawer, CircularProgress,
-  IconButton, Tooltip, Avatar, Divider, Alert, Grid, Card, CardContent,
-  TextField, InputAdornment, MenuItem, Select, FormControl, InputLabel,
-  Slider, Switch, FormControlLabel,
+  Box,
+  Paper,
+  Typography,
+  Button,
+  Chip,
+  Drawer,
+  CircularProgress,
+  IconButton,
+  Tooltip,
+  Avatar,
+  Divider,
+  Grid,
+  TextField,
+  InputAdornment,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Slider,
 } from '@mui/material'
 import {
   Refresh as RefreshIcon,
   Close as CloseIcon,
   Search as SearchIcon,
-  FilterList as FilterListIcon,
-  CenterFocusStrong as FocusIcon,
-  Visibility as EyeIcon,
   GroupWork as SyndicateIcon,
 } from '@mui/icons-material'
 import ReactFlow, {
-  MiniMap, Controls, Background, useNodesState, useEdgesState, MarkerType,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  MarkerType,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { useQuery } from '@tanstack/react-query'
@@ -23,7 +40,7 @@ import { networkAPI } from '../api/network'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
-// Custom Criminological Node Component with Dynamic Highlight & Fading
+// Custom Neumorphic Criminological Node Component
 const CustomCriminologicalNode = ({ data }) => {
   const isSuspect = data.type === 'suspect'
   const isCrime = data.type === 'crime'
@@ -34,44 +51,53 @@ const CustomCriminologicalNode = ({ data }) => {
   const isFocused = data.isFocused
   const isDimmed = data.isDimmed
 
-  const bgColor = isSuspect ? '#ffebee' : isCrime ? '#e3f2fd' : isVictim ? '#e8f5e9' : isLocation ? '#fff3e0' : '#f3e5f5'
-  const borderColor = isSuspect ? '#e91e63' : isCrime ? '#1976d2' : isVictim ? '#4caf50' : isLocation ? '#ff9800' : '#9c27b0'
+  const borderColor = isSuspect
+    ? '#D94F55'
+    : isCrime
+    ? '#356AE6'
+    : isVictim
+    ? '#239B62'
+    : isLocation
+    ? '#D99118'
+    : '#8B5CF6'
 
   return (
-    <Paper
-      elevation={isFocused ? 10 : 2}
+    <Box
       sx={{
-        p: 1.5,
-        borderRadius: 3,
-        bgcolor: bgColor,
-        border: isFocused ? `3px solid ${borderColor}` : `2px solid ${borderColor}`,
-        opacity: isDimmed ? 0.2 : 1,
-        transform: isFocused ? 'scale(1.08)' : 'scale(1)',
+        p: 1.6,
+        borderRadius: '16px',
+        bgcolor: 'var(--neu-surface, #E8ECF3)',
+        border: isFocused ? `2.5px solid ${borderColor}` : `1px solid ${borderColor}60`,
+        boxShadow: isFocused
+          ? `0 0 16px ${borderColor}60, 6px 6px 14px #C7CDD7, -6px -6px 14px #FFFFFF`
+          : 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+        opacity: isDimmed ? 0.25 : 1,
+        transform: isFocused ? 'scale(1.06)' : 'scale(1)',
         transition: 'all 0.25s ease-in-out',
         minWidth: 160,
         maxWidth: 220,
-        boxShadow: isFocused ? `0 0 20px ${borderColor}` : '0 4px 12px rgba(0,0,0,0.1)',
         fontFamily: 'Inter, sans-serif',
         cursor: 'pointer',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.6 }}>
         <Avatar
           sx={{
-            width: 28,
-            height: 28,
+            width: 26,
+            height: 26,
             bgcolor: borderColor,
-            fontSize: '0.8rem',
-            fontWeight: 700,
+            color: '#fff',
+            fontSize: '0.75rem',
+            fontWeight: 800,
           }}
         >
           {isSuspect ? 'S' : isCrime ? 'F' : isVictim ? 'V' : isLocation ? 'L' : 'M'}
         </Avatar>
         <Box sx={{ overflow: 'hidden' }}>
-          <Typography variant="caption" fontWeight={700} sx={{ color: borderColor, textTransform: 'uppercase', fontSize: '0.65rem', display: 'block' }}>
+          <Typography variant="caption" fontWeight={800} sx={{ color: borderColor, textTransform: 'uppercase', fontSize: '0.62rem', display: 'block' }}>
             {data.category || data.type}
           </Typography>
-          <Typography variant="body2" fontWeight={700} noWrap sx={{ color: '#1a237e' }}>
+          <Typography variant="body2" fontWeight={800} noWrap sx={{ color: '#202A3A', fontSize: '0.82rem' }}>
             {data.label}
           </Typography>
         </Box>
@@ -79,23 +105,23 @@ const CustomCriminologicalNode = ({ data }) => {
 
       {isCrime && (
         <Box sx={{ mt: 0.5 }}>
-          <Chip label={data.data?.crimeTypeName || 'Crime'} size="small" sx={{ height: 18, fontSize: '0.6rem', bgcolor: '#bbdefb' }} />
-          <Chip label={data.data?.severity?.toUpperCase()} size="small" color={data.data?.severity === 'critical' ? 'error' : 'warning'} sx={{ height: 18, fontSize: '0.6rem', ml: 0.5 }} />
+          <Chip label={data.data?.crimeTypeName || 'Crime'} size="small" sx={{ height: 18, fontSize: '0.6rem', bgcolor: 'rgba(53, 106, 230, 0.1)', color: '#356AE6', fontWeight: 700 }} />
+          <Chip label={data.data?.severity?.toUpperCase()} size="small" sx={{ height: 18, fontSize: '0.6rem', ml: 0.5, bgcolor: data.data?.severity === 'critical' ? 'rgba(217, 79, 85, 0.15)' : 'rgba(217, 145, 24, 0.15)', color: data.data?.severity === 'critical' ? '#D94F55' : '#D99118', fontWeight: 800 }} />
         </Box>
       )}
 
       {isSuspect && (
-        <Typography variant="caption" color="textSecondary" sx={{ display: 'block', fontSize: '0.65rem' }}>
+        <Typography variant="caption" sx={{ display: 'block', fontSize: '0.65rem', color: '#5C6779', fontWeight: 500 }}>
           Alias: {data.data?.alias || 'N/A'} • Status: {data.data?.status || 'Active'}
         </Typography>
       )}
 
       {isMO && (
-        <Typography variant="caption" color="textSecondary" sx={{ display: 'block', fontSize: '0.65rem', fontStyle: 'italic' }}>
+        <Typography variant="caption" sx={{ display: 'block', fontSize: '0.65rem', color: '#5C6779', fontStyle: 'italic' }}>
           {data.data?.tactics}
         </Typography>
       )}
-    </Paper>
+    </Box>
   )
 }
 
@@ -112,7 +138,7 @@ const Network = () => {
   const [repeatDrawerOpen, setRepeatDrawerOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
-  const [maxNodesLimit, setMaxNodesLimit] = useState(40) // Default to clean 40 nodes to prevent clutter!
+  const [maxNodesLimit, setMaxNodesLimit] = useState(40)
   const [coOffendersOnly, setCoOffendersOnly] = useState(false)
 
   const { data, refetch, isLoading } = useQuery({
@@ -137,16 +163,14 @@ const Network = () => {
       const rawNodes = graphData.nodes || []
       const rawEdges = graphData.edges || []
 
-      // Separate nodes into radial rings
-      const crimeNodes = rawNodes.filter(n => n.type === 'crime')
-      const suspectNodes = rawNodes.filter(n => n.type === 'suspect')
-      const moNodes = rawNodes.filter(n => n.type === 'mo')
-      const locNodes = rawNodes.filter(n => n.type === 'location')
-      const victimNodes = rawNodes.filter(n => n.type === 'victim')
+      const crimeNodes = rawNodes.filter((n) => n.type === 'crime')
+      const suspectNodes = rawNodes.filter((n) => n.type === 'suspect')
+      const moNodes = rawNodes.filter((n) => n.type === 'mo')
+      const locNodes = rawNodes.filter((n) => n.type === 'location')
+      const victimNodes = rawNodes.filter((n) => n.type === 'victim')
 
       const flowNodes = []
 
-      // Center Ring (Crimes) - Spaced out
       crimeNodes.forEach((node, idx) => {
         const angle = (idx / Math.max(1, crimeNodes.length)) * 2 * Math.PI
         const radius = 220
@@ -158,7 +182,6 @@ const Network = () => {
         })
       })
 
-      // Inner Ring (Suspects)
       suspectNodes.forEach((node, idx) => {
         const angle = (idx / Math.max(1, suspectNodes.length)) * 2 * Math.PI
         const radius = 450
@@ -170,7 +193,6 @@ const Network = () => {
         })
       })
 
-      // Outer Ring (MO & Locations & Victims)
       const outerNodes = [...moNodes, ...locNodes, ...victimNodes]
       outerNodes.forEach((node, idx) => {
         const angle = (idx / Math.max(1, outerNodes.length)) * 2 * Math.PI
@@ -183,16 +205,15 @@ const Network = () => {
         })
       })
 
-      // Create Flow Edges with clear labels
       const flowEdges = rawEdges.map((edge) => ({
         id: edge.id,
         source: edge.source,
         target: edge.target,
         label: edge.label || edge.type?.toUpperCase(),
         animated: edge.type === 'co_offender' || edge.type === 'suspect_in',
-        style: { stroke: edge.color || '#1976d2', strokeWidth: edge.type === 'co_offender' ? 3 : 2 },
-        labelStyle: { fill: edge.color || '#1976d2', fontWeight: 700, fontSize: 10 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: edge.color || '#1976d2' },
+        style: { stroke: edge.color || '#356AE6', strokeWidth: edge.type === 'co_offender' ? 3 : 2 },
+        labelStyle: { fill: edge.color || '#356AE6', fontWeight: 700, fontSize: 10 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: edge.color || '#356AE6' },
       }))
 
       setNodes(flowNodes)
@@ -200,13 +221,12 @@ const Network = () => {
     }
   }, [data, setNodes, setEdges])
 
-  // Active Focus/Highlighting Logic
   const activeFocusId = selectedNodeId || hoveredNodeId
 
   const connectedEdgeIds = useMemo(() => {
     if (!activeFocusId) return new Set()
     const set = new Set()
-    edges.forEach(e => {
+    edges.forEach((e) => {
       if (e.source === activeFocusId || e.target === activeFocusId) {
         set.add(e.id)
       }
@@ -217,16 +237,15 @@ const Network = () => {
   const connectedNodeIds = useMemo(() => {
     if (!activeFocusId) return new Set()
     const set = new Set([activeFocusId])
-    edges.forEach(e => {
+    edges.forEach((e) => {
       if (e.source === activeFocusId) set.add(e.target)
       if (e.target === activeFocusId) set.add(e.source)
     })
     return set
   }, [activeFocusId, edges])
 
-  // Dynamically update nodes and edges based on active focus
   const styledNodes = useMemo(() => {
-    return nodes.map(node => {
+    return nodes.map((node) => {
       const matchesSearch = node.data.label.toLowerCase().includes(searchTerm.toLowerCase())
       const matchesType = filterType === 'all' || node.data.type === filterType
       const isCoOffenderFilter = !coOffendersOnly || node.data.type === 'suspect'
@@ -243,13 +262,13 @@ const Network = () => {
           ...node.data,
           isFocused,
           isDimmed,
-        }
+        },
       }
     }).filter(Boolean)
   }, [nodes, searchTerm, filterType, coOffendersOnly, activeFocusId, connectedNodeIds])
 
   const styledEdges = useMemo(() => {
-    return edges.map(edge => {
+    return edges.map((edge) => {
       const isConnected = activeFocusId ? connectedEdgeIds.has(edge.id) : true
       const isDimmed = activeFocusId ? !connectedEdgeIds.has(edge.id) : false
 
@@ -279,14 +298,13 @@ const Network = () => {
   }, [])
 
   const selectedNodeObject = useMemo(() => {
-    return nodes.find(n => n.id === selectedNodeId)
+    return nodes.find((n) => n.id === selectedNodeId)
   }, [nodes, selectedNodeId])
 
-  // Compute Direct Connections for Selected Node Dossier
   const directConnections = useMemo(() => {
     if (!selectedNodeId) return []
     const connections = []
-    edges.forEach(e => {
+    edges.forEach((e) => {
       let targetId = null
       let relationLabel = e.label || e.type
 
@@ -294,7 +312,7 @@ const Network = () => {
       else if (e.target === selectedNodeId) targetId = e.source
 
       if (targetId) {
-        const targetNode = nodes.find(n => n.id === targetId)
+        const targetNode = nodes.find((n) => n.id === targetId)
         if (targetNode) {
           connections.push({
             id: targetNode.id,
@@ -312,44 +330,61 @@ const Network = () => {
   const stats = useMemo(() => ({
     totalNodes: nodes.length,
     totalEdges: edges.length,
-    suspects: nodes.filter(n => n.data.type === 'suspect').length,
-    crimes: nodes.filter(n => n.data.type === 'crime').length,
-    mo: nodes.filter(n => n.data.type === 'mo').length,
-    locations: nodes.filter(n => n.data.type === 'location').length,
+    suspects: nodes.filter((n) => n.data.type === 'suspect').length,
+    crimes: nodes.filter((n) => n.data.type === 'crime').length,
+    mo: nodes.filter((n) => n.data.type === 'mo').length,
+    locations: nodes.filter((n) => n.data.type === 'location').length,
   }), [nodes, edges])
 
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
-        <CircularProgress />
+        <CircularProgress sx={{ color: '#356AE6' }} />
       </Box>
     )
   }
 
+  const neuInputSx = {
+    '& .MuiOutlinedInput-root': {
+      bgcolor: 'var(--neu-surface, #E8ECF3)',
+      boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+      borderRadius: '12px',
+      border: '1px solid rgba(255, 255, 255, 0.4)',
+      '& fieldset': { border: 'none' },
+      '&:hover fieldset': { border: 'none' },
+      '&.Mui-focused fieldset': { border: '1.5px solid #356AE6' },
+    },
+  }
+
   return (
-    <Box sx={{ width: '100%', height: 'calc(100vh - 110px)', position: 'relative' }}>
-      {/* Header Bar */}
+    <Box sx={{ width: '100%', height: 'calc(100vh - 110px)', minHeight: { xs: 700, md: 750 }, position: 'relative', display: 'flex', flexDirection: 'column' }}>
+      {/* Header Controls Bar */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" fontWeight={700}>Criminological Link Analysis</Typography>
-          <Typography variant="body2" color="textSecondary">Interactive offender connections, FIR incidents, modus operandi, and crime hubs</Typography>
+          <Typography variant="h4" fontWeight={800} sx={{ color: '#202A3A', letterSpacing: '-0.02em', fontSize: { xs: '1.4rem', sm: '1.75rem' } }}>
+            Criminal Syndicate & Network Linkage
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#5C6779', fontWeight: 500 }}>
+            {stats.totalNodes} Graph entities ({stats.suspects} suspects, {stats.crimes} FIR cases, {stats.totalEdges} active associations)
+          </Typography>
         </Box>
+
         <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', alignItems: 'center' }}>
           <TextField
             size="small"
-            placeholder="Search node name..."
+            placeholder="Search node..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             InputProps={{
-              startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>,
+              startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#8893A4', fontSize: 18 }} /></InputAdornment>,
             }}
-            sx={{ width: 180 }}
+            sx={{ width: 170, ...neuInputSx }}
           />
 
-          <FormControl size="small" sx={{ minWidth: 130 }}>
+          <FormControl size="small" sx={{ minWidth: 130, ...neuInputSx }}>
             <InputLabel>Category</InputLabel>
             <Select value={filterType} onChange={(e) => setFilterType(e.target.value)} label="Category">
-              <MenuItem value="all">All Categories</MenuItem>
+              <MenuItem value="all">All Entities</MenuItem>
               <MenuItem value="suspect">Suspects</MenuItem>
               <MenuItem value="crime">FIR Incidents</MenuItem>
               <MenuItem value="mo">Modus Operandi</MenuItem>
@@ -358,9 +393,11 @@ const Network = () => {
             </Select>
           </FormControl>
 
-          {/* Node Density Control Slider */}
-          <Box sx={{ width: 140, px: 1 }}>
-            <Typography variant="caption" color="textSecondary" fontWeight={600}>Limit: {maxNodesLimit} Nodes</Typography>
+          {/* Node Density Slider */}
+          <Box sx={{ width: 130, px: 1 }}>
+            <Typography variant="caption" sx={{ color: '#5C6779', fontWeight: 700, fontSize: '0.68rem' }}>
+              Limit: {maxNodesLimit} Entities
+            </Typography>
             <Slider
               value={maxNodesLimit}
               onChange={(e, val) => setMaxNodesLimit(val)}
@@ -368,91 +405,72 @@ const Network = () => {
               max={150}
               step={10}
               size="small"
+              sx={{ color: '#356AE6', py: 0.5 }}
             />
           </Box>
 
           <Button
             variant="contained"
-            color="secondary"
             onClick={() => setRepeatDrawerOpen(true)}
-            sx={{ bgcolor: '#e91e63', '&:hover': { bgcolor: '#c2185b' }, fontWeight: 600, fontSize: '0.8rem' }}
+            sx={{
+              bgcolor: '#D94F55',
+              '&:hover': { bgcolor: '#B5383D' },
+              fontWeight: 700,
+              fontSize: '0.78rem',
+              borderRadius: '12px',
+              boxShadow: 'var(--neu-shadow-danger-btn, 4px 4px 12px rgba(217, 79, 85, 0.35))',
+            }}
           >
-            Repeat Offender Profiler ({repeatOffendersList.length})
+            Repeat Offender Leads ({repeatOffendersList.length})
           </Button>
 
           {activeFocusId && (
             <Button
               variant="outlined"
-              color="error"
               size="small"
               onClick={() => { setSelectedNodeId(null); setHoveredNodeId(null) }}
+              sx={{
+                color: '#D94F55',
+                borderColor: '#D94F55',
+                borderRadius: '12px',
+                fontWeight: 600,
+              }}
             >
               Clear Focus
             </Button>
           )}
 
-          <Tooltip title="Refresh Graph">
-            <IconButton onClick={() => refetch()} sx={{ bgcolor: '#f5f7fa' }}>
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
+          <IconButton
+            onClick={() => refetch()}
+            sx={{
+              bgcolor: 'var(--neu-surface, #E8ECF3)',
+              boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+              borderRadius: '12px',
+            }}
+          >
+            <RefreshIcon sx={{ fontSize: 20, color: '#5C6779' }} />
+          </IconButton>
         </Box>
       </Box>
 
-      {/* Connection Mode Helper Alert */}
-      <Alert severity="info" icon={<FocusIcon />} sx={{ mb: 1.5, py: 0.2, px: 2, borderRadius: 2 }}>
-        <Typography variant="caption" fontWeight={600}>
-          💡 <strong>Connection Highlight Mode:</strong> Hover or click any node card to instantly isolate and highlight its direct links & co-offenders!
-        </Typography>
-      </Alert>
-
-      {/* KPI Stats Bar */}
-      <Grid container spacing={2} sx={{ mb: 2 }}>
-        <Grid item xs={6} sm={2.4}>
-          <Card sx={{ bgcolor: '#1a237e', color: '#fff', borderRadius: 2 }}>
-            <CardContent sx={{ py: 1, '&:last-child': { pb: 1 }, textAlign: 'center' }}>
-              <Typography variant="h6" fontWeight={700}>{stats.totalNodes}</Typography>
-              <Typography variant="caption" sx={{ opacity: 0.8 }}>Rendered Nodes</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={2.4}>
-          <Card sx={{ bgcolor: '#e91e63', color: '#fff', borderRadius: 2 }}>
-            <CardContent sx={{ py: 1, '&:last-child': { pb: 1 }, textAlign: 'center' }}>
-              <Typography variant="h6" fontWeight={700}>{stats.suspects}</Typography>
-              <Typography variant="caption" sx={{ opacity: 0.8 }}>Suspects / Offenders</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={2.4}>
-          <Card sx={{ bgcolor: '#1976d2', color: '#fff', borderRadius: 2 }}>
-            <CardContent sx={{ py: 1, '&:last-child': { pb: 1 }, textAlign: 'center' }}>
-              <Typography variant="h6" fontWeight={700}>{stats.crimes}</Typography>
-              <Typography variant="caption" sx={{ opacity: 0.8 }}>FIR Incidents</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={2.4}>
-          <Card sx={{ bgcolor: '#9c27b0', color: '#fff', borderRadius: 2 }}>
-            <CardContent sx={{ py: 1, '&:last-child': { pb: 1 }, textAlign: 'center' }}>
-              <Typography variant="h6" fontWeight={700}>{stats.mo}</Typography>
-              <Typography variant="caption" sx={{ opacity: 0.8 }}>MO Signatures</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6} sm={2.4}>
-          <Card sx={{ bgcolor: '#ff9800', color: '#fff', borderRadius: 2 }}>
-            <CardContent sx={{ py: 1, '&:last-child': { pb: 1 }, textAlign: 'center' }}>
-              <Typography variant="h6" fontWeight={700}>{stats.locations}</Typography>
-              <Typography variant="caption" sx={{ opacity: 0.8 }}>Crime Hotspots</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* ReactFlow Canvas */}
-      <Paper sx={{ height: 'calc(100% - 170px)', borderRadius: 3, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.08)' }}>
+      {/* Main Flow Canvas in Neumorphic Panel */}
+      <Box
+        style={{ width: '100%', height: '100%' }}
+        sx={{
+          flex: 1,
+          width: '100%',
+          height: '100%',
+          minHeight: { xs: 520, sm: 580, md: 620 },
+          borderRadius: '24px',
+          overflow: 'hidden',
+          bgcolor: 'var(--neu-surface, #E8ECF3)',
+          boxShadow: 'var(--neu-shadow-raised, 7px 7px 16px #C7CDD7, -7px -7px 16px #FFFFFF)',
+          border: '1px solid rgba(255, 255, 255, 0.7)',
+          position: 'relative',
+        }}
+      >
         <ReactFlow
+          style={{ width: '100%', height: '100%' }}
           nodes={styledNodes}
           edges={styledEdges}
           onNodesChange={onNodesChange}
@@ -462,164 +480,159 @@ const Network = () => {
           onNodeMouseLeave={onNodeMouseLeave}
           nodeTypes={nodeTypes}
           fitView
-          minZoom={0.05}
-          maxZoom={10}
-          zoomOnScroll={true}
-          zoomOnPinch={true}
-          panOnScroll={false}
         >
-          <Background color="#bbb" gap={20} />
-          <Controls showZoom={true} showFitView={true} showInteractive={true} />
-          <MiniMap nodeColor={(node) => node.data?.color || '#1a237e'} />
+          <Background color="#CBD1DB" gap={20} size={1.2} />
+          <Controls
+            style={{
+              backgroundColor: 'var(--neu-surface, #E8ECF3)',
+              boxShadow: '4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+            }}
+          />
+          <MiniMap
+            nodeColor={(node) =>
+              node.data?.type === 'suspect' ? '#D94F55' : node.data?.type === 'crime' ? '#356AE6' : '#239B62'
+            }
+            style={{
+              backgroundColor: 'var(--neu-surface, #E8ECF3)',
+              borderRadius: '14px',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              boxShadow: '4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF',
+            }}
+          />
         </ReactFlow>
-      </Paper>
+      </Box>
 
-      {/* Criminological Intelligence Dossier Drawer */}
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)} PaperProps={{ sx: { width: 460, p: 3, bgcolor: '#0b0c10', color: '#fff', borderLeft: '1px solid rgba(255,215,0,0.3)' } }}>
+      {/* Selected Node Dossier Drawer */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        ModalProps={{
+          disableAutoFocus: true,
+          disableRestoreFocus: true,
+        }}
+        PaperProps={{
+          sx: {
+            width: 340,
+            p: 3,
+            bgcolor: 'var(--neu-surface, #E8ECF3)',
+            boxShadow: 'var(--neu-shadow-raised-lg, 10px 10px 24px #C3C9D3, -10px -10px 24px #FFFFFF)',
+          },
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6" fontWeight={800} color="#202A3A">
+            Entity Intelligence Dossier
+          </Typography>
+          <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: '#5C6779' }}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <Divider sx={{ mb: 2.5, borderColor: 'var(--neu-divider, #D7DDE7)' }} />
+
         {selectedNodeObject && (
           <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Chip label="CONFIDENTIAL" color="error" size="small" sx={{ fontWeight: 800, fontSize: '0.65rem' }} />
-                <Typography variant="h6" component="span" fontWeight={800} sx={{ color: '#ffd700' }}>
-                  Intelligence Dossier
-                </Typography>
-              </Box>
-              <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: '#fff' }}><CloseIcon /></IconButton>
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: '16px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+                mb: 2.5,
+              }}
+            >
+              <Chip
+                label={selectedNodeObject.data.type?.toUpperCase()}
+                size="small"
+                sx={{ bgcolor: '#356AE6', color: '#fff', fontWeight: 800, fontSize: '0.65rem', mb: 1 }}
+              />
+              <Typography variant="h6" fontWeight={800} color="#202A3A">
+                {selectedNodeObject.data.label}
+              </Typography>
             </Box>
-            <Divider sx={{ mb: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-            {/* Suspect / Node Card Header */}
-            <Paper elevation={0} sx={{ p: 2.5, mb: 2.5, bgcolor: 'rgba(255,255,255,0.05)', borderRadius: 3, border: '1px solid rgba(255,215,0,0.3)', backdropFilter: 'blur(10px)' }}>
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                <Avatar 
-                  sx={{ 
-                    width: 56, 
-                    height: 56, 
-                    bgcolor: '#ffd700', 
-                    color: '#070709', 
-                    fontWeight: 900, 
-                    fontSize: '1.4rem',
-                    border: '2px solid #ffd700',
-                    boxShadow: '0 0 15px rgba(255,215,0,0.4)'
+            <Typography variant="subtitle2" fontWeight={800} color="#202A3A" sx={{ mb: 1 }}>
+              Direct Criminological Links ({directConnections.length})
+            </Typography>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {directConnections.map((conn, idx) => (
+                <Box
+                  key={idx}
+                  sx={{
+                    p: 1.5,
+                    borderRadius: '12px',
+                    bgcolor: 'var(--neu-surface, #E8ECF3)',
+                    boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+                    border: '1px solid rgba(255, 255, 255, 0.5)',
                   }}
                 >
-                  {selectedNodeObject.data.label[0]}
-                </Avatar>
-                <Box>
-                  <Typography variant="h6" fontWeight={800} sx={{ color: '#ffffff', lineHeight: 1.2 }}>
-                    {selectedNodeObject.data.label}
+                  <Typography variant="body2" fontWeight={700} color="#202A3A">
+                    {conn.label}
                   </Typography>
-                  <Chip 
-                    label={selectedNodeObject.data.category || selectedNodeObject.data.type} 
-                    size="small" 
-                    sx={{ mt: 0.5, bgcolor: 'rgba(255,215,0,0.15)', color: '#ffd700', fontWeight: 700, fontSize: '0.65rem' }} 
-                  />
+                  <Typography variant="caption" sx={{ color: '#356AE6', fontWeight: 700, textTransform: 'uppercase' }}>
+                    Relation: {conn.relation}
+                  </Typography>
                 </Box>
-              </Box>
-
-              {selectedNodeObject.data.type === 'suspect' && (
-                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyBetween: 'space-between', alignItems: 'center' }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: '#9ca3af', display: 'block' }}>THREAT LEVEL INDEX</Typography>
-                    <Typography variant="body2" fontWeight={800} sx={{ color: '#f87171' }}>HIGH RISK (85 / 100)</Typography>
-                  </Box>
-                  <Chip label="ACTIVE WARRANT ISSUED" color="error" size="small" sx={{ fontWeight: 800, fontSize: '0.6rem' }} />
-                </Box>
-              )}
-            </Paper>
-
-            {/* Direct Connections Inspector List */}
-            <Typography variant="subtitle2" fontWeight={800} sx={{ color: '#ffd700', mb: 1, letterSpacing: 0.5 }}>
-              🔗 DIRECT NETWORK CONNECTIONS ({directConnections.length})
-            </Typography>
-            <Paper variant="outlined" sx={{ p: 1.5, mb: 3, maxHeight: 220, overflowY: 'auto', bgcolor: 'rgba(0,0,0,0.4)', borderRadius: 2, borderColor: 'rgba(255,255,255,0.1)' }}>
-              {directConnections.length === 0 ? (
-                <Typography variant="caption" color="textSecondary">No direct connections found.</Typography>
-              ) : (
-                directConnections.map((conn, i) => (
-                  <Box
-                    key={i}
-                    onClick={() => setSelectedNodeId(conn.id)}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      py: 1,
-                      px: 1.5,
-                      mb: 0.8,
-                      borderRadius: 1.5,
-                      bgcolor: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      cursor: 'pointer',
-                      '&:hover': { bgcolor: 'rgba(255,215,0,0.15)', borderColor: '#ffd700' }
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="body2" fontWeight={700} sx={{ color: '#fff' }}>{conn.label}</Typography>
-                      <Typography variant="caption" sx={{ color: '#9ca3af' }}>{conn.category}</Typography>
-                    </Box>
-                    <Chip label={conn.relation} size="small" sx={{ height: 18, fontSize: '0.6rem', bgcolor: '#ffd700', color: '#000', fontWeight: 800 }} />
-                  </Box>
-                ))
-              )}
-            </Paper>
-
-            <Typography variant="subtitle2" fontWeight={800} sx={{ color: '#ffd700', mb: 1 }}>NODE ATTRIBUTES & METADATA</Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 3 }}>
-              {Object.entries(selectedNodeObject.data.data || {}).map(([key, val]) => (
-                typeof val !== 'object' && val !== null && (
-                  <Box key={key} sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(255,255,255,0.1)', py: 0.5 }}>
-                    <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 700 }}>{key.toUpperCase()}:</Typography>
-                    <Typography variant="caption" fontWeight={600} sx={{ color: '#fff' }}>{String(val)}</Typography>
-                  </Box>
-                )
               ))}
             </Box>
-
-            <Button fullWidth variant="contained" onClick={() => setDrawerOpen(false)} sx={{ bgcolor: '#ffd700', color: '#070709', fontWeight: 800, '&:hover': { bgcolor: '#ffc107' } }}>
-              Close Intelligence Dossier
-            </Button>
           </Box>
         )}
       </Drawer>
 
       {/* Repeat Offender Profiler Drawer */}
-      <Drawer anchor="right" open={repeatDrawerOpen} onClose={() => setRepeatDrawerOpen(false)} PaperProps={{ sx: { width: 450, p: 3 } }}>
+      <Drawer
+        anchor="right"
+        open={repeatDrawerOpen}
+        onClose={() => setRepeatDrawerOpen(false)}
+        ModalProps={{
+          disableAutoFocus: true,
+          disableRestoreFocus: true,
+        }}
+        PaperProps={{
+          sx: {
+            width: 360,
+            p: 3,
+            bgcolor: 'var(--neu-surface, #E8ECF3)',
+            boxShadow: 'var(--neu-shadow-raised-lg, 10px 10px 24px #C3C9D3, -10px -10px 24px #FFFFFF)',
+          },
+        }}
+      >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" component="span" fontWeight={700} sx={{ color: '#1a237e' }}>
-            Cross-Jurisdiction Offender Profiler
+          <Typography variant="h6" fontWeight={800} color="#D94F55">
+            Repeat Offender Watchlist
           </Typography>
-          <IconButton onClick={() => setRepeatDrawerOpen(false)}><CloseIcon /></IconButton>
+          <IconButton onClick={() => setRepeatDrawerOpen(false)} sx={{ color: '#5C6779' }}>
+            <CloseIcon />
+          </IconButton>
         </Box>
-        <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mb: 2 }}>
-          Tracks suspects linked across multiple police station jurisdictions and MO signatures.
-        </Typography>
-        <Divider sx={{ mb: 2 }} />
+        <Divider sx={{ mb: 2.5, borderColor: 'var(--neu-divider, #D7DDE7)' }} />
 
-        {repeatOffendersList.length === 0 ? (
-          <Alert severity="info">No repeat offenders detected in active dataset.</Alert>
-        ) : (
-          repeatOffendersList.map((offender, idx) => (
-            <Paper key={idx} elevation={2} sx={{ p: 2, mb: 2, borderRadius: 2, borderLeft: offender.crossJurisdiction ? '4px solid #e91e63' : '4px solid #1976d2' }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                <Box>
-                  <Typography variant="subtitle1" fontWeight={700}>{offender.name}</Typography>
-                  <Typography variant="caption" color="textSecondary">Alias: {offender.alias} • Status: {offender.status}</Typography>
-                </Box>
-                {offender.crossJurisdiction && <Chip label="Cross-Jurisdiction" color="error" size="small" sx={{ fontSize: '0.65rem' }} />}
-              </Box>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
-                <Chip label={`${offender.crimesCount} Crimes Linked`} color="primary" size="small" variant="outlined" />
-                <Chip label={`${offender.policeStations.length} Police Stations`} color="info" size="small" variant="outlined" />
-                <Chip label={`${offender.districts.length} Districts`} color="secondary" size="small" variant="outlined" />
-              </Box>
-              <Typography variant="caption" fontWeight={600} color="textSecondary" sx={{ display: 'block' }}>
-                FIRs Linked: {offender.firs.join(', ') || 'N/A'}
+        {repeatOffendersList.map((off, idx) => (
+          <Box
+            key={idx}
+            sx={{
+              p: 2,
+              mb: 1.5,
+              borderRadius: '16px',
+              bgcolor: 'var(--neu-surface, #E8ECF3)',
+              boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+              border: '1px solid rgba(217, 79, 85, 0.25)',
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="subtitle2" fontWeight={800} color="#202A3A">
+                {off.name || off.alias || 'Offender'}
               </Typography>
-            </Paper>
-          ))
-        )}
+              <Chip label={`${off.linkCount || 3} Cases`} size="small" sx={{ bgcolor: '#D94F55', color: '#fff', fontWeight: 800 }} />
+            </Box>
+            <Typography variant="caption" sx={{ color: '#5C6779', display: 'block', mt: 0.5 }}>
+              MO: {off.tactics || off.crimeType || 'Burglary'}
+            </Typography>
+          </Box>
+        ))}
       </Drawer>
     </Box>
   )

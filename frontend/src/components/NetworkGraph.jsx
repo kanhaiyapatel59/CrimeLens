@@ -102,8 +102,9 @@ const NetworkGraph = ({ height = 400, suspectId = null, crimeId = null }) => {
   }
 
   return (
-    <Box sx={{ height, width: '100%' }}>
+    <Box style={{ height, width: '100%' }} sx={{ height, width: '100%', minHeight: typeof height === 'number' ? `${height}px` : height }}>
       <ReactFlow
+        style={{ width: '100%', height: '100%' }}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

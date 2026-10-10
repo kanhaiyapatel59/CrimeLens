@@ -192,6 +192,34 @@ class DashboardController {
       return ResponseHandler.success(res, [], 'Anomalies fetched (fallback)');
     }
   }
+
+  /**
+   * Get tactical command intelligence data
+   */
+  static async getTactical(req, res) {
+    try {
+      if (mongoose.connection.readyState !== 1) {
+        return ResponseHandler.success(res, {
+          diurnal: { hourly: Array(24).fill(0), morningShift: { count: 0, percent: 33 }, eveningShift: { count: 0, percent: 33 }, nightPatrol: { count: 0, percent: 34 } },
+          districtLeaderboard: [],
+          repeatSuspects: [],
+          liveBulletins: [],
+          aiAdvisory: {}
+        }, 'Tactical intelligence fetched (offline mode)');
+      }
+      const tactical = await DashboardService.getTactical(req.query);
+      return ResponseHandler.success(res, tactical, 'Tactical intelligence fetched successfully');
+    } catch (error) {
+      logger.error('Get tactical error:', error);
+      return ResponseHandler.success(res, {
+        diurnal: { hourly: Array(24).fill(0), morningShift: { count: 0, percent: 33 }, eveningShift: { count: 0, percent: 33 }, nightPatrol: { count: 0, percent: 34 } },
+        districtLeaderboard: [],
+        repeatSuspects: [],
+        liveBulletins: [],
+        aiAdvisory: {}
+      }, 'Tactical intelligence fetched (fallback)');
+    }
+  }
 }
 
 module.exports = DashboardController;

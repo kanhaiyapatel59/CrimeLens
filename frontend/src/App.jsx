@@ -19,6 +19,7 @@ import Map from './pages/Map'
 import Network from './pages/Network'
 import AIChat from './pages/AIChat'
 import Reports from './pages/Reports'
+import Forensics from './pages/Forensics'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
 
@@ -34,26 +35,31 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen bg-[#E8ECF3] dark:bg-[#1A1E29] text-[#202A3A] dark:text-[#F0F4FC] transition-colors duration-200">
           <Toaster
             position="top-right"
             toastOptions={{
               duration: 4000,
               style: {
-                background: '#363636',
-                color: '#fff',
+                background: 'var(--neu-surface, #E8ECF3)',
+                color: 'var(--neu-text-primary, #202A3A)',
+                boxShadow: 'var(--neu-shadow-raised, 7px 7px 16px #C7CDD7, -7px -7px 16px #FFFFFF)',
+                borderRadius: '14px',
+                border: '1px solid rgba(255, 255, 255, 0.5)',
+                fontWeight: 500,
+                fontSize: '0.875rem',
               },
               success: {
                 duration: 3000,
                 iconTheme: {
-                  primary: '#4caf50',
+                  primary: '#239B62',
                   secondary: '#fff',
                 },
               },
               error: {
                 duration: 5000,
                 iconTheme: {
-                  primary: '#f44336',
+                  primary: '#D94F55',
                   secondary: '#fff',
                 },
               },
@@ -81,6 +87,7 @@ function App() {
                   <Route path="/network" element={<Network />} />
                   <Route path="/ai-chat" element={<AIChat />} />
                   <Route path="/reports" element={<Reports />} />
+                  <Route path="/forensics" element={<Forensics />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/settings" element={<Settings />} />
                 </Route>

@@ -13,13 +13,25 @@ const Layout = () => {
   const location = useLocation()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile)
+
+  // Cleanly close and blur on mobile when navigating
+  React.useEffect(() => {
+    if (isMobile) {
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur()
+      }
+      setSidebarOpen(false)
+    } else {
+      setSidebarOpen(true)
+    }
+  }, [isMobile, location.pathname])
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
-  // Hide Header & Footer on AI Chat page
+  // Hide Header & Footer on AI Chat page for immersive experience
   const isAIChat = location.pathname === '/ai-chat'
 
   return (
@@ -28,18 +40,18 @@ const Layout = () => {
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
-        bgcolor: '#f0f2f5',
+        bgcolor: 'var(--neu-bg, #E8ECF3)',
       }}
     >
       <Box sx={{ display: 'flex', flex: 1, position: 'relative' }}>
-        {/* Sidebar */}
+        {/* Neumorphic Sidebar */}
         <Sidebar
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           isMobile={isMobile}
         />
 
-        {/* Main Content */}
+        {/* Main Content Area */}
         <Box
           component="main"
           sx={{
@@ -47,11 +59,10 @@ const Layout = () => {
             display: 'flex',
             flexDirection: 'column',
             minHeight: '100vh',
-            width: '100%',
-            ml: !isMobile && sidebarOpen ? '0px' : '0px',
-            transition: 'margin-left 0.3s ease-in-out',
+            minWidth: 0,
             overflow: 'hidden',
             position: 'relative',
+            bgcolor: 'var(--neu-bg, #E8ECF3)',
           }}
         >
           {/* Header */}
@@ -63,8 +74,8 @@ const Layout = () => {
           <Box
             sx={{
               flex: 1,
-              p: isAIChat ? 0 : { xs: 2, sm: 3, md: 4 },
-              backgroundColor: '#f0f2f5',
+              p: isAIChat ? 0 : { xs: 2, sm: 2.5, md: 3.5 },
+              bgcolor: 'var(--neu-bg, #E8ECF3)',
               minHeight: isAIChat ? '100vh' : 'calc(100vh - 64px)',
               width: '100%',
               maxWidth: '100%',
@@ -77,7 +88,7 @@ const Layout = () => {
             <Box
               sx={{
                 width: '100%',
-                maxWidth: isAIChat ? '100%' : '1200px',
+                maxWidth: isAIChat ? '100%' : '1440px',
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
@@ -86,10 +97,10 @@ const Layout = () => {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={location.pathname}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
                   style={{
                     width: '100%',
                     height: '100%',
@@ -108,8 +119,9 @@ const Layout = () => {
           {!isAIChat && <Footer />}
         </Box>
       </Box>
+
       {/* Global Floating AI Copilot Assistant */}
-      <GlobalAiCopilot />
+      {!isAIChat && <GlobalAiCopilot />}
     </Box>
   )
 }

@@ -132,4 +132,15 @@ router.get(
   DashboardController.getAnomalies
 );
 
+/**
+ * @route GET /api/dashboard/tactical
+ * @desc Get consolidated tactical intelligence for command dashboard
+ * @access Private
+ */
+router.get(
+  '/tactical',
+  AuthMiddleware.authenticate,
+  DashboardController.getTactical
+);
+
 module.exports = router;

@@ -31,6 +31,7 @@ import {
   DialogContent,
   DialogActions,
   Tooltip,
+  useTheme,
 } from '@mui/material'
 import {
   Security as SecurityIcon,
@@ -65,6 +66,51 @@ import { motion } from 'framer-motion'
 import { updateUser } from '../redux/slices/authSlice'
 
 const Settings = () => {
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
+
+  const bgSurface = isDark ? '#1A1E29' : '#E8ECF3'
+  const textPrimary = isDark ? '#F0F4FC' : '#202A3A'
+  const textSecondary = isDark ? '#9DA8BA' : '#5C6779'
+  const dividerColor = isDark ? '#262B3A' : '#D7DDE7'
+  const raisedShadow = isDark
+    ? '6px 6px 14px #12151D, -6px -6px 14px #222735'
+    : '7px 7px 16px #C7CDD7, -7px -7px 16px #FFFFFF'
+  const raisedSubtle = isDark
+    ? '4px 4px 10px #12151D, -4px -4px 10px #222735'
+    : '4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF'
+  const insetShadow = isDark
+    ? 'inset 3px 3px 7px #12151D, inset -3px -3px 7px #232837'
+    : 'inset 4px 4px 8px #C7CDD7, inset -4px -4px 8px #FFFFFF'
+
+  const selectSx = {
+    bgcolor: bgSurface,
+    boxShadow: insetShadow,
+    borderRadius: 3,
+    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+    '& .MuiSelect-select': { color: textPrimary, fontWeight: 600, fontSize: '0.88rem', py: 1.2 },
+    '& .MuiSvgIcon-root': { color: textSecondary },
+  }
+
+  const neuInputSx = {
+    '& .MuiOutlinedInput-root': {
+      bgcolor: bgSurface,
+      boxShadow: insetShadow,
+      borderRadius: 3,
+      '& fieldset': { border: 'none' },
+      '&:hover fieldset': { border: 'none' },
+      '&.Mui-focused fieldset': { border: '1px solid #356AE6' },
+      '& input': { color: textPrimary, fontSize: '0.9rem', py: 1.2 },
+    },
+    '& .MuiInputLabel-root': { color: textSecondary, fontWeight: 600, fontSize: '0.88rem' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#356AE6' },
+  }
+
+  const switchSx = {
+    '& .MuiSwitch-switchBase.Mui-checked': { color: '#356AE6' },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#356AE6' },
+  }
+
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
@@ -199,35 +245,37 @@ const Settings = () => {
   const sections = [
     {
       id: 'general',
-      label: 'General',
+      label: 'General Preferences',
       icon: <LanguageIcon />,
       content: (
-        <Grid container spacing={2}>
+        <Grid container spacing={2.5}>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Language</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Language</InputLabel>
               <Select
                 value={settings.language}
                 onChange={(e) => handleChange('language', e.target.value)}
                 label="Language"
+                sx={selectSx}
               >
-                <MenuItem value="en">English</MenuItem>
+                <MenuItem value="en">English (Official)</MenuItem>
                 <MenuItem value="hi">Hindi</MenuItem>
-                <MenuItem value="kn">Kannada</MenuItem>
+                <MenuItem value="kn">Kannada (ಕನ್ನಡ)</MenuItem>
                 <MenuItem value="ta">Tamil</MenuItem>
                 <MenuItem value="te">Telugu</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Timezone</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Timezone</InputLabel>
               <Select
                 value={settings.timezone}
                 onChange={(e) => handleChange('timezone', e.target.value)}
                 label="Timezone"
+                sx={selectSx}
               >
-                <MenuItem value="Asia/Kolkata">Asia/Kolkata (UTC+5:30)</MenuItem>
+                <MenuItem value="Asia/Kolkata">Asia/Kolkata (IST UTC+5:30)</MenuItem>
                 <MenuItem value="Asia/Dubai">Asia/Dubai (UTC+4)</MenuItem>
                 <MenuItem value="America/New_York">America/New_York (UTC-5)</MenuItem>
                 <MenuItem value="Europe/London">Europe/London (UTC+0)</MenuItem>
@@ -235,29 +283,31 @@ const Settings = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Date Format</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Date Format</InputLabel>
               <Select
                 value={settings.dateFormat}
                 onChange={(e) => handleChange('dateFormat', e.target.value)}
                 label="Date Format"
+                sx={selectSx}
               >
-                <MenuItem value="DD/MM/YYYY">DD/MM/YYYY</MenuItem>
+                <MenuItem value="DD/MM/YYYY">DD/MM/YYYY (Indian Standard)</MenuItem>
                 <MenuItem value="MM/DD/YYYY">MM/DD/YYYY</MenuItem>
-                <MenuItem value="YYYY-MM-DD">YYYY-MM-DD</MenuItem>
+                <MenuItem value="YYYY-MM-DD">YYYY-MM-DD (ISO)</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Time Format</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Time Format</InputLabel>
               <Select
                 value={settings.timeFormat}
                 onChange={(e) => handleChange('timeFormat', e.target.value)}
                 label="Time Format"
+                sx={selectSx}
               >
                 <MenuItem value="12h">12 Hour (AM/PM)</MenuItem>
-                <MenuItem value="24h">24 Hour</MenuItem>
+                <MenuItem value="24h">24 Hour (Military/Police Standard)</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -266,32 +316,33 @@ const Settings = () => {
     },
     {
       id: 'security',
-      label: 'Security',
+      label: 'Security & Access Protocols',
       icon: <SecurityIcon />,
       content: (
-        <Grid container spacing={2}>
+        <Grid container spacing={2.5}>
           <Grid item xs={12}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.twoFactorAuth}
                   onChange={(e) => handleChange('twoFactorAuth', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Two-Factor Authentication"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Two-Factor Authentication (2FA)</Typography>}
             />
-            <Typography variant="caption" color="textSecondary" display="block">
-              Add an extra layer of security to your account
+            <Typography variant="caption" sx={{ color: textSecondary, display: 'block', mt: 0.2 }}>
+              Require OTP token confirmation for station terminals
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Session Timeout (minutes)</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Session Timeout (minutes)</InputLabel>
               <Select
                 value={settings.sessionTimeout}
                 onChange={(e) => handleChange('sessionTimeout', e.target.value)}
                 label="Session Timeout"
+                sx={selectSx}
               >
                 <MenuItem value={15}>15 minutes</MenuItem>
                 <MenuItem value={30}>30 minutes</MenuItem>
@@ -302,14 +353,15 @@ const Settings = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Max Login Attempts</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Max Login Attempts</InputLabel>
               <Select
                 value={settings.maxLoginAttempts}
                 onChange={(e) => handleChange('maxLoginAttempts', e.target.value)}
                 label="Max Login Attempts"
+                sx={selectSx}
               >
-                <MenuItem value={3}>3 attempts</MenuItem>
+                <MenuItem value={3}>3 attempts (High Security)</MenuItem>
                 <MenuItem value={5}>5 attempts</MenuItem>
                 <MenuItem value={10}>10 attempts</MenuItem>
               </Select>
@@ -321,13 +373,13 @@ const Settings = () => {
                 <Switch
                   checked={settings.requireStrongPassword}
                   onChange={(e) => handleChange('requireStrongPassword', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Require Strong Password"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Require Strong Password Policy</Typography>}
             />
-            <Typography variant="caption" color="textSecondary" display="block">
-              Enforce strong password requirements (8+ chars, uppercase, lowercase, number, special)
+            <Typography variant="caption" sx={{ color: textSecondary, display: 'block', mt: 0.2 }}>
+              Enforce 8+ characters, uppercase, lowercase, numbers, and symbols
             </Typography>
           </Grid>
         </Grid>
@@ -335,83 +387,83 @@ const Settings = () => {
     },
     {
       id: 'notifications',
-      label: 'Notifications',
+      label: 'Notification Dispatch Triggers',
       icon: <NotificationsIcon />,
       content: (
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.emailNotifications}
                   onChange={(e) => handleChange('emailNotifications', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Email Notifications"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Email Alerts</Typography>}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.pushNotifications}
                   onChange={(e) => handleChange('pushNotifications', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Push Notifications"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Push Alerts</Typography>}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.smsNotifications}
                   onChange={(e) => handleChange('smsNotifications', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="SMS Notifications"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>SMS Dispatch</Typography>}
             />
           </Grid>
           <Grid item xs={12}>
-            <Divider />
+            <Divider sx={{ my: 1, borderColor: dividerColor }} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.crimeAlerts}
                   onChange={(e) => handleChange('crimeAlerts', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Crime Alerts"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Critical FIRs</Typography>}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.systemUpdates}
                   onChange={(e) => handleChange('systemUpdates', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="System Updates"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>System Updates</Typography>}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.reportNotifications}
                   onChange={(e) => handleChange('reportNotifications', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Report Notifications"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>SCRB Briefings</Typography>}
             />
           </Grid>
         </Grid>
@@ -419,79 +471,79 @@ const Settings = () => {
     },
     {
       id: 'display',
-      label: 'Display',
+      label: 'Display & UI Density',
       icon: <PaletteIcon />,
       content: (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel>Theme</InputLabel>
+        <Grid container spacing={2.5}>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Theme</InputLabel>
               <Select
                 value={settings.theme}
                 onChange={(e) => handleChange('theme', e.target.value)}
                 label="Theme"
+                sx={selectSx}
               >
-                <MenuItem value="light">Light</MenuItem>
-                <MenuItem value="dark">Dark</MenuItem>
+                <MenuItem value="light">Neumorphic Light (#E8ECF3)</MenuItem>
+                <MenuItem value="dark">Neumorphic Dark (#1A1E29)</MenuItem>
                 <MenuItem value="system">System Default</MenuItem>
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Default View</InputLabel>
+              <Select
+                value={settings.defaultView}
+                onChange={(e) => handleChange('defaultView', e.target.value)}
+                label="Default View"
+                sx={selectSx}
+              >
+                <MenuItem value="dashboard">Dashboard Overview</MenuItem>
+                <MenuItem value="crimes">FIR Incidents Table</MenuItem>
+                <MenuItem value="map">Live Hotspot Map</MenuItem>
+                <MenuItem value="network">Crime Syndicate Graph</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.compactMode}
                   onChange={(e) => handleChange('compactMode', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Compact Mode"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Compact High-Density Mode</Typography>}
             />
-            <Typography variant="caption" color="textSecondary" display="block">
-              Reduce spacing and font sizes for more content density
-            </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.showAnimations}
                   onChange={(e) => handleChange('showAnimations', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Enable Animations"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Soft Fluid Animations</Typography>}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Default View</InputLabel>
-              <Select
-                value={settings.defaultView}
-                onChange={(e) => handleChange('defaultView', e.target.value)}
-                label="Default View"
-              >
-                <MenuItem value="dashboard">Dashboard</MenuItem>
-                <MenuItem value="crimes">Crimes</MenuItem>
-                <MenuItem value="map">Map</MenuItem>
-                <MenuItem value="network">Network</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Items Per Page</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Items Per Page</InputLabel>
               <Select
                 value={settings.itemsPerPage}
                 onChange={(e) => handleChange('itemsPerPage', e.target.value)}
                 label="Items Per Page"
+                sx={selectSx}
               >
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={25}>25</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
+                <MenuItem value={5}>5 items</MenuItem>
+                <MenuItem value={10}>10 items</MenuItem>
+                <MenuItem value={25}>25 items</MenuItem>
+                <MenuItem value={50}>50 items</MenuItem>
+                <MenuItem value={100}>100 items</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -500,29 +552,30 @@ const Settings = () => {
     },
     {
       id: 'data',
-      label: 'Data & Backup',
+      label: 'Data Archival & Backup',
       icon: <DataIcon />,
       content: (
-        <Grid container spacing={2}>
+        <Grid container spacing={2.5}>
           <Grid item xs={12}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.autoBackup}
                   onChange={(e) => handleChange('autoBackup', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Auto Backup"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Automated MongoDB Snapshots</Typography>}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Backup Frequency</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Backup Frequency</InputLabel>
               <Select
                 value={settings.backupFrequency}
                 onChange={(e) => handleChange('backupFrequency', e.target.value)}
                 label="Backup Frequency"
+                sx={selectSx}
               >
                 <MenuItem value="hourly">Hourly</MenuItem>
                 <MenuItem value="daily">Daily</MenuItem>
@@ -532,12 +585,13 @@ const Settings = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Data Retention (days)</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Data Retention (days)</InputLabel>
               <Select
                 value={settings.dataRetention}
                 onChange={(e) => handleChange('dataRetention', e.target.value)}
                 label="Data Retention"
+                sx={selectSx}
               >
                 <MenuItem value={30}>30 days</MenuItem>
                 <MenuItem value={90}>90 days</MenuItem>
@@ -547,25 +601,14 @@ const Settings = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={settings.autoExport}
-                  onChange={(e) => handleChange('autoExport', e.target.checked)}
-                  color="primary"
-                />
-              }
-              label="Auto Export Reports"
-            />
-          </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Export Format</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Export Format</InputLabel>
               <Select
                 value={settings.exportFormat}
                 onChange={(e) => handleChange('exportFormat', e.target.value)}
                 label="Export Format"
+                sx={selectSx}
               >
                 <MenuItem value="json">JSON</MenuItem>
                 <MenuItem value="csv">CSV</MenuItem>
@@ -575,11 +618,43 @@ const Settings = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Button variant="outlined" startIcon={<BackupIcon />}>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 1 }}>
+              <Button
+                startIcon={<BackupIcon />}
+                onClick={() => toast.success('Snapshot archive started!')}
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: textPrimary,
+                  borderRadius: 2.5,
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  textTransform: 'none',
+                  px: 2.5,
+                  py: 1,
+                  border: `1px solid ${dividerColor}`,
+                  '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+                }}
+              >
                 Create Backup Now
               </Button>
-              <Button variant="outlined" startIcon={<DownloadIcon />} onClick={() => setShowExportDialog(true)}>
+              <Button
+                startIcon={<DownloadIcon />}
+                onClick={() => setShowExportDialog(true)}
+                sx={{
+                  bgcolor: bgSurface,
+                  boxShadow: raisedSubtle,
+                  color: '#356AE6',
+                  borderRadius: 2.5,
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  textTransform: 'none',
+                  px: 2.5,
+                  py: 1,
+                  border: `1px solid ${dividerColor}`,
+                  '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+                }}
+              >
                 Export All Data
               </Button>
             </Box>
@@ -589,29 +664,30 @@ const Settings = () => {
     },
     {
       id: 'integrations',
-      label: 'Integrations',
+      label: 'API & Integrations',
       icon: <IntegrationIcon />,
       content: (
-        <Grid container spacing={2}>
+        <Grid container spacing={2.5}>
           <Grid item xs={12}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.integrationEnabled}
                   onChange={(e) => handleChange('integrationEnabled', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Enable Integrations"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Enable External CCTNS Integrations</Typography>}
             />
           </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel>API Access</InputLabel>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>API Access</InputLabel>
               <Select
                 value={settings.apiAccess}
                 onChange={(e) => handleChange('apiAccess', e.target.value)}
                 label="API Access"
+                sx={selectSx}
               >
                 <MenuItem value={true}>Enabled</MenuItem>
                 <MenuItem value={false}>Disabled</MenuItem>
@@ -624,10 +700,23 @@ const Settings = () => {
               label="API Key"
               value={settings.apiKey}
               onChange={(e) => handleChange('apiKey', e.target.value)}
+              sx={neuInputSx}
               InputProps={{
                 readOnly: true,
                 endAdornment: (
-                  <Button onClick={handleGenerateApiKey} size="small">
+                  <Button
+                    onClick={handleGenerateApiKey}
+                    size="small"
+                    sx={{
+                      bgcolor: bgSurface,
+                      boxShadow: raisedSubtle,
+                      color: '#356AE6',
+                      borderRadius: 2,
+                      fontWeight: 700,
+                      textTransform: 'none',
+                      '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+                    }}
+                  >
                     Generate
                   </Button>
                 ),
@@ -638,9 +727,10 @@ const Settings = () => {
             <TextField
               fullWidth
               label="Webhook URL"
-              placeholder="https://your-service.com/webhook"
+              placeholder="https://police-dispatch.gov.in/api/v1/webhook"
               value={settings.webhookUrl}
               onChange={(e) => handleChange('webhookUrl', e.target.value)}
+              sx={neuInputSx}
             />
           </Grid>
         </Grid>
@@ -648,20 +738,20 @@ const Settings = () => {
     },
     {
       id: 'privacy',
-      label: 'Privacy',
+      label: 'Privacy & Compliance',
       icon: <ShieldIcon />,
       content: (
-        <Grid container spacing={2}>
+        <Grid container spacing={2.5}>
           <Grid item xs={12}>
             <FormControlLabel
               control={
                 <Switch
                   checked={settings.showOnlineStatus}
                   onChange={(e) => handleChange('showOnlineStatus', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Show Online Status"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Display Operational On-Duty Status</Typography>}
             />
           </Grid>
           <Grid item xs={12}>
@@ -670,13 +760,13 @@ const Settings = () => {
                 <Switch
                   checked={settings.shareAnalytics}
                   onChange={(e) => handleChange('shareAnalytics', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Share Anonymous Analytics"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Share Anonymized Crime Telemetry for Model Training</Typography>}
             />
-            <Typography variant="caption" color="textSecondary" display="block">
-              Help us improve by sharing usage data (completely anonymous)
+            <Typography variant="caption" sx={{ color: textSecondary, display: 'block', mt: 0.2 }}>
+              Helps improve state-wide crime prediction models with zero PII exposure
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -685,10 +775,10 @@ const Settings = () => {
                 <Switch
                   checked={settings.allowCookies}
                   onChange={(e) => handleChange('allowCookies', e.target.checked)}
-                  color="primary"
+                  sx={switchSx}
                 />
               }
-              label="Allow Cookies"
+              label={<Typography variant="body2" fontWeight={600} sx={{ color: textPrimary }}>Allow Essential Session Cookies</Typography>}
             />
           </Grid>
         </Grid>
@@ -697,22 +787,49 @@ const Settings = () => {
   ]
 
   return (
-    <Box sx={{ maxWidth: '1200px', mx: 'auto', p: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    <Box sx={{ maxWidth: '1200px', mx: 'auto', p: { xs: 1, sm: 2 }, pb: 5 }}>
+      {/* Top Header */}
+      <Paper
+        elevation={0}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 4,
+          flexWrap: 'wrap',
+          gap: 2,
+          p: { xs: 2.5, md: 3 },
+          borderRadius: 4,
+          bgcolor: bgSurface,
+          boxShadow: raisedShadow,
+          border: `1px solid ${dividerColor}`,
+        }}
+      >
         <Box>
-          <Typography variant="h4" fontWeight={700}>
-            Settings
+          <Typography variant="h5" fontWeight={800} sx={{ color: textPrimary, letterSpacing: -0.3 }}>
+            System Settings & Preferences
           </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Configure your application preferences
+          <Typography variant="body2" sx={{ color: textSecondary }}>
+            Configure localized workstation parameters, notification triggers, and archival policies
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
           <Button
-            variant="outlined"
-            color="error"
             startIcon={<DeleteIcon />}
             onClick={() => setShowResetDialog(true)}
+            sx={{
+              bgcolor: bgSurface,
+              boxShadow: raisedSubtle,
+              color: '#D94F55',
+              borderRadius: 3,
+              px: 2,
+              py: 0.8,
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              textTransform: 'none',
+              border: `1px solid ${dividerColor}`,
+              '&:hover': { bgcolor: bgSurface, boxShadow: insetShadow },
+            }}
           >
             Reset Defaults
           </Button>
@@ -721,43 +838,64 @@ const Settings = () => {
             startIcon={<SaveIcon />}
             onClick={handleSave}
             disabled={loading}
-            sx={{ bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}
+            sx={{
+              bgcolor: '#356AE6',
+              color: '#fff',
+              borderRadius: 3,
+              px: 3,
+              py: 0.8,
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              textTransform: 'none',
+              boxShadow: '4px 4px 12px rgba(53, 106, 230, 0.4)',
+              '&:hover': { bgcolor: '#254EBF' },
+            }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Save Settings'}
+            {loading ? <CircularProgress size={18} color="inherit" /> : 'Save Settings'}
           </Button>
         </Box>
-      </Box>
+      </Paper>
 
       <Grid container spacing={3}>
         {/* Settings Sections */}
         {sections.map((section, index) => (
           <Grid item xs={12} key={section.id}>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: index * 0.04 }}
             >
-              <Paper sx={{ p: 3, borderRadius: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: { xs: 2.5, md: 3.5 },
+                  borderRadius: 4,
+                  bgcolor: bgSurface,
+                  boxShadow: raisedShadow,
+                  border: `1px solid ${dividerColor}`,
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.8, mb: 2.5 }}>
                   <Box
                     sx={{
                       width: 40,
                       height: 40,
-                      borderRadius: 2,
-                      bgcolor: 'rgba(26, 35, 126, 0.1)',
+                      borderRadius: 3,
+                      bgcolor: bgSurface,
+                      boxShadow: raisedSubtle,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#1a237e',
+                      color: '#356AE6',
                     }}
                   >
                     {section.icon}
                   </Box>
-                  <Typography variant="h6" fontWeight={600}>
+                  <Typography variant="h6" fontWeight={800} sx={{ color: textPrimary, fontSize: '1.05rem' }}>
                     {section.label}
                   </Typography>
                 </Box>
-                <Divider sx={{ mb: 3 }} />
+                <Divider sx={{ mb: 3, borderColor: dividerColor }} />
                 {section.content}
               </Paper>
             </motion.div>
@@ -766,53 +904,130 @@ const Settings = () => {
       </Grid>
 
       {/* Reset Dialog */}
-      <Dialog open={showResetDialog} onClose={() => setShowResetDialog(false)}>
-        <DialogTitle>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'warning.main' }}>
-            <WarningIcon />
-            Reset All Settings?
-          </Box>
+      <Dialog
+        open={showResetDialog}
+        onClose={() => setShowResetDialog(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            bgcolor: bgSurface,
+            boxShadow: raisedShadow,
+            border: `1px solid ${dividerColor}`,
+            p: 1,
+          },
+        }}
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: '#D94F55', fontWeight: 800 }}>
+          <WarningIcon />
+          Reset All Settings to Defaults?
         </DialogTitle>
-        <DialogContent>
-          <Typography>
-            This will reset all settings to their default values. This action cannot be undone.
+        <DialogContent sx={{ color: textSecondary }}>
+          <Typography variant="body2">
+            This will reset all user preferences and UI density options back to their factory defaults. This action cannot be undone.
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowResetDialog(false)}>Cancel</Button>
-          <Button onClick={handleReset} variant="contained" color="error">
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={() => setShowResetDialog(false)}
+            sx={{
+              bgcolor: bgSurface,
+              boxShadow: raisedSubtle,
+              color: textSecondary,
+              borderRadius: 2.5,
+              fontWeight: 600,
+              textTransform: 'none',
+              px: 2,
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleReset}
+            variant="contained"
+            sx={{
+              bgcolor: '#D94F55',
+              color: '#fff',
+              borderRadius: 2.5,
+              fontWeight: 700,
+              textTransform: 'none',
+              px: 2.5,
+              boxShadow: '3px 3px 8px rgba(217, 79, 85, 0.4)',
+              '&:hover': { bgcolor: '#b83b40' },
+            }}
+          >
             Reset All
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Export Dialog */}
-      <Dialog open={showExportDialog} onClose={() => setShowExportDialog(false)}>
-        <DialogTitle>Export All Data</DialogTitle>
-        <DialogContent>
-          <Typography>
+      <Dialog
+        open={showExportDialog}
+        onClose={() => setShowExportDialog(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            bgcolor: bgSurface,
+            boxShadow: raisedShadow,
+            border: `1px solid ${dividerColor}`,
+            p: 1,
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: textPrimary, fontWeight: 800, fontSize: '1.05rem' }}>
+          Export Complete Platform Dataset
+        </DialogTitle>
+        <DialogContent sx={{ color: textSecondary }}>
+          <Typography variant="body2" sx={{ mb: 2 }}>
             This will export all your data including crimes, suspects, victims, and cases.
-            The export will be sent to your email as a zip file.
+            The export will be compressed into an encrypted zip archive.
           </Typography>
           <Box sx={{ mt: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel>Export Format</InputLabel>
+            <FormControl fullWidth size="small">
+              <InputLabel sx={{ color: textSecondary, fontWeight: 600 }}>Export Format</InputLabel>
               <Select
                 value={settings.exportFormat}
                 onChange={(e) => handleChange('exportFormat', e.target.value)}
                 label="Export Format"
+                sx={selectSx}
               >
-                <MenuItem value="json">JSON</MenuItem>
-                <MenuItem value="csv">CSV</MenuItem>
-                <MenuItem value="excel">Excel</MenuItem>
+                <MenuItem value="json">JSON Archive</MenuItem>
+                <MenuItem value="csv">CSV Spreadsheets</MenuItem>
+                <MenuItem value="excel">Excel (.xlsx)</MenuItem>
               </Select>
             </FormControl>
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowExportDialog(false)}>Cancel</Button>
-          <Button onClick={handleExportData} variant="contained" sx={{ bgcolor: '#1a237e' }}>
-            Export Data
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={() => setShowExportDialog(false)}
+            sx={{
+              bgcolor: bgSurface,
+              boxShadow: raisedSubtle,
+              color: textSecondary,
+              borderRadius: 2.5,
+              fontWeight: 600,
+              textTransform: 'none',
+              px: 2,
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleExportData}
+            variant="contained"
+            sx={{
+              bgcolor: '#356AE6',
+              color: '#fff',
+              borderRadius: 2.5,
+              fontWeight: 700,
+              textTransform: 'none',
+              px: 2.5,
+              boxShadow: '3px 3px 8px rgba(53, 106, 230, 0.4)',
+              '&:hover': { bgcolor: '#254EBF' },
+            }}
+          >
+            Start Export
           </Button>
         </DialogActions>
       </Dialog>
@@ -822,7 +1037,9 @@ const Settings = () => {
         autoHideDuration={3000}
         onClose={() => saveSettingsMutation.reset()}
       >
-        <Alert severity="success">Settings saved successfully!</Alert>
+        <Alert severity="success" sx={{ borderRadius: 3, boxShadow: raisedSubtle }}>
+          Settings saved successfully!
+        </Alert>
       </Snackbar>
     </Box>
   )

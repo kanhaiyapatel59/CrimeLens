@@ -115,7 +115,7 @@ const suspectSchema = new mongoose.Schema({
     },
     level: {
       type: String,
-      enum: ['low', 'medium', 'high', 'extreme']
+      enum: ['low', 'medium', 'high', 'extreme', 'critical']
     },
     factors: [String],
     lastAssessed: Date

@@ -116,8 +116,17 @@ class CrimeController {
 
   static async bulkUpload(req, res) {
     try {
+      const mongoose = require('mongoose');
+      if (mongoose.connection.readyState !== 1) {
+        return ResponseHandler.error(res, 'Database connection is not ready. Please verify MongoDB is running.', 503);
+      }
+
       const userId = req.userId;
-      let { crimes } = req.body;
+      const validUserId = (userId && mongoose.Types.ObjectId.isValid(userId)) ? userId : null;
+      let { crimes, duplicateMode = 'update' } = req.body;
+      if (!duplicateMode && req.query.duplicateMode) {
+        duplicateMode = req.query.duplicateMode;
+      }
 
       if (!Array.isArray(crimes)) {
         if (typeof crimes === 'string') {
@@ -133,38 +142,23 @@ class CrimeController {
         return ResponseHandler.badRequest(res, 'No crimes to upload');
       }
 
-      // Detect external format (CrimeNo/GravityOffenceID) and normalize
-      const isExternalFormat = crimes[0] && ('CrimeNo' in crimes[0] || 'GravityOffenceID' in crimes[0]);
-      if (isExternalFormat) {
-        const CrimeType = require('../models/CrimeType');
-        const District = require('../models/District');
-        const crimeTypes = await CrimeType.find({ isActive: true }).sort({ _id: 1 }).select('_id').lean();
-        const districts = await District.find({ isActive: true }).select('_id code').lean();
-        const districtByCode = {};
-        districts.forEach(d => { districtByCode[d.code.toUpperCase()] = d._id; });
-
-        crimes = crimes.map(r => ({
-          firNumber: String(r.CrimeNo || r.CaseNo || ''),
-          incidentId: String(r.CaseNo || r.CrimeNo || ''),
-          crimeType: crimeTypes[Math.max(0, parseInt(r.GravityOffenceID || 1) - 1)]?._id,
-          date: r.CrimeRegisteredDate || new Date(),
-          description: r.BriefFacts || 'Imported crime record',
-          severity: 'medium',
-          status: 'reported',
-          location: {
-            type: 'Point',
-            coordinates: [parseFloat(r.longitude) || 77.5946, parseFloat(r.latitude) || 12.9716],
-            address: {
-              city: 'Bengaluru',
-              district: districtByCode[(r.DistrictID || '').toUpperCase()] || null,
-            },
-          },
-        }));
-      }
-
-      const results = { success: [], failed: [], total: crimes.length };
       const CrimeType = require('../models/CrimeType');
-      const mongoose = require('mongoose');
+      const District = require('../models/District');
+      const Victim = require('../models/Victim');
+      const Suspect = require('../models/Suspect');
+
+      // Preload active CrimeTypes and Districts in parallel for high performance
+      const [allTypes, allDistricts] = await Promise.all([
+        CrimeType.find({ isActive: true }).lean(),
+        District.find({ isActive: true }).lean(),
+      ]);
+
+      let defaultCrimeType = allTypes[0];
+      if (!defaultCrimeType) {
+        defaultCrimeType = await CrimeType.create({ name: 'General Crime', code: 'GEN100', category: 'other', severity: 'medium' });
+        allTypes.push(defaultCrimeType);
+      }
+      const defaultDistrictId = allDistricts[0]?._id || null;
 
       // Helper function for flexible case-insensitive CSV key extraction
       const getVal = (row, ...keys) => {
@@ -181,122 +175,265 @@ class CrimeController {
         return null;
       };
 
-      // Get first active CrimeType as global fallback
-      let defaultCrimeType = await CrimeType.findOne({ isActive: true });
-      if (!defaultCrimeType) {
-        defaultCrimeType = new CrimeType({ name: 'General Crime', code: 'GEN100', category: 'other', severity: 'medium' });
-        await defaultCrimeType.save();
+      // Detect external format (CrimeNo/GravityOffenceID) and normalize
+      const isExternalFormat = crimes[0] && ('CrimeNo' in crimes[0] || 'GravityOffenceID' in crimes[0]);
+      if (isExternalFormat) {
+        const districtByCode = {};
+        allDistricts.forEach(d => { if (d.code) districtByCode[d.code.toUpperCase()] = d._id; });
+
+        crimes = crimes.map(r => ({
+          firNumber: String(r.CrimeNo || r.CaseNo || ''),
+          incidentId: String(r.CaseNo || r.CrimeNo || ''),
+          crimeType: allTypes[Math.max(0, parseInt(r.GravityOffenceID || 1) - 1)]?._id || defaultCrimeType._id,
+          date: r.CrimeRegisteredDate || new Date(),
+          description: r.BriefFacts || 'Imported crime record',
+          severity: 'medium',
+          status: 'reported',
+          location: {
+            type: 'Point',
+            coordinates: [parseFloat(r.longitude) || 77.5946, parseFloat(r.latitude) || 12.9716],
+            address: {
+              city: 'Bengaluru',
+              district: districtByCode[(r.DistrictID || '').toUpperCase()] || defaultDistrictId,
+            },
+          },
+        }));
       }
 
-      for (const r of crimes) {
+      const results = {
+        success: [],
+        created: [],
+        updated: [],
+        skipped: [],
+        failed: [],
+        total: crimes.length
+      };
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+      for (let i = 0; i < crimes.length; i++) {
+        const r = crimes[i];
+        let firNumber = null;
         try {
-          const firNumber = getVal(r, 'firNumber', 'fir_number', 'firNo', 'crimeNo', 'caseNo', 'fir');
-          let incidentId = getVal(r, 'incidentId', 'incident_id', 'incidentNo', 'caseNo', 'crimeNo');
-          let crimeTypeVal = getVal(r, 'crimeType', 'crime_type', 'category', 'type', 'gravityOffenceID');
+          firNumber = getVal(r, 'firNumber', 'fir_number', 'firNo', 'fir_no', 'crimeNo', 'crime_no', 'caseNo', 'case_no', 'caseNumber', 'case_number', 'fir');
+          let incidentId = getVal(r, 'incidentId', 'incident_id', 'incidentNo', 'incident_no', 'caseNo', 'case_no', 'crimeNo', 'crime_no');
+          const crimeTypeVal = getVal(r, 'crimeType', 'crime_type', 'category', 'type', 'gravityOffenceID');
           const dateStr = getVal(r, 'date', 'crimeRegisteredDate', 'incident_date', 'registeredDate');
           const description = getVal(r, 'description', 'briefFacts', 'details', 'facts') || 'Imported crime incident record';
-          const severity = (getVal(r, 'severity', 'gravity') || 'medium').toLowerCase();
-          const status = (getVal(r, 'status', 'caseStatus') || 'reported').toLowerCase().replace(' ', '_');
+          const severityRaw = (getVal(r, 'severity', 'gravity') || 'medium').toLowerCase();
+          const statusRaw = (getVal(r, 'status', 'caseStatus') || 'reported').toLowerCase().replace(' ', '_');
           const timeVal = getVal(r, 'time', 'incidentTime') || '00:00';
+          const riskScoreVal = parseInt(getVal(r, 'riskScore', 'risk_score', 'risk'), 10);
+          const victimName = getVal(r, 'victimName', 'victim_name', 'victim');
+          const suspectName = getVal(r, 'suspectName', 'suspect_name', 'suspect');
+          const districtVal = getVal(r, 'district', 'districtName', 'districtId', 'districtID');
+          const policeStationVal = getVal(r, 'policeStation', 'police_station', 'ps', 'station');
 
-          if (!incidentId && firNumber) {
-            incidentId = `INC-${firNumber}`;
+          // Auto-generate identifiers if omitted in uploaded dataset
+          if (!firNumber && incidentId) {
+            firNumber = `FIR-${incidentId.replace(/^INC-?/i, '')}`;
           }
-
-          if (!firNumber || !incidentId) {
-            results.failed.push({ firNumber: firNumber || 'Unknown', error: 'Missing required firNumber or incidentId field' });
-            continue;
+          if (!firNumber) {
+            firNumber = `FIR${new Date().getFullYear()}${Math.floor(100000 + Math.random() * 900000)}`;
+          }
+          if (!incidentId) {
+            incidentId = `INC-${firNumber}`;
           }
 
           // Resolve CrimeType
           let resolvedCrimeTypeId = defaultCrimeType._id;
           if (crimeTypeVal) {
             if (mongoose.Types.ObjectId.isValid(crimeTypeVal)) {
-              const foundCt = await CrimeType.findById(crimeTypeVal);
-              if (foundCt) {
-                resolvedCrimeTypeId = foundCt._id;
-              } else {
-                // If ObjectId string doesn't exist in DB, create/use default
-                let namedCt = await CrimeType.findOne({ name: 'Robbery' }) || defaultCrimeType;
-                resolvedCrimeTypeId = namedCt._id;
-              }
+              const matchedById = allTypes.find(t => String(t._id) === String(crimeTypeVal));
+              resolvedCrimeTypeId = matchedById ? matchedById._id : defaultCrimeType._id;
             } else {
-              // String name (e.g. "Armed Robbery")
-              let ct = await CrimeType.findOne({ name: new RegExp('^' + crimeTypeVal + '$', 'i') });
-              if (!ct) {
-                const nameLower = crimeTypeVal.toLowerCase();
+              const ctLower = crimeTypeVal.toLowerCase();
+              const matchedByName = allTypes.find(t => t.name.toLowerCase() === ctLower);
+              if (matchedByName) {
+                resolvedCrimeTypeId = matchedByName._id;
+              } else {
                 let category = 'violent_crime';
-                if (nameLower.includes('burglary') || nameLower.includes('theft') || nameLower.includes('robbery') || nameLower.includes('snatching')) {
+                if (ctLower.includes('burglary') || ctLower.includes('theft') || ctLower.includes('robbery') || ctLower.includes('snatching')) {
                   category = 'property_crime';
-                } else if (nameLower.includes('cyber') || nameLower.includes('phishing') || nameLower.includes('otp') || nameLower.includes('fraud') || nameLower.includes('atm')) {
+                } else if (ctLower.includes('cyber') || ctLower.includes('phishing') || ctLower.includes('otp') || ctLower.includes('fraud') || ctLower.includes('atm')) {
                   category = 'cyber_crime';
-                } else if (nameLower.includes('drug') || nameLower.includes('narcotic')) {
+                } else if (ctLower.includes('drug') || ctLower.includes('narcotic')) {
                   category = 'drug_related';
-                } else if (nameLower.includes('extortion') || nameLower.includes('syndicate') || nameLower.includes('gang')) {
+                } else if (ctLower.includes('extortion') || ctLower.includes('syndicate') || ctLower.includes('gang')) {
                   category = 'organised_crime';
                 }
 
-                ct = new CrimeType({
+                const newCt = new CrimeType({
                   name: crimeTypeVal,
                   code: crimeTypeVal.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase() + Math.floor(100 + Math.random() * 900),
                   category: category,
-                  severity: ['low', 'medium', 'high', 'critical'].includes(severity) ? severity : 'medium'
+                  severity: ['low', 'medium', 'high', 'critical'].includes(severityRaw) ? severityRaw : 'medium',
                 });
-                await ct.save();
+                await newCt.save();
+                allTypes.push(newCt.toObject());
+                resolvedCrimeTypeId = newCt._id;
               }
-              resolvedCrimeTypeId = ct._id;
             }
           }
 
-          // Check for duplicate FIR
-          const existing = await CrimeIncident.findOne({ firNumber, deletedAt: null });
+          // Resolve Coordinates
+          let coordinates = [77.5946, 12.9716];
+          if (r.location && Array.isArray(r.location.coordinates) && r.location.coordinates.length === 2) {
+            const pLng = parseFloat(r.location.coordinates[0]);
+            const pLat = parseFloat(r.location.coordinates[1]);
+            if (!isNaN(pLng) && !isNaN(pLat)) coordinates = [pLng, pLat];
+          } else {
+            const pLng = parseFloat(getVal(r, 'longitude', 'long', 'lng', 'lon'));
+            const pLat = parseFloat(getVal(r, 'latitude', 'lat'));
+            if (!isNaN(pLng) && !isNaN(pLat)) coordinates = [pLng, pLat];
+          }
+
+          // Resolve District
+          let matchedDistrictId = null;
+          if (districtVal) {
+            const dNorm = districtVal.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const matched = allDistricts.find(d => 
+              d.name.toLowerCase().replace(/[^a-z0-9]/g, '') === dNorm || 
+              (d.code && d.code.toLowerCase().replace(/[^a-z0-9]/g, '') === dNorm) ||
+              d.name.toLowerCase().includes(districtVal.toLowerCase()) ||
+              districtVal.toLowerCase().includes(d.name.toLowerCase())
+            );
+            if (matched) matchedDistrictId = matched._id;
+          }
+
+          const parsedDate = new Date(dateStr || new Date());
+          const date = isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+          const validSeverity = ['low', 'medium', 'high', 'critical'].includes(severityRaw) ? severityRaw : 'medium';
+          const validStatus = ['reported', 'investigating', 'in_progress', 'resolved', 'closed', 'pending'].includes(statusRaw) ? statusRaw : 'reported';
+          const formattedTime = /^\d{1,2}:\d{2}$/.test(timeVal) ? (timeVal.length === 4 ? `0${timeVal}` : timeVal) : '00:00';
+
+          const dummyCrimeId = new mongoose.Types.ObjectId();
+          const victimIds = [];
+          const suspectIds = [];
+
+          // Link or create Victim document
+          if (victimName && victimName !== 'Unknown' && victimName !== 'N/A') {
+            const parts = victimName.split(' ');
+            const victim = new Victim({
+              firstName: parts[0] || 'Unknown',
+              lastName: parts.slice(1).join(' ') || 'Victim',
+              contact: { phone: '9845012345' },
+              crimes: [{ crime: dummyCrimeId, role: 'primary' }],
+            });
+            await victim.save();
+            victimIds.push(victim._id);
+          }
+
+          // Link or create Suspect document
+          if (suspectName && suspectName !== 'Unknown Offender' && suspectName !== 'Unknown' && suspectName !== 'N/A') {
+            const parts = suspectName.split(' ');
+            const suspectLevel = ['low', 'medium', 'high', 'critical'].includes(validSeverity) ? validSeverity : 'high';
+            const suspect = new Suspect({
+              firstName: parts[0] || 'Unknown',
+              lastName: parts.slice(1).join(' ') || 'Suspect',
+              status: 'under_investigation',
+              riskAssessment: { score: !isNaN(riskScoreVal) ? riskScoreVal : 75, level: suspectLevel },
+              currentCrimes: [{ crime: dummyCrimeId, role: 'primary', status: 'active' }],
+            });
+            await suspect.save();
+            suspectIds.push(suspect._id);
+          }
+
+          // Check for duplicate FIR / Incident ID
+          let existing = await CrimeIncident.findOne({ firNumber, deletedAt: null });
+          if (!existing && incidentId) {
+            existing = await CrimeIncident.findOne({ incidentId, deletedAt: null });
+          }
+
           if (existing) {
-            results.failed.push({ firNumber, error: 'FIR number already exists' });
-            continue;
-          }
+            if (duplicateMode === 'skip') {
+              results.skipped.push({ firNumber, reason: 'FIR already exists in database (skipped)' });
+              continue;
+            } else if (duplicateMode === 'auto_rename') {
+              const uniqueSuffix = `_${Date.now().toString().slice(-4)}${Math.floor(10 + Math.random() * 90)}`;
+              firNumber = `${firNumber}${uniqueSuffix}`;
+              incidentId = `${incidentId}${uniqueSuffix}`;
+              // Fall through to create as a new incident
+            } else if (duplicateMode === 'update') {
+              // Update existing incident record with uploaded data
+              if (resolvedCrimeTypeId) existing.crimeType = resolvedCrimeTypeId;
+              if (date) existing.date = date;
+              if (formattedTime) existing.time = formattedTime;
+              existing.dayOfWeek = dayNames[date.getDay()] || existing.dayOfWeek || 'Monday';
+              if (description) existing.description = description;
+              if (validSeverity) existing.severity = validSeverity;
+              if (!isNaN(riskScoreVal)) existing.riskScore = Math.min(100, Math.max(0, riskScoreVal));
+              if (validStatus) existing.status = validStatus;
+              if (coordinates && coordinates.length === 2) existing.location.coordinates = coordinates;
+              if (matchedDistrictId) existing.location.address.district = matchedDistrictId;
+              if (policeStationVal) {
+                existing.location.address.street = policeStationVal;
+                existing.location.address.area = policeStationVal;
+              }
+              if (victimIds.length > 0) existing.victims = [...(existing.victims || []), ...victimIds];
+              if (suspectIds.length > 0) existing.suspects = [...(existing.suspects || []), ...suspectIds];
+              await existing.save();
 
-          // Check for duplicate incidentId
-          const existingInc = await CrimeIncident.findOne({ incidentId, deletedAt: null });
-          if (existingInc) {
-            results.failed.push({ firNumber, error: 'Incident ID already exists' });
-            continue;
+              results.updated.push({ firNumber: existing.firNumber, id: existing._id });
+              results.success.push({ firNumber: existing.firNumber, id: existing._id, action: 'updated' });
+              continue;
+            } else {
+              // 'reject' mode
+              results.failed.push({
+                firNumber,
+                error: 'FIR number already exists. Select "Update" or "Auto-rename" mode to import duplicates.'
+              });
+              continue;
+            }
           }
-
-          const date = new Date(dateStr || new Date());
-          const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-          const validSeverity = ['low', 'medium', 'high', 'critical'].includes(severity) ? severity : 'medium';
-          const validStatus = ['reported', 'investigating', 'in_progress', 'resolved', 'closed', 'pending'].includes(status) ? status : 'reported';
 
           const crime = new CrimeIncident({
+            _id: dummyCrimeId,
             firNumber,
             incidentId,
             crimeType: resolvedCrimeTypeId,
-            date: isNaN(date.getTime()) ? new Date() : date,
-            time: /^\d{2}:\d{2}$/.test(timeVal) ? timeVal : '00:00',
+            date: date,
+            time: formattedTime,
             dayOfWeek: dayNames[date.getDay()] || 'Monday',
             description,
             severity: validSeverity,
+            riskScore: !isNaN(riskScoreVal) ? Math.min(100, Math.max(0, riskScoreVal)) : 50,
             status: validStatus,
+            victims: victimIds,
+            suspects: suspectIds,
             location: {
               type: 'Point',
-              coordinates: [77.5946, 12.9716],
-              address: {}
+              coordinates,
+              address: {
+                city: getVal(r, 'city') || districtVal || 'Bengaluru',
+                district: matchedDistrictId || defaultDistrictId,
+                street: policeStationVal || getVal(r, 'street', 'area') || '',
+                area: policeStationVal || '',
+                landmark: getVal(r, 'landmark') || '',
+              },
             },
-            reportedBy: userId,
-            reportingOfficer: userId,
+            reportedBy: validUserId,
+            reportingOfficer: validUserId,
             reportingDate: new Date(),
-            metaData: { source: 'excel_upload' }
+            metaData: { source: 'bulk_upload' },
           });
 
           await crime.save();
-          results.success.push({ firNumber: crime.firNumber, id: crime._id });
+          results.created.push({ firNumber: crime.firNumber, id: crime._id });
+          results.success.push({ firNumber: crime.firNumber, id: crime._id, action: 'created' });
         } catch (err) {
-          results.failed.push({ firNumber: r.firNumber || r.CrimeNo || 'Unknown', error: err.message });
+          const rowIdent = firNumber || getVal(r, 'firNumber', 'crimeNo', 'caseNo') || `Row ${i + 1}`;
+          results.failed.push({ firNumber: rowIdent, error: err.message || 'Row rejected' });
         }
       }
 
-      const message = `Uploaded ${results.success.length} of ${results.total} crimes`;
-      return ResponseHandler.success(res, results, results.failed.length > 0 ? `${message} (${results.failed.length} failed)` : message);
+      const summaryParts = [];
+      if (results.created.length > 0) summaryParts.push(`${results.created.length} created`);
+      if (results.updated.length > 0) summaryParts.push(`${results.updated.length} updated`);
+      if (results.skipped.length > 0) summaryParts.push(`${results.skipped.length} skipped`);
+      if (results.failed.length > 0) summaryParts.push(`${results.failed.length} failed`);
+      const message = `Processed ${results.total} records (${summaryParts.join(', ') || '0 processed'})`;
+
+      return ResponseHandler.success(res, results, message);
     } catch (error) {
       logger.error('Bulk upload error:', error);
       return ResponseHandler.error(res, error, 'Bulk upload failed');

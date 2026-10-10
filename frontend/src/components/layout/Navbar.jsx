@@ -6,8 +6,8 @@ import {
   Typography,
   Button,
   Box,
-  useTheme,
   useMediaQuery,
+  useTheme,
   IconButton,
   Drawer,
   List,
@@ -34,59 +34,79 @@ const Navbar = () => {
   const toggleDrawer = (open) => () => setDrawerOpen(open)
 
   const menuItems = [
-    { label: 'Features', path: '#features' },
-    { label: 'About', path: '#about' },
+    { label: 'Capabilities', path: '#features' },
+    { label: 'Intelligence Modules', path: '#modules' },
+    { label: 'Jurisdiction', path: '#about' },
   ]
 
-  // Mobile drawer content
   const drawerContent = (
-    <Box sx={{ width: 280, p: 2 }} role="presentation">
+    <Box sx={{ width: 280, p: 2.5, bgcolor: 'var(--neu-surface, #E8ECF3)', height: '100%' }} role="presentation">
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6" fontWeight={700} color="primary">
-          CrimeLens
-        </Typography>
-        <IconButton onClick={toggleDrawer(false)}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <SecurityIcon sx={{ color: '#356AE6', fontSize: 24 }} />
+          <Typography variant="h6" fontWeight={800} color="#202A3A">
+            CrimeLens
+          </Typography>
+        </Box>
+        <IconButton onClick={toggleDrawer(false)} sx={{ color: '#5C6779' }}>
           <CloseIcon />
         </IconButton>
       </Box>
-      <Divider sx={{ mb: 2 }} />
+      <Divider sx={{ mb: 2, borderColor: 'var(--neu-divider, #D7DDE7)' }} />
 
       {isAuthPage ? (
-        // Mobile - Auth pages
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => { toggleDrawer(false)(); navigate('/') }}>
-              <ListItemText primary="← Back to Home" />
+            <ListItemButton
+              onClick={() => { toggleDrawer(false)(); navigate('/') }}
+              sx={{
+                borderRadius: '12px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+              }}
+            >
+              <ListItemText primary="← Back to Login" />
             </ListItemButton>
           </ListItem>
         </List>
       ) : (
-        // Mobile - Landing page
         <List>
           {menuItems.map((item) => (
-            <ListItem key={item.label} disablePadding>
-              <ListItemButton href={item.path}>
-                <ListItemText primary={item.label} />
+            <ListItem key={item.label} disablePadding sx={{ mb: 1 }}>
+              <ListItemButton href={item.path} sx={{ borderRadius: '10px' }}>
+                <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600, color: '#5C6779' }} />
               </ListItemButton>
             </ListItem>
           ))}
-          <Divider sx={{ my: 1 }} />
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => { toggleDrawer(false)(); navigate('/login') }}>
-              <ListItemText primary="Login" sx={{ color: 'primary.main' }} />
+          <Divider sx={{ my: 1.5, borderColor: 'var(--neu-divider, #D7DDE7)' }} />
+          <ListItem disablePadding sx={{ mb: 1.5 }}>
+            <ListItemButton
+              onClick={() => { toggleDrawer(false)(); navigate('/login') }}
+              sx={{
+                borderRadius: '12px',
+                textAlign: 'center',
+                boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                color: '#356AE6',
+                fontWeight: 700,
+              }}
+            >
+              <ListItemText primary="Sign In" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
               onClick={() => { toggleDrawer(false)(); navigate('/register') }}
               sx={{
-                bgcolor: '#1a237e',
-                borderRadius: 1,
+                bgcolor: '#356AE6',
+                borderRadius: '12px',
                 color: '#fff',
-                '&:hover': { bgcolor: '#283593' },
+                textAlign: 'center',
+                boxShadow: '4px 4px 12px rgba(53, 106, 230, 0.35)',
+                '&:hover': { bgcolor: '#2955C4' },
               }}
             >
-              <ListItemText primary="Register" sx={{ textAlign: 'center' }} />
+              <ListItemText primary="Officer Portal Register" />
             </ListItemButton>
           </ListItem>
         </List>
@@ -100,89 +120,119 @@ const Navbar = () => {
       color="default"
       elevation={0}
       sx={{
-        backgroundColor: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(0,0,0,0.06)',
+        backgroundColor: 'var(--neu-bg, #E8ECF3)',
+        borderBottom: '1px solid var(--neu-divider, #D7DDE7)',
         py: 0.5,
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', minHeight: 56 }}>
+      <Toolbar sx={{ justifyContent: 'space-between', minHeight: 60, px: { xs: 2, sm: 4 } }}>
         {/* Logo */}
         <Box
-          sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
+          sx={{ display: 'flex', alignItems: 'center', gap: 1.2, cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
-          <SecurityIcon sx={{ color: '#1a237e', fontSize: 28 }} />
-          <Typography variant="h6" fontWeight={700} color="#1a237e" sx={{ fontSize: '1.1rem' }}>
-            CrimeLens
+          <Box
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: '10px',
+              bgcolor: '#356AE6',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '3px 3px 8px rgba(53, 106, 230, 0.35)',
+              color: '#fff',
+            }}
+          >
+            <SecurityIcon sx={{ fontSize: 20 }} />
+          </Box>
+          <Typography variant="h6" fontWeight={800} color="#202A3A" sx={{ fontSize: '1.15rem', letterSpacing: '-0.02em' }}>
+            Crime<span style={{ color: '#356AE6' }}>Lens</span>
           </Typography>
         </Box>
 
         {/* Desktop Menu */}
         {!isMobile ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             {isAuthPage ? (
-              // Desktop - Auth pages: Show Back to Home
               <Button
                 onClick={() => navigate('/')}
-                sx={{ textTransform: 'none', fontWeight: 500, color: '#1a237e' }}
-                startIcon={<span>←</span>}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  color: '#202A3A',
+                  bgcolor: 'var(--neu-surface, #E8ECF3)',
+                  boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+                  borderRadius: '12px',
+                  px: 2.2,
+                  py: 0.8,
+                  '&:hover': { color: '#356AE6' },
+                }}
               >
-                Back to Home
+                ← Back to Portal
               </Button>
             ) : (
-              // Desktop - Landing page: Show normal menu
               <>
-                {menuItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    href={item.path}
-                    color="inherit"
-                    sx={{ textTransform: 'none', fontWeight: 500, fontSize: '0.9rem' }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
                 <Button
-                  variant="outlined"
+                  variant="text"
                   onClick={() => navigate('/login')}
                   sx={{
                     textTransform: 'none',
-                    fontWeight: 500,
-                    borderColor: '#1a237e',
-                    color: '#1a237e',
-                    borderRadius: 2,
-                    px: 3,
-                    '&:hover': { bgcolor: 'rgba(26, 35, 126, 0.04)' },
+                    fontWeight: 600,
+                    color: '#202A3A',
+                    borderRadius: '12px',
+                    px: 2.5,
+                    py: 0.8,
+                    bgcolor: 'var(--neu-surface, #E8ECF3)',
+                    boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+                    border: '1px solid rgba(255, 255, 255, 0.6)',
+                    '&:hover': { color: '#356AE6' },
                   }}
                 >
-                  Login
+                  Sign In
                 </Button>
                 <Button
                   variant="contained"
                   onClick={() => navigate('/register')}
                   sx={{
-                    bgcolor: '#1a237e',
-                    '&:hover': { bgcolor: '#283593' },
+                    bgcolor: '#356AE6',
+                    '&:hover': { bgcolor: '#2955C4' },
                     textTransform: 'none',
-                    fontWeight: 500,
-                    borderRadius: 2,
+                    fontWeight: 700,
+                    borderRadius: '12px',
                     px: 3,
+                    py: 0.8,
+                    boxShadow: 'var(--neu-shadow-primary-btn, 5px 5px 14px rgba(53, 106, 230, 0.35), -5px -5px 14px rgba(255, 255, 255, 0.9))',
                   }}
                 >
-                  Register
+                  Officer Register
                 </Button>
               </>
             )}
           </Box>
         ) : (
-          <IconButton onClick={toggleDrawer(true)}>
+          <IconButton
+            onClick={toggleDrawer(true)}
+            sx={{
+              bgcolor: 'var(--neu-surface, #E8ECF3)',
+              boxShadow: 'var(--neu-shadow-raised-sm, 4px 4px 10px #C7CDD7, -4px -4px 10px #FFFFFF)',
+              borderRadius: '10px',
+            }}
+          >
             <MenuIcon />
           </IconButton>
         )}
 
         {/* Mobile Drawer */}
-        <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={toggleDrawer(false)}
+          ModalProps={{
+            disableAutoFocus: true,
+            disableRestoreFocus: true,
+          }}
+        >
           {drawerContent}
         </Drawer>
       </Toolbar>

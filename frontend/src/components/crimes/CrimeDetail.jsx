@@ -39,7 +39,7 @@ const CrimeDetail = ({ crime }) => {
   if (!crime) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
-        <Typography variant="body1" color="textSecondary">
+        <Typography variant="body1" sx={{ color: '#8893A4' }}>
           No crime data available
         </Typography>
       </Box>
@@ -57,34 +57,22 @@ const CrimeDetail = ({ crime }) => {
 
   const getSeverityColor = (severity) => {
     const colors = {
-      low: 'success',
-      medium: 'info',
-      high: 'warning',
-      critical: 'error',
+      low: '#239B62',
+      medium: '#D99118',
+      high: '#D94F55',
+      critical: '#E91E63',
     }
-    return colors[severity] || 'default'
+    return colors[severity] || '#356AE6'
   }
 
   const getSeverityIcon = (severity) => {
     const icons = {
-      low: <Info />,
-      medium: <Info />,
-      high: <Warning />,
-      critical: <Error />,
+      low: <Info sx={{ fontSize: 16 }} />,
+      medium: <Info sx={{ fontSize: 16 }} />,
+      high: <Warning sx={{ fontSize: 16 }} />,
+      critical: <Error sx={{ fontSize: 16 }} />,
     }
-    return icons[severity] || <Info />
-  }
-
-  const getStatusColor = (status) => {
-    const colors = {
-      reported: 'warning',
-      investigating: 'info',
-      in_progress: 'primary',
-      resolved: 'success',
-      closed: 'default',
-      pending: 'warning',
-    }
-    return colors[status] || 'default'
+    return icons[severity] || <Info sx={{ fontSize: 16 }} />
   }
 
   // Generate deterministic evidence items if not attached to crime record
@@ -151,47 +139,61 @@ const CrimeDetail = ({ crime }) => {
   ]
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 1 }}>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.25 }}
       >
-        {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+        {/* Header Bar */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2.5, flexWrap: 'wrap', gap: 1.5 }}>
           <Box>
-            <Typography variant="h5" fontWeight={700}>
+            <Typography variant="h5" fontWeight={800} sx={{ color: '#202A3A', letterSpacing: '-0.02em' }}>
               {crime.firNumber}
             </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Incident ID: {crime.incidentId}
+            <Typography variant="body2" sx={{ color: '#5C6779', fontWeight: 500 }}>
+              Incident ID: <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#356AE6' }}>{crime.incidentId}</span>
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Chip
               icon={getSeverityIcon(crime.severity)}
               label={crime.severity.toUpperCase()}
-              color={getSeverityColor(crime.severity)}
+              sx={{
+                bgcolor: `${getSeverityColor(crime.severity)}18`,
+                color: getSeverityColor(crime.severity),
+                fontWeight: 700,
+                border: `1px solid ${getSeverityColor(crime.severity)}40`,
+              }}
             />
             <Chip
-              label={crime.status}
-              color={getStatusColor(crime.status)}
-              variant="outlined"
+              label={crime.status?.toUpperCase() || 'REPORTED'}
+              sx={{
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+                color: '#202A3A',
+                fontWeight: 700,
+              }}
             />
           </Box>
         </Box>
 
-        <Divider sx={{ my: 2 }} />
-
-        {/* Basic Info */}
-        <Grid container spacing={3}>
+        {/* Basic Info Panels in Neumorphic Cards */}
+        <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 2, borderRadius: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                <CalendarToday sx={{ mr: 1, fontSize: 16 }} />
-                Date & Time
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: '16px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+              }}
+            >
+              <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#202A3A', display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                <CalendarToday sx={{ fontSize: 16, color: '#356AE6' }} />
+                Date & Time of Incident
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" fontWeight={600} color="#202A3A">
                 {new Date(crime.date).toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
@@ -199,143 +201,196 @@ const CrimeDetail = ({ crime }) => {
                   day: 'numeric',
                 })}
               </Typography>
-              <Typography variant="body2" color="textSecondary">
-                {crime.time || 'Time not specified'}
+              <Typography variant="caption" sx={{ color: '#5C6779', fontWeight: 500 }}>
+                Recorded Time: {crime.time || 'Time not specified'}
               </Typography>
-            </Paper>
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 2, borderRadius: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                <LocationOn sx={{ mr: 1, fontSize: 16 }} />
-                Location
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: '16px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+              }}
+            >
+              <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#202A3A', display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                <LocationOn sx={{ fontSize: 16, color: '#D94F55' }} />
+                Location & Jurisdiction
               </Typography>
-              <Typography variant="body2">
-                {crime.location?.address?.street || 'Address not available'}
+              <Typography variant="body2" fontWeight={600} color="#202A3A">
+                {crime.location?.address?.street || 'Address not registered'}
               </Typography>
-              <Typography variant="body2" color="textSecondary">
+              <Typography variant="caption" sx={{ color: '#5C6779', fontWeight: 500 }}>
                 {crime.location?.address?.area}, {crime.location?.address?.city}
-                {crime.location?.address?.district && `, ${crime.location.address.district.name}`}
+                {crime.location?.address?.district && `, ${crime.location.address.district.name || crime.location.address.district}`}
               </Typography>
-            </Paper>
+            </Box>
           </Grid>
 
           <Grid item xs={12}>
-            <Paper sx={{ p: 2, borderRadius: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                <DescriptionIcon sx={{ mr: 1, fontSize: 16 }} />
-                Description
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: '16px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+              }}
+            >
+              <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#202A3A', display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                <DescriptionIcon sx={{ fontSize: 16, color: '#356AE6' }} />
+                Incident Narrative
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{ color: '#5C6779', lineHeight: 1.6 }}>
                 {crime.description || 'No description available'}
               </Typography>
-            </Paper>
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 2, borderRadius: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                <BadgeIcon sx={{ mr: 1, fontSize: 16 }} />
-                Crime Type
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: '16px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+              }}
+            >
+              <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#202A3A', display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                <BadgeIcon sx={{ fontSize: 16, color: '#356AE6' }} />
+                Crime Classification
               </Typography>
-              <Typography variant="body2" fontWeight={500}>
-                {crime.crimeType?.name || 'Unknown'}
+              <Typography variant="body2" fontWeight={700} color="#202A3A">
+                {crime.crimeType?.name || 'Classified Offence'}
               </Typography>
-              <Typography variant="caption" color="textSecondary">
-                Category: {crime.crimeType?.category || 'N/A'}
+              <Typography variant="caption" sx={{ color: '#8893A4' }}>
+                Category: {crime.crimeType?.category || 'General Penal Code'}
               </Typography>
-            </Paper>
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 2, borderRadius: 2 }}>
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                <CheckCircle sx={{ mr: 1, fontSize: 16 }} />
-                Status Details
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: '16px',
+                bgcolor: 'var(--neu-surface, #E8ECF3)',
+                boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
+              }}
+            >
+              <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#202A3A', display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                <CheckCircle sx={{ fontSize: 16, color: '#239B62' }} />
+                Registration Log
               </Typography>
-              <Typography variant="body2">
-                Reported by: {crime.reportedBy?.firstName || 'System'} {crime.reportedBy?.lastName || 'Officer'}
+              <Typography variant="body2" color="#202A3A">
+                Logged By: <strong>{crime.reportedBy?.firstName || 'SCRB Officer'} {crime.reportedBy?.lastName || ''}</strong>
               </Typography>
-              <Typography variant="caption" color="textSecondary">
-                Reported on: {new Date(crime.reportingDate || crime.date).toLocaleDateString()}
+              <Typography variant="caption" sx={{ color: '#8893A4' }}>
+                Timestamp: {new Date(crime.reportingDate || crime.date).toLocaleString()}
               </Typography>
-            </Paper>
+            </Box>
           </Grid>
         </Grid>
 
-        {/* Victims & Suspects */}
+        {/* Involved Parties: Victims & Suspects */}
         {(crime.victims?.length > 0 || crime.suspects?.length > 0) && (
-          <>
-            <Divider sx={{ my: 3 }} />
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              People Involved
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="subtitle1" fontWeight={800} color="#202A3A" sx={{ mb: 1.5 }}>
+              Involved Persons
             </Typography>
             <Grid container spacing={2}>
               {crime.victims?.length > 0 && (
                 <Grid item xs={12} md={6}>
-                  <Paper sx={{ p: 2, borderRadius: 2 }}>
-                    <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: '16px',
+                      bgcolor: 'var(--neu-surface, #E8ECF3)',
+                      boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+                    }}
+                  >
+                    <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#239B62', mb: 1 }}>
                       Victims ({crime.victims.length})
                     </Typography>
-                    {crime.victims.map((victim) => (
-                      <Box key={victim._id || victim.firstName} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
-                        <Avatar sx={{ width: 24, height: 24, bgcolor: '#4caf50' }}>
-                          <PersonIcon sx={{ fontSize: 14 }} />
+                    {crime.victims.map((victim, i) => (
+                      <Box key={victim._id || i} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
+                        <Avatar sx={{ width: 26, height: 26, bgcolor: 'rgba(35, 155, 98, 0.2)', color: '#239B62', fontSize: 12, fontWeight: 700 }}>
+                          V
                         </Avatar>
-                        <Typography variant="body2">
+                        <Typography variant="body2" fontWeight={600} color="#202A3A">
                           {victim.firstName} {victim.lastName}
                         </Typography>
                       </Box>
                     ))}
-                  </Paper>
+                  </Box>
                 </Grid>
               )}
 
               {crime.suspects?.length > 0 && (
                 <Grid item xs={12} md={6}>
-                  <Paper sx={{ p: 2, borderRadius: 2 }}>
-                    <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: '16px',
+                      bgcolor: 'var(--neu-surface, #E8ECF3)',
+                      boxShadow: 'var(--neu-shadow-raised-sm, 3px 3px 8px #C7CDD7, -3px -3px 8px #FFFFFF)',
+                    }}
+                  >
+                    <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#D94F55', mb: 1 }}>
                       Suspects ({crime.suspects.length})
                     </Typography>
-                    {crime.suspects.map((suspect) => (
-                      <Box key={suspect._id || suspect.firstName} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
-                        <Avatar sx={{ width: 24, height: 24, bgcolor: '#f44336' }}>
-                          <PersonIcon sx={{ fontSize: 14 }} />
+                    {crime.suspects.map((suspect, i) => (
+                      <Box key={suspect._id || i} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
+                        <Avatar sx={{ width: 26, height: 26, bgcolor: 'rgba(217, 79, 85, 0.2)', color: '#D94F55', fontSize: 12, fontWeight: 700 }}>
+                          S
                         </Avatar>
-                        <Typography variant="body2">
+                        <Typography variant="body2" fontWeight={600} color="#202A3A">
                           {suspect.firstName} {suspect.lastName}
                         </Typography>
                       </Box>
                     ))}
-                  </Paper>
+                  </Box>
                 </Grid>
               )}
             </Grid>
-          </>
+          </Box>
         )}
 
-        {/* DIGITAL CHAIN OF CUSTODY & EVIDENCE MATRIX */}
-        <Divider sx={{ my: 3 }} />
-
-        <Paper
+        {/* DIGITAL CHAIN OF CUSTODY & EVIDENCE MATRIX in Neumorphic Panel */}
+        <Box
           sx={{
+            mt: 3.5,
             p: 3,
-            borderRadius: 3,
-            background: 'linear-gradient(135deg, #090e17 0%, #111a2e 100%)',
-            border: '1px solid rgba(255,215,0,0.3)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-            color: '#ffffff',
+            borderRadius: '20px',
+            bgcolor: 'var(--neu-surface, #E8ECF3)',
+            boxShadow: 'var(--neu-shadow-raised, 7px 7px 16px #C7CDD7, -7px -7px 16px #FFFFFF)',
+            border: '1px solid rgba(255, 255, 255, 0.7)',
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5, flexWrap: 'wrap', gap: 1.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Security sx={{ color: '#ffd700', fontSize: 28 }} />
+              <Box
+                sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '12px',
+                  bgcolor: '#356AE6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  boxShadow: '3px 3px 8px rgba(53, 106, 230, 0.35)',
+                }}
+              >
+                <Security sx={{ fontSize: 22 }} />
+              </Box>
               <Box>
-                <Typography variant="h6" fontWeight={700} sx={{ color: '#ffd700', letterSpacing: 0.5 }}>
-                  DIGITAL CHAIN OF CUSTODY & EVIDENCE MATRIX
+                <Typography variant="subtitle1" fontWeight={800} color="#202A3A">
+                  Digital Chain of Custody & Evidence Matrix
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+                <Typography variant="caption" sx={{ color: '#5C6779', fontWeight: 500 }}>
                   Cryptographic SHA-256 Ledger • Tamper-Proof Evidence Vault
                 </Typography>
               </Box>
@@ -347,86 +402,98 @@ const CrimeDetail = ({ crime }) => {
               onClick={handleVerifyIntegrity}
               disabled={verifying}
               sx={{
-                background: verifiedHash
-                  ? 'linear-gradient(135deg, #00c853, #00e676)'
-                  : 'linear-gradient(135deg, #ffd700, #ffb300)',
-                color: '#000000',
+                bgcolor: verifiedHash ? '#239B62' : '#356AE6',
+                color: '#fff !important',
                 fontWeight: 700,
                 fontSize: '0.8rem',
-                borderRadius: 2,
+                borderRadius: '12px',
                 px: 2.5,
+                boxShadow: verifiedHash
+                  ? '4px 4px 12px rgba(35, 155, 98, 0.35)'
+                  : '4px 4px 12px rgba(53, 106, 230, 0.35)',
                 '&:hover': {
-                  background: verifiedHash
-                    ? 'linear-gradient(135deg, #00e676, #69f0ae)'
-                    : 'linear-gradient(135deg, #ffe033, #ffd700)',
+                  bgcolor: verifiedHash ? '#1E8453' : '#2955C4',
                 },
               }}
             >
-              {verifying ? 'Scanning Cryptographic Ledger...' : verifiedHash ? 'SHA-256 MATCH CONFIRMED' : 'Verify SHA-256 Integrity'}
+              {verifying ? 'Scanning Ledger...' : verifiedHash ? 'SHA-256 MATCH CONFIRMED' : 'Verify SHA-256 Integrity'}
             </Button>
           </Box>
 
           {verifying && (
             <Box sx={{ width: '100%', mb: 2 }}>
-              <LinearProgress sx={{ bgcolor: 'rgba(255,215,0,0.2)', '& .MuiLinearProgress-bar': { bgcolor: '#ffd700' } }} />
+              <LinearProgress sx={{ borderRadius: 4, height: 6, bgcolor: '#D7DDE7', '& .MuiLinearProgress-bar': { bgcolor: '#356AE6' } }} />
             </Box>
           )}
 
-          {/* Evidence Items List */}
-          <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#ffffff', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Fingerprint sx={{ color: '#ffd700', fontSize: 18 }} />
-            Logging & Forensic Exhibits ({evidenceItems.length})
+          {/* Evidence Items */}
+          <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#202A3A', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Fingerprint sx={{ color: '#356AE6', fontSize: 18 }} />
+            Forensic Exhibits & Evidence Items ({evidenceItems.length})
           </Typography>
 
           <Grid container spacing={2} sx={{ mb: 3 }}>
             {evidenceItems.map((ev, i) => (
               <Grid item xs={12} key={i}>
-                <Paper
+                <Box
                   sx={{
                     p: 2,
-                    bgcolor: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: 2,
-                    '&:hover': { border: '1px solid rgba(255,215,0,0.5)' },
+                    borderRadius: '14px',
+                    bgcolor: 'var(--neu-surface, #E8ECF3)',
+                    boxShadow: 'var(--neu-shadow-inset-sm, inset 2px 2px 5px #CBD1DB, inset -2px -2px 5px #FFFFFF)',
                   }}
                 >
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 1 }}>
                     <Box>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" fontWeight={700} sx={{ color: '#ffffff' }}>
+                        <Typography variant="body2" fontWeight={700} color="#202A3A">
                           {ev.name}
                         </Typography>
-                        <Chip label={ev.type} size="small" sx={{ bgcolor: 'rgba(255,215,0,0.15)', color: '#ffd700', fontSize: '0.65rem', height: 20 }} />
+                        <Chip label={ev.type} size="small" sx={{ bgcolor: 'rgba(53, 106, 230, 0.1)', color: '#356AE6', fontSize: '0.65rem', height: 20, fontWeight: 700 }} />
                       </Box>
-                      <Typography variant="caption" sx={{ color: '#8899a6', display: 'block', mt: 0.5 }}>
+                      <Typography variant="caption" sx={{ color: '#5C6779', display: 'block', mt: 0.5 }}>
                         Vault: <strong>{ev.vault}</strong> • Custodial Officer: <strong>{ev.officer}</strong>
                       </Typography>
                     </Box>
 
                     <Chip
-                      icon={<FactCheck sx={{ fontSize: 14, color: '#00e676 !important' }} />}
-                      label="SHA-256 SECURE"
+                      icon={<FactCheck sx={{ fontSize: 14, color: '#239B62 !important' }} />}
+                      label="SHA-256 VERIFIED"
                       size="small"
-                      sx={{ bgcolor: 'rgba(0,230,118,0.15)', color: '#00e676', fontSize: '0.65rem', border: '1px solid rgba(0,230,118,0.3)' }}
+                      sx={{ bgcolor: 'rgba(35, 155, 98, 0.12)', color: '#239B62', fontSize: '0.65rem', fontWeight: 700 }}
                     />
                   </Box>
 
-                  <Box sx={{ mt: 1.5, p: 1, bgcolor: 'rgba(0,0,0,0.4)', borderRadius: 1, fontFamily: 'monospace', fontSize: '0.72rem', color: '#ffd700', wordBreak: 'break-all', display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Lock sx={{ fontSize: 14, color: '#8899a6' }} />
+                  <Box
+                    sx={{
+                      mt: 1.2,
+                      p: 1,
+                      bgcolor: 'rgba(255, 255, 255, 0.6)',
+                      borderRadius: '8px',
+                      fontFamily: 'monospace',
+                      fontSize: '0.72rem',
+                      color: '#202A3A',
+                      wordBreak: 'break-all',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <Lock sx={{ fontSize: 14, color: '#8893A4' }} />
                     {ev.hash}
                   </Box>
-                </Paper>
+                </Box>
               </Grid>
             ))}
           </Grid>
 
-          {/* Custody Timeline Steps */}
-          <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#ffffff', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Timeline sx={{ color: '#ffd700', fontSize: 18 }} />
-            Cryptographic Custody Timeline & Sign-Offs
+          {/* Custody Timeline */}
+          <Typography variant="subtitle2" fontWeight={700} sx={{ color: '#202A3A', mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Timeline sx={{ color: '#356AE6', fontSize: 18 }} />
+            Chain of Custody Events
           </Typography>
 
-          <Box sx={{ position: 'relative', pl: 2, borderLeft: '2px dashed rgba(255,215,0,0.4)', ml: 1 }}>
+          <Box sx={{ position: 'relative', pl: 2, borderLeft: '2px solid #356AE6', ml: 1 }}>
             {chainEvents.map((evt, idx) => (
               <Box key={idx} sx={{ mb: 2, position: 'relative', pl: 2 }}>
                 <Box
@@ -437,30 +504,30 @@ const CrimeDetail = ({ crime }) => {
                     width: 12,
                     height: 12,
                     borderRadius: '50%',
-                    bgcolor: '#ffd700',
-                    boxShadow: '0 0 8px #ffd700',
+                    bgcolor: '#356AE6',
+                    boxShadow: '0 0 8px rgba(53, 106, 230, 0.6)',
                   }}
                 />
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap' }}>
-                  <Typography variant="body2" fontWeight={700} sx={{ color: '#ffffff' }}>
+                  <Typography variant="body2" fontWeight={700} color="#202A3A">
                     {evt.title}
                   </Typography>
-                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                  <Typography variant="caption" sx={{ color: '#8893A4' }}>
                     {evt.time}
                   </Typography>
                 </Box>
-                <Typography variant="caption" sx={{ color: '#8899a6', display: 'block' }}>
-                  {evt.officer} • Ledger Block: <span style={{ color: '#ffd700', fontFamily: 'monospace' }}>{evt.block}</span>
+                <Typography variant="caption" sx={{ color: '#5C6779', display: 'block' }}>
+                  {evt.officer} • Block: <span style={{ fontFamily: 'monospace', color: '#356AE6', fontWeight: 600 }}>{evt.block}</span>
                 </Typography>
                 <Chip
                   label={evt.status}
                   size="small"
-                  sx={{ mt: 0.5, bgcolor: 'rgba(255,255,255,0.06)', color: '#00e676', fontSize: '0.6rem', height: 18 }}
+                  sx={{ mt: 0.5, bgcolor: 'rgba(35, 155, 98, 0.12)', color: '#239B62', fontSize: '0.62rem', height: 18, fontWeight: 700 }}
                 />
               </Box>
             ))}
           </Box>
-        </Paper>
+        </Box>
       </motion.div>
     </Box>
   )
